@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>MintRadar</title>
-<script src="https://telegram.org"></script>
-<script src="https://unpkg.com"></script>
+<script>
+function addScr(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
+addScr('https://'+'telegram.org/js/telegram-web-app.js');
+addScr('https://'+'://unpkg.com');
+</script>
 <style>
 :root{--bg:#0b0e14;--card:#151a23;--border:#232a36;--green:#22c55e;--blue:#38bdf8;--gold:#f59e0b;--muted:#8b949e}
 *{box-sizing:border-box}
@@ -30,7 +33,7 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 </style>
 </head>
 <body>
-<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">BINANCE LIVE</div></div>
+<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">LIVE MARKET</div></div>
 
 <div id="t-radar" class="tab active">
   <div class="grid">
@@ -90,15 +93,11 @@ function go(t,e){
   e.classList.add('active');
 }
 
-try {
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-  if(tg.initDataUnsafe?.user){
-    const u=tg.initDataUnsafe.user;
-    document.getElementById('uname').innerText=u.first_name+(u.last_name?' '+u.last_name:'');
-    document.getElementById('uid').innerText=(u.username?'@'+u.username+' • ':'')+'ID: '+u.id;
-    if(u.photo_url)document.getElementById('uava').innerHTML=`<img src="${u.photo_url}">`;
-  }
-} catch(err) {}
-
-function payAndSpin(
+setTimeout(()=>{
+  try {
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    if(tg.initDataUnsafe?.user){
+      const u=tg.initDataUnsafe.user;
+      document.getElementById('uname').innerText=u.first_name+(u.last_name?' '+u.last_name:'');
+      document.getElementById('uid').innerText=(u.username?'@'+u.username+' •
