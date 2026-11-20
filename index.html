@@ -4,15 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>MintRadar</title>
-<script>
-function addScr(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
-addScr('https://'+'telegram.org/js/telegram-web-app.js');
-addScr('https://'+'://unpkg.com');
-</script>
+<script src="https://telegram.org"></script>
+<script src="https://unpkg.com"></script>
 <style>
 :root{--bg:#0b0e14;--card:#151a23;--border:#232a36;--green:#22c55e;--blue:#38bdf8;--gold:#f59e0b;--muted:#8b949e}
 *{box-sizing:border-box}
-body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16px 16px 85px;user-select:none}
+body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin:0;padding:16px 16px 85px;user-select:none}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .brand{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700}
 .dot{width:10px;height:10px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green)}
@@ -33,11 +30,11 @@ body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16p
 </style>
 </head>
 <body>
-<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">LIVE MARKET</div></div>
+<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">MARKET LIVE</div></div>
 
 <div id="t-radar" class="tab active">
   <div class="grid">
-    <div class="card"><div class="lbl">Курс TON (Binance)</div><div class="val" style="color:var(--green)" id="ton">...</div></div>
+    <div class="card"><div class="lbl">Курс TON (USD)</div><div class="val" style="color:var(--green)" id="ton">...</div></div>
     <div class="card"><div class="lbl">Оновлено о</div><div class="val" style="font-size:16px;padding-top:3px" id="upd">...</div></div>
   </div>
   <div class="card row"><div><b>🥥 Coconut (Кокос)</b><br><small style="color:var(--muted)">Непокращений • 500K</small></div><span class="badge" style="color:var(--blue);border-color:var(--blue)">Чекає апгрейд</span></div>
@@ -63,7 +60,7 @@ body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16p
 
 <div id="t-prof" class="tab">
   <div class="card" style="text-align:center;padding:20px"><div class="ava" id="uava">👤</div><h3 id="uname" style="margin:0 0 4px">Користувач</h3><small id="uid" style="color:var(--muted)">Telegram ID</small></div>
-  <div class="card row"><span>Радар цін Binance</span><span class="badge">УВІМКНЕНО</span></div>
+  <div class="card row"><span>Радар цін ринку</span><span class="badge">УВІМКНЕНО</span></div>
 </div>
 
 <div class="nav">
@@ -75,19 +72,33 @@ body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16p
 
 <script>
 function go(t,e){document.querySelectorAll('.tab,.nav-i').forEach(x=>x.classList.remove('active'));document.getElementById('t-'+t).classList.add('active');e.classList.add('active');}
-function payAndSpin(){try{window.Telegram.WebApp.sendData(JSON.stringify({action:"spin_15"}));}catch(e){alert("Відкрийте через кнопку в меню бота!");}}
+function payAndSpin(){try{window.Telegram.WebApp.sendData(JSON.stringify({action:"spin_15"}));}catch(e){alert("Відкрийте через кнопку '📱 Відкрити MintRadar App' у боті!");}}
 async function getPrice(){
   try{
     let r=await fetch('https://coingecko.com');
     let d=await r.json();
     let p=d['the-open-network'].usd;
     document.getElementById('ton').innerText='$'+p.toFixed(3);
-    document.getElementById('b-status').innerText='MARKET LIVE';
     document.getElementById('upd').innerText=new Date().toTimeString().slice(0,5);
     document.querySelectorAll('.usd').forEach(el=>el.innerText='~$'+Math.round(parseFloat(el.dataset.ton)*p).toLocaleString());
   }catch(e){}
 }
 getPrice();setInterval(getPrice,300000);
+setTimeout(()=>{
+  try{
+    const tg=window.Telegram.WebApp;tg.expand();
+    const u=tg.initDataUnsafe?.user;
+    if(u){
+      document.getElementById('uname').innerText=u.first_name;
+      document.getElementById('uid').innerText='ID: '+u.id;
+      if(u.photo_url)document.getElementById('uava').innerHTML='<img src="'+u.photo_url+'">';
+    }
+    new TONConnectUI.TonConnectUI({
+      manifestUrl:'https://github.io',
+      buttonRootId:'ton-connect-btn'
+    });
+  }catch(e){}
+},500);
 </script>
 </body>
 </html>
