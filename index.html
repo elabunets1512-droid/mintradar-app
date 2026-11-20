@@ -34,17 +34,17 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 
 <div id="t-radar" class="tab active">
   <div class="grid">
-    <div class="card"><div class="lbl">Курс TON (Binance)</div><div class="val" style="color:var(--green)" id="ton">$1.03</div></div>
-    <div class="card"><div class="lbl">Оновлено о</div><div class="val" style="font-size:16px;padding-top:3px" id="upd">зараз</div></div>
+    <div class="card"><div class="lbl">Курс TON (Binance)</div><div class="val" style="color:var(--green)" id="ton">...</div></div>
+    <div class="card"><div class="lbl">Оновлено о</div><div class="val" style="font-size:16px;padding-top:3px" id="upd">...</div></div>
   </div>
   
   <div class="card row"><div><b>🥥 Coconut (Кокос)</b><br><small style="color:var(--muted)">Непокращений • 500K шт.</small></div><span class="badge" style="color:var(--blue);border-color:var(--blue)">Чекає апгрейд</span></div>
-  <div class="card row"><div><b>🐸 Plush Pepe</b><br><small style="color:var(--muted)">Покращений NFT • Топ-1</small></div><div style="text-align:right"><b style="color:var(--blue)">6,900 TON</b><br><small class="usd" data-ton="6900" style="color:var(--muted)">~$7,107</small></div></div>
-  <div class="card row"><div><b>🧢 Durov's Cap</b><br><small style="color:var(--muted)">Покращений NFT • Ліміт</small></div><div style="text-align:right"><b style="color:var(--blue)">680 TON</b><br><small class="usd" data-ton="680" style="color:var(--muted)">~$700</small></div></div>
-  <div class="card row"><div><b>💼 Loot Bag (Портфель)</b><br><small style="color:var(--muted)">Покращений NFT • Популярний</small></div><div style="text-align:right"><b style="color:var(--blue)">185 TON</b><br><small class="usd" data-ton="185" style="color:var(--muted)">~$190</small></div></div>
-  <div class="card row"><div><b>⌚ Swiss Watch</b><br><small style="color:var(--muted)">Покращений NFT • Преміум</small></div><div style="text-align:right"><b style="color:var(--blue)">95 TON</b><br><small class="usd" data-ton="95" style="color:var(--muted)">~$98</small></div></div>
-  <div class="card row"><div><b>💍 Diamond Ring</b><br><small style="color:var(--muted)">Покращений NFT • Колекція</small></div><div style="text-align:right"><b style="color:var(--blue)">62 TON</b><br><small class="usd" data-ton="62" style="color:var(--muted)">~$64</small></div></div>
-  <div class="card row"><div><b>🔮 Astral Shard</b><br><small style="color:var(--muted)">Покращений NFT • Рідкісний</small></div><div style="text-align:right"><b style="color:var(--blue)">140 TON</b><br><small class="usd" data-ton="140" style="color:var(--muted)">~$144</small></div></div>
+  <div class="card row"><div><b>🐸 Plush Pepe</b><br><small style="color:var(--muted)">Покращений NFT • Топ-1</small></div><div style="text-align:right"><b style="color:var(--blue)">6,900 TON</b><br><small class="usd" data-ton="6900" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>🧢 Durov's Cap</b><br><small style="color:var(--muted)">Покращений NFT • Ліміт</small></div><div style="text-align:right"><b style="color:var(--blue)">680 TON</b><br><small class="usd" data-ton="680" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>💼 Loot Bag (Портфель)</b><br><small style="color:var(--muted)">Покращений NFT • Популярний</small></div><div style="text-align:right"><b style="color:var(--blue)">185 TON</b><br><small class="usd" data-ton="185" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>⌚ Swiss Watch</b><br><small style="color:var(--muted)">Покращений NFT • Преміум</small></div><div style="text-align:right"><b style="color:var(--blue)">95 TON</b><br><small class="usd" data-ton="95" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>💍 Diamond Ring</b><br><small style="color:var(--muted)">Покращений NFT • Колекція</small></div><div style="text-align:right"><b style="color:var(--blue)">62 TON</b><br><small class="usd" data-ton="62" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>🔮 Astral Shard</b><br><small style="color:var(--muted)">Покращений NFT • Рідкісний</small></div><div style="text-align:right"><b style="color:var(--blue)">140 TON</b><br><small class="usd" data-ton="140" style="color:var(--muted)">...</small></div></div>
 </div>
 
 <div id="t-spin" class="tab">
@@ -83,7 +83,6 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 </div>
 
 <script>
-// 1. Перемикання вкладок (працює першочергово без збоїв)
 function go(t,e){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-i').forEach(x=>x.classList.remove('active'));
@@ -91,7 +90,6 @@ function go(t,e){
   e.classList.add('active');
 }
 
-// 2. Ініціалізація Telegram WebApp
 try {
   const tg = window.Telegram.WebApp;
   tg.expand();
@@ -99,4 +97,8 @@ try {
     const u=tg.initDataUnsafe.user;
     document.getElementById('uname').innerText=u.first_name+(u.last_name?' '+u.last_name:'');
     document.getElementById('uid').innerText=(u.username?'@'+u.username+' • ':'')+'ID: '+u.id;
-    if(u.photo_url)doc
+    if(u.photo_url)document.getElementById('uava').innerHTML=`<img src="${u.photo_url}">`;
+  }
+} catch(err) {}
+
+function payAndSpin(
