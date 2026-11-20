@@ -1,3 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>MintRadar</title>
+<script>
+function addScr(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
+addScr('https://'+'telegram.org/js/telegram-web-app.js');
+addScr('https://'+'://unpkg.com');
+</script>
+<style>
+:root{--bg:#0b0e14;--card:#151a23;--border:#232a36;--green:#22c55e;--blue:#38bdf8;--gold:#f59e0b;--muted:#8b949e}
+*{box-sizing:border-box}
+body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin:0;padding:16px 16px 85px;user-select:none}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700}
+.dot{width:10px;height:10px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green)}
+.badge{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px;margin-bottom:9px}
+.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.val{font-size:19px;font-weight:700}
+.row{display:flex;justify-content:space-between;align-items:center}
+.btn{background:linear-gradient(90deg,#f59e0b,#d97706);color:#000;border:none;width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;margin-top:12px}
+.tab{display:none}.tab.active{display:block}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#11151d;border-top:1px solid var(--border);display:flex;padding:8px 0 12px;z-index:999}
+.nav-i{flex:1;text-align:center;color:var(--muted);font-size:11px;cursor:pointer}
+.nav-i.active{color:var(--blue);font-weight:700}
+.nav-i div{font-size:20px;margin-bottom:2px}
+.ava{width:70px;height:70px;border-radius:50%;border:2px solid var(--blue);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;background:var(--bg)}
+.ava img{width:100%;height:100%;object-fit:cover}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">LIVE MARKET</div></div>
+
+<div id="t-radar" class="tab active">
+  <div class="grid">
+    <div class="card"><div class="lbl">Курс TON (Binance)</div><div class="val" style="color:var(--green)" id="ton">...</div></div>
+    <div class="card"><div class="lbl">Оновлено о</div><div class="val" style="font-size:16px;padding-top:3px" id="upd">...</div></div>
+  </div>
+  
+  <div class="card row"><div><b>🥥 Coconut (Кокос)</b><br><small style="color:var(--muted)">Непокращений • 500K шт.</small></div><span class="badge" style="color:var(--blue);border-color:var(--blue)">Чекає апгрейд</span></div>
+  <div class="card row"><div><b>🐸 Plush Pepe</b><br><small style="color:var(--muted)">Покращений NFT • Топ-1</small></div><div style="text-align:right"><b style="color:var(--blue)">6,900 TON</b><br><small class="usd" data-ton="6900" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>🧢 Durov's Cap</b><br><small style="color:var(--muted)">Покращений NFT • Ліміт</small></div><div style="text-align:right"><b style="color:var(--blue)">680 TON</b><br><small class="usd" data-ton="680" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>💼 Loot Bag (Портфель)</b><br><small style="color:var(--muted)">Покращений NFT • Популярний</small></div><div style="text-align:right"><b style="color:var(--blue)">185 TON</b><br><small class="usd" data-ton="185" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>⌚ Swiss Watch</b><br><small style="color:var(--muted)">Покращений NFT • Преміум</small></div><div style="text-align:right"><b style="color:var(--blue)">95 TON</b><br><small class="usd" data-ton="95" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>💍 Diamond Ring</b><br><small style="color:var(--muted)">Покращений NFT • Колекція</small></div><div style="text-align:right"><b style="color:var(--blue)">62 TON</b><br><small class="usd" data-ton="62" style="color:var(--muted)">...</small></div></div>
+  <div class="card row"><div><b>🔮 Astral Shard</b><br><small style="color:var(--muted)">Покращений NFT • Рідкісний</small></div><div style="text-align:right"><b style="color:var(--blue)">140 TON</b><br><small class="usd" data-ton="140" style="color:var(--muted)">...</small></div></div>
+</div>
+
+<div id="t-spin" class="tab">
+  <div class="card" style="text-align:center;padding:24px 14px">
+    <h3 style="margin:0">🎰 NFT Рулетка на 15 ⭐</h3>
+    <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Оплата офіційними Telegram Stars через бота</p>
+    <div style="font-size:64px;margin:18px 0">🎁</div>
+    <button class="btn" onclick="payAndSpin()">Оплатити 15 ⭐ і крутити</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px">Шанси: 💨 Пусто 70% • ⭐ 5 зірок 25% • 🎁 NFT 5%</p>
+  </div>
+</div>
+
+<div id="t-wallet" class="tab">
+  <div class="card">
+    <div class="lbl">Підключення TON-гаманця</div>
+    <p style="font-size:13px;color:var(--muted);margin:6px 0 14px">Оберіть <b>Trust Wallet</b>, <b>Tonkeeper</b> або <b>Telegram Wallet</b>:</p>
+    <div id="ton-connect-btn" style="display:flex;justify-content:center"></div>
+  </div>
+</div>
+
+<div id="t-prof" class="tab">
+  <div class="card" style="text-align:center;padding:20px">
+    <div class="ava" id="uava">👤</div>
+    <h3 id="uname" style="margin:0 0 4px">Користувач</h3>
+    <small id="uid" style="color:var(--muted)">Telegram ID</small>
+  </div>
+  <div class="card row"><span>Радар цін Binance</span><span class="badge">УВІМКНЕНО</span></div>
+  <div class="card row"><span>Сповіщення про дропи</span><span class="badge">АКТИВНО</span></div>
+</div>
+
+<div class="nav">
+  <div class="nav-i active" onclick="go('radar',this)"><div>📡</div>Радар</div>
+  <div class="nav-i" onclick="go('spin',this)"><div>🎰</div>Рулетка</div>
+  <div class="nav-i" onclick="go('wallet',this)"><div>👛</div>Гаманець</div>
+  <div class="nav-i" onclick="go('prof',this)"><div>👤</div>Профіль</div>
+</div>
+
 <script>
 function go(t,e){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -13,53 +100,4 @@ setTimeout(()=>{
     if(tg.initDataUnsafe?.user){
       const u=tg.initDataUnsafe.user;
       document.getElementById('uname').innerText=u.first_name+(u.last_name?' '+u.last_name:'');
-      document.getElementById('uid').innerText=(u.username?'@'+u.username+' • ':'')+'ID: '+u.id;
-      if(u.photo_url)document.getElementById('uava').innerHTML='<img src="'+u.photo_url+'">';
-    }
-  } catch(err) {}
-  try {
-    new TONConnectUI.TonConnectUI({
-      manifestUrl: 'https://'+'elabunets1512-droid.github.io/mintradar-app/tonconnect-manifest.json',
-      buttonRootId: 'ton-connect-btn'
-    });
-  } catch(e) {}
-}, 800);
-
-function payAndSpin(){
-  try {
-    window.Telegram.WebApp.sendData(JSON.stringify({action: "spin_15"}));
-  } catch(e) {
-    alert("Відкрийте застосунок через кнопку '📱 Відкрити MintRadar App' у меню бота!");
-  }
-}
-
-function showRate(price, label){
-  document.getElementById('ton').innerText='$'+price.toFixed(3);
-  document.getElementById('b-status').innerText=label;
-  const now=new Date();
-  document.getElementById('upd').innerText=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-  document.querySelectorAll('.usd').forEach(el=>{
-    const t=parseFloat(el.getAttribute('data-ton'));
-    el.innerText='~$'+Math.round(t*price).toLocaleString();
-  });
-}
-
-async function fetchLiveTON(){
-  const u1 = 'https://'+'://cryptocompare.com';
-  const u2 = 'https://'+'api.coincap.io/v2/assets/toncoin';
-  try {
-    const r = await fetch(u1);
-    const d = await r.json();
-    if(d.USD){ showRate(parseFloat(d.USD), 'BINANCE LIVE'); return; }
-  } catch(e) {}
-  try {
-    const r2 = await fetch(u2);
-    const d2 = await r2.json();
-    if(d2.data?.priceUsd){ showRate(parseFloat(d2.data.priceUsd), 'LIVE RATE'); }
-  } catch(e) {}
-}
-fetchLiveTON();
-setInterval(fetchLiveTON, 60000);
-</script>
-</body>
-</html>
+      document.getElementById('uid').innerText=(u.username?'@'+u.username+' •
