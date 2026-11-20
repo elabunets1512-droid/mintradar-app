@@ -1,1 +1,271 @@
-9099033897:AAFJq6H-yiVdpJ11i33k2L4maykbW3Fnq5c
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MintRadar — Crypto Scanner</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent: #00e676;
+            --accent-glow: rgba(0, 230, 118, 0.2);
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --border: #30363d;
+            --danger: #ff5252;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px;
+            padding-bottom: 80px;
+            user-select: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .radar-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .user-badge {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-value.green {
+            color: var(--accent);
+        }
+
+        .search-box {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            font-size: 14px;
+            margin-bottom: 14px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .token-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .token-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .token-card:active {
+            transform: scale(0.98);
+        }
+
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .token-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1f2937, #00e67633);
+            border: 1px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--accent);
+        }
+
+        .token-name {
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .network-tag {
+            font-size: 10px;
+            background: #21262d;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .token-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .token-metrics {
+            text-align: right;
+        }
+
+        .token-price {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .token-change {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .up { color: var(--accent); }
+        .down { color: var(--danger); }
+
+        .scan-btn {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .scan-btn:active {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">
+            <div class="radar-dot"></div>
+            MintRadar
+        </div>
+        <div class="user-badge" id="userName">LIVE SCAN</div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Нових мінтів (24г)</div>
+            <div class="stat-value green" id="mintCount">1,428</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Гарячий тренд</div>
+            <div class="stat-value">SOL / TON</div>
+        </div>
+    </div>
+
+    <input type="text" class="search-box" id="searchInput" placeholder="Пошук токена або контракту..." oninput="renderTokens
