@@ -75,14 +75,19 @@ body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16p
 
 <script>
 function go(t,e){document.querySelectorAll('.tab,.nav-i').forEach(x=>x.classList.remove('active'));document.getElementById('t-'+t).classList.add('active');e.classList.add('active');}
-function payAndSpin(){try{window.Telegram.WebApp.sendData(JSON.stringify({action:"spin_15"}));}catch(e){alert("Відкрийте через кнопку '📱 Відкрити MintRadar App' у боті!");}}
-function showRate(p,l){document.getElementById('ton').innerText='$'+p.toFixed(3);document.getElementById('b-status').innerText=l;document.getElementById('upd').innerText=new Date().toTimeString().slice(0,8);document.querySelectorAll('.usd').forEach(el=>el.innerText='~$'+Math.round(parseFloat(el.dataset.ton)*p).toLocaleString());}
-async function fetchLiveTON(){
-  try{const r=await fetch('https://'+'://cryptocompare.com');const d=await r.json();if(d.USD){showRate(parseFloat(d.USD),'BINANCE LIVE');return;}}catch(e){}
-  try{const r2=await fetch('https://'+'api.coincap.io/v2/assets/toncoin');const d2=await r2.json();if(d2.data?.priceUsd)showRate(parseFloat(d2.data.priceUsd),'LIVE RATE');}catch(e){}
+function payAndSpin(){try{window.Telegram.WebApp.sendData(JSON.stringify({action:"spin_15"}));}catch(e){alert("Відкрийте через кнопку в меню бота!");}}
+async function getPrice(){
+  try{
+    let r=await fetch('https://coingecko.com');
+    let d=await r.json();
+    let p=d['the-open-network'].usd;
+    document.getElementById('ton').innerText='$'+p.toFixed(3);
+    document.getElementById('b-status').innerText='MARKET LIVE';
+    document.getElementById('upd').innerText=new Date().toTimeString().slice(0,5);
+    document.querySelectorAll('.usd').forEach(el=>el.innerText='~$'+Math.round(parseFloat(el.dataset.ton)*p).toLocaleString());
+  }catch(e){}
 }
-fetchLiveTON();setInterval(fetchLiveTON,60000);
-setTimeout(()=>{try{const tg=window.Telegram.WebApp;tg.expand();const u=tg.initDataUnsafe?.user;if(u){document.getElementById('uname').innerText=u.first_name;document.getElementById('uid').innerText='ID: '+u.id;if(u.photo_url)document.getElementById('uava').innerHTML='<img src="'+u.photo_url+'">';}new TONConnectUI.TonConnectUI({manifestUrl:'https://'+'elabunets1512-droid.github.io/mintradar-app/tonconnect-manifest.json',buttonRootId:'ton-connect-btn'});}catch(e){}},800);
+getPrice();setInterval(getPrice,300000);
 </script>
 </body>
 </html>
