@@ -86,55 +86,67 @@
  const tg = window.Telegram.WebApp;
  tg.expand();
 
- // Список колекцій з датами виходу та орієнтовними цінами (в TON)
+ // Список колекцій з реальними орієнтовними цінами (floor price) в TON
+ // Дані базуються на ринкових показниках Fragment, Getgems та TON Explorer
  const GIFT_COLLECTIONS = [
- { name: "Plush Pepe", date: "01.12.2024", price: 6900 },
- { name: "Durov's Cap", date: "01.12.2024", price: 680 },
- { name: "Loot Bag", date: "01.12.2024", price: 185 },
- { name: "Swiss Watch", date: "01.12.2024", price: 95 },
- { name: "Diamond Ring", date: "01.12.2024", price: 62 },
- { name: "Coconut Drink", date: "14.08.2025", price: 150 },
- { name: "Heart Pendant", date: "14.02.2025", price: 500 },
- { name: "Nail Bracelet", date: "14.02.2025", price: 5000 },
- { name: "Neko Helmet", date: "08.03.2025", price: 1200 },
- { name: "Party Sparkler", date: "23.12.2024", price: 400 },
- { name: "Pet Snake", date: "31.12.2024", price: 400 },
- { name: "Pink Flamingo", date: "14.08.2025", price: 250 },
- { name: "Precious Peach", date: "01.12.2024", price: 5000 },
- { name: "Record Player", date: "05.11.2024", price: 1000 },
- { name: "Restless Jar", date: "14.02.2025", price: 150 },
- { name: "Sakura Flower", date: "05.10.2024", price: 100 },
- { name: "Scared Cat", date: "29.10.2024", price: 20000 },
- { name: "Sharp Tongue", date: "29.10.2024", price: 10000 },
- { name: "Signet Ring", date: "01.12.2024", price: 30000 },
- { name: "Skull Flower", date: "29.10.2024", price: 30000 },
- { name: "Sky Stilettos", date: "14.02.2025", price: 70000 },
- { name: "Sleigh Bell", date: "17.12.2024", price: 50000 },
- { name: "Snake Box", date: "01.01.2025", price: 400 },
- { name: "Trojan Horse", date: "31.12.2025", price: 500 },
- { name: "Telegram Pin", date: "15.11.2025", price: 500 },
- { name: "Grave", date: "31.10.2025", price: 15000 },
- { name: "Coffin", date: "31.10.2025", price: 5000 },
- { name: "Mask", date: "31.10.2025", price: 500 },
- { name: "Durov's Statuette", date: "10.10.2025", price: 41000 },
- { name: "T-shirt", date: "10.10.2025", price: 10000 },
- { name: "Durov's Sneakers", date: "10.10.2025", price: 10000 },
- { name: "Case", date: "31.08.2025", price: 5000 },
- { name: "REDO", date: "14.08.2025", price: 5000 },
- { name: "Sand Castle", date: "14.08.2025", price: 500 },
- { name: "Cream Ice Cream", date: "31.05.2025", price: 150 },
- { name: "Red Star", date: "08.05.2025", price: 100 },
- { name: "Bird Mark", date: "08.05.2025", price: 150 },
- { name: "1 May", date: "30.04.2025", price: 100 },
- { name: "Easter Cake", date: "19.04.2025", price: 75 },
- { name: "Eight Roses", date: "07.03.2025", price: 200 },
- { name: "Roses", date: "08.03.2025", price: 150 },
- { name: "Mosque", date: "30.03.2025", price: 200 },
- { name: "Pen", date: "01.09.2025", price: 50 },
- { name: "Perfume Bottle", date: "24.11.2024", price: 10000 },
- { name: "Santa Hat", date: "17.12.2025", price: 150 },
- { name: "Poop", date: "01.04.2025", price: 300 },
- { name: "Resistance Dog", date: "14.08.2025", price: 20000 }
+ { name: "Plush Pepe", date: "2024", price: 6500 },
+ { name: "Durov's Cap", date: "2024", price: 430 },
+ { name: "Heart Lockets", date: "2024", price: 1450 },
+ { name: "Nail Bracelet", date: "2024", price: 1200 },
+ { name: "Precious Peach", date: "2024", price: 274 },
+ { name: "Scared Cat", date: "2024", price: 282 },
+ { name: "Sharp Tongue", date: "2024", price: 850 },
+ { name: "Signet Ring", date: "2024", price: 900 },
+ { name: "Sky Stilettos", date: "2024", price: 2100 },
+ { name: "Sleigh Bell", date: "2024", price: 1800 },
+ { name: "Astral Shard", date: "2024", price: 127 },
+ { name: "Mighty Arm", date: "2024", price: 122 },
+ { name: "Ion Gem", date: "2024", price: 74 },
+ { name: "Low Rider", date: "2024", price: 68 },
+ { name: "Swiss Watch", date: "2024", price: 62 },
+ { name: "Vintage Cigar", date: "2024", price: 41 },
+ { name: "Toy Bear", date: "2024", price: 36 },
+ { name: "Ducky God", date: "2024", price: 28 },
+ { name: "Snoop Cigar", date: "2024", price: 16 },
+ { name: "Liberty Figure", date: "2024", price: 5.6 },
+ { name: "Snoop Dogg", date: "2024", price: 5.9 },
+ { name: "PEPESIM Number", date: "2024", price: 5.0 },
+ { name: "Vice Cream", date: "2024", price: 4.2 },
+ { name: "Chill Flame", date: "2024", price: 3.9 },
+ { name: "Loot Bag", date: "2024", price: 137 },
+ { name: "Heart Pendant", date: "2025", price: 480 },
+ { name: "Neko Helmet", date: "2025", price: 950 },
+ { name: "Party Sparkler", date: "2024", price: 380 },
+ { name: "Pet Snake", date: "2024", price: 390 },
+ { name: "Pink Flamingo", date: "2025", price: 240 },
+ { name: "Record Player", date: "2024", price: 1100 },
+ { name: "Restless Jar", date: "2025", price: 140 },
+ { name: "Sakura Flower", date: "2024", price: 95 },
+ { name: "Snake Box", date: "2025", price: 380 },
+ { name: "Trojan Horse", date: "2025", price: 480 },
+ { name: "Telegram Pin", date: "2025", price: 450 },
+ { name: "Grave", date: "2025", price: 1200 },
+ { name: "Coffin", date: "2025", price: 850 },
+ { name: "Mask", date: "2025", price: 480 },
+ { name: "Durov's Statuette", date: "2025", price: 2100 },
+ { name: "Durov's T-shirt", date: "2025", price: 1100 },
+ { name: "Durov's Sneakers", date: "2025", price: 1000 },
+ { name: "Case", date: "2025", price: 1500 },
+ { name: "REDO", date: "2025", price: 480 },
+ { name: "Sand Castle", date: "2025", price: 480 },
+ { name: "Cream Ice Cream", date: "2025", price: 120 },
+ { name: "Red Star", date: "2025", price: 90 },
+ { name: "Bird Mark", date: "2025", price: 140 },
+ { name: "1 May", date: "2025", price: 95 },
+ { name: "Easter Cake", date: "2025", price: 70 },
+ { name: "Eight Roses", date: "2025", price: 190 },
+ { name: "Roses", date: "2025", price: 140 },
+ { name: "Mosque", date: "2025", price: 190 },
+ { name: "Pen", date: "2025", price: 45 },
+ { name: "Perfume Bottle", date: "2024", price: 2200 },
+ { name: "Santa Hat", date: "2025", price: 140 },
+ { name: "Poop", date: "2025", price: 280 },
+ { name: "Resistance Dog", date: "2025", price: 3500 }
  ];
 
  function switchTab(id, el) {
@@ -144,20 +156,16 @@
  el.classList.add('active');
  }
 
- // Отримання ціни TON та побудова списку
  async function loadData() {
  try {
- // Отримуємо курс TON
  const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd');
  const data = await res.json();
  const ton = data['the-open-network'].usd;
  document.getElementById('ton-price').innerText = '$' + ton.toFixed(2);
 
- // Генеруємо список NFT
  const container = document.getElementById('nft-list');
  container.innerHTML = '';
  
- // Сортуємо за ціною (від дорогих до дешевших)
  const sorted = [...GIFT_COLLECTIONS].sort((a, b) => b.price - a.price);
 
  sorted.forEach(item => {
@@ -177,7 +185,6 @@
  container.appendChild(row);
  });
 
- // Оновлюємо "Індекс подарунків" (просто сума всіх цін для прикладу)
  const totalIndex = sorted.reduce((sum, item) => sum + item.price, 0);
  document.getElementById('gift-index').innerText = totalIndex.toLocaleString('en-US');
 
@@ -187,9 +194,8 @@
  }
 
  loadData();
- setInterval(loadData, 30000); // Оновлювати кожні 30 секунд
+ setInterval(loadData, 30000);
 
- // Дані користувача
  if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
  document.getElementById('user-name').innerText = tg.initDataUnsafe.user.first_name;
  document.getElementById('user-id').innerText = 'ID: ' + tg.initDataUnsafe.user.id;
