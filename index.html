@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>MintRadar</title>
-<script src="https://telegram.org"></script>
-<script src="https://unpkg.com"></script>
+<script>
+function addScr(u){var s=document.createElement('script');s.src=u;document.head.appendChild(s);}
+addScr(['https:/','telegram.org','js','telegram-web-app.js'].join('/'));
+addScr(['https:/','unpkg.com','@tonconnect','ui@2.0.5','dist','tonconnect-ui.min.js'].join('/'));
+</script>
 <style>
 :root{--bg:#0b0e14;--card:#151a23;--border:#232a36;--green:#22c55e;--blue:#38bdf8;--gold:#f59e0b;--muted:#8b949e}
 *{box-sizing:border-box}
-body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin:0;padding:16px 16px 85px;user-select:none}
+body{background:var(--bg);color:#fff;font-family:sans-serif;margin:0;padding:16px 16px 85px;user-select:none}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .brand{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700}
 .dot{width:10px;height:10px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green)}
@@ -30,7 +33,7 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 </style>
 </head>
 <body>
-<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">MARKET LIVE</div></div>
+<div class="top"><div class="brand"><div class="dot"></div>MintRadar</div><div class="badge" id="b-status">MULTI-API LIVE</div></div>
 
 <div id="t-radar" class="tab active">
   <div class="grid">
@@ -44,7 +47,6 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
   <div class="card row"><div><b>⌚ Swiss Watch</b><br><small style="color:var(--muted)">Покращений NFT</small></div><div style="text-align:right"><b style="color:var(--blue)">95 TON</b><br><small class="usd" data-ton="95" style="color:var(--muted)">...</small></div></div>
   <div class="card row"><div><b>💍 Diamond Ring</b><br><small style="color:var(--muted)">Покращений NFT</small></div><div style="text-align:right"><b style="color:var(--blue)">62 TON</b><br><small class="usd" data-ton="62" style="color:var(--muted)">...</small></div></div>
 </div>
-
 <div id="t-spin" class="tab">
   <div class="card" style="text-align:center;padding:24px 14px">
     <h3 style="margin:0">🎰 NFT Рулетка на 15 ⭐</h3>
@@ -60,7 +62,7 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 
 <div id="t-prof" class="tab">
   <div class="card" style="text-align:center;padding:20px"><div class="ava" id="uava">👤</div><h3 id="uname" style="margin:0 0 4px">Користувач</h3><small id="uid" style="color:var(--muted)">Telegram ID</small></div>
-  <div class="card row"><span>Радар цін ринку</span><span class="badge">УВІМКНЕНО</span></div>
+  <div class="card row"><span>Автооновлення (1 хв)</span><span class="badge">АКТИВНО</span></div>
 </div>
 
 <div class="nav">
@@ -73,32 +75,17 @@ body{background:var(--bg);color:#fff;font-family:-apple-system,sans-serif;margin
 <script>
 function go(t,e){document.querySelectorAll('.tab,.nav-i').forEach(x=>x.classList.remove('active'));document.getElementById('t-'+t).classList.add('active');e.classList.add('active');}
 function payAndSpin(){try{window.Telegram.WebApp.sendData(JSON.stringify({action:"spin_15"}));}catch(e){alert("Відкрийте через кнопку '📱 Відкрити MintRadar App' у боті!");}}
-async function getPrice(){
-  try{
-    let r=await fetch('https://coingecko.com');
-    let d=await r.json();
-    let p=d['the-open-network'].usd;
-    document.getElementById('ton').innerText='$'+p.toFixed(3);
-    document.getElementById('upd').innerText=new Date().toTimeString().slice(0,5);
-    document.querySelectorAll('.usd').forEach(el=>el.innerText='~$'+Math.round(parseFloat(el.dataset.ton)*p).toLocaleString());
-  }catch(e){}
+function setP(p,s){document.getElementById('ton').innerText='$'+p.toFixed(3);document.getElementById('b-status').innerText=s;document.getElementById('upd').innerText=new Date().toTimeString().slice(0,8);document.querySelectorAll('.usd').forEach(el=>el.innerText='~$'+Math.round(parseFloat(el.dataset.ton)*p).toLocaleString());}
+async function syncPrice(){
+  const srcs=[
+    {u:['https:/','data-api.binance.vision','api','v3','ticker','price?symbol=TONUSDT'].join('/'),f:d=>parseFloat(d.price),n:'BINANCE LIVE'},
+    {u:['https:/','://okx.com','api','v5','market','ticker?instId=TON-USDT'].join('/'),f:d=>parseFloat(d.data[0].last),n:'OKX LIVE'},
+    {u:['https:/','://coingecko.com','api','v3','simple','price?ids=the-open-network&vs_currencies=usd'].join('/'),f:d=>parseFloat(d['the-open-network'].usd),n:'COINGECKO LIVE'}
+  ];
+  for(const s of srcs){try{const r=await fetch(s.u,{cache:'no-store'});const d=await r.json();const v=s.f(d);if(v>0){setP(v,s.n);return;}}catch(e){}}
 }
-getPrice();setInterval(getPrice,300000);
-setTimeout(()=>{
-  try{
-    const tg=window.Telegram.WebApp;tg.expand();
-    const u=tg.initDataUnsafe?.user;
-    if(u){
-      document.getElementById('uname').innerText=u.first_name;
-      document.getElementById('uid').innerText='ID: '+u.id;
-      if(u.photo_url)document.getElementById('uava').innerHTML='<img src="'+u.photo_url+'">';
-    }
-    new TONConnectUI.TonConnectUI({
-      manifestUrl:'https://github.io',
-      buttonRootId:'ton-connect-btn'
-    });
-  }catch(e){}
-},500);
+syncPrice();setInterval(syncPrice,60000);
+setTimeout(()=>{try{const tg=window.Telegram.WebApp;tg.expand();const u=tg.initDataUnsafe?.user;if(u){document.getElementById('uname').innerText=u.first_name;document.getElementById('uid').innerText='ID: '+u.id;if(u.photo_url)document.getElementById('uava').innerHTML='<img src="'+u.photo_url+'">';}new TONConnectUI.TonConnectUI({manifestUrl:['https:/','elabunets1512-droid.github.io','mintradar-app','tonconnect-manifest.json'].join('/'),buttonRootId:'ton-connect-btn'});}catch(e){}},600);
 </script>
 </body>
 </html>
