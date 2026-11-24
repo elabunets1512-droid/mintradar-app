@@ -21,6 +21,7 @@
         /* Верхнє меню */
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .logo { font-size: 20px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px;}
+        .balance-area { display: flex; align-items: center; gap: 10px; }
         .balance { font-size: 14px; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 5px; }
 
         /* Вкладки */
@@ -29,9 +30,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ========================================= */
-        /* ДИЗАЙН МАРКЕТУ (ПІД НОУТБУК) */
+        /* ДИЗАЙН МАРКЕТУ */
         /* ========================================= */
-        
         .market-controls { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-bar { 
             flex: 1; background: var(--card); border: 1px solid var(--border); 
@@ -42,75 +42,40 @@
         
         .market-grid {
             display: grid;
-            /* Ось магія для ноутбука: картки підлаштовуються під ширину екрану */
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 15px;
         }
 
         .market-card {
-            background: #14171f;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
+            background: #14171f; border-radius: 16px; overflow: hidden;
+            border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s;
         }
-        .market-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            border-color: var(--blue);
-        }
+        .market-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: var(--blue); }
 
         .market-img-box {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #1c1f26;
-            position: relative;
-            padding: 20px;
-            box-sizing: border-box;
+            width: 100%; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center;
+            background: #1c1f26; position: relative; padding: 20px; box-sizing: border-box;
         }
-        .market-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-        }
-
+        .market-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); }
         .market-badge {
             position: absolute; bottom: 10px; left: 10px;
             background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            color: #ccc; font-size: 11px; padding: 4px 8px; border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc; font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .market-info {
-            padding: 15px;
-            background: #101218;
-        }
-
-        .market-name { font-size: 16px; font-weight: bold; margin-bottom: 2px; }
+        .market-info { padding: 15px; background: #101218; }
+        .market-name { font-size: 16px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .market-id { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
 
-        .market-price-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #1a1d26; padding: 8px 12px; border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        .market-price-text { font-size: 14px; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 5px; }
+        .market-price-row { display: flex; justify-content: space-between; align-items: center; background: #1a1d26; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .market-price-text { font-size: 14px; font-weight: bold; color: var(--yellow); display: flex; align-items: center; gap: 5px; }
         
-        /* Кнопка купівлі в маркеті (замість кошика) */
-        .market-buy-btn {
-            background: var(--blue); color: white; border: none;
-            padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px;
-            cursor: pointer; transition: 0.2s;
-        }
+        .market-buy-btn { background: var(--blue); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.2s; }
         .market-buy-btn:hover { background: #0080ff; }
+        .market-buy-btn:active { transform: scale(0.95); }
 
         /* ========================================= */
-        /* ДИЗАЙН АПГРЕЙДЕРА (ЗАЛИШИВСЯ БЕЗ ЗМІН) */
+        /* ДИЗАЙН АПГРЕЙДЕРА */
         /* ========================================= */
         .main-layout { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 800px) { .main-layout { grid-template-columns: 320px 1fr 350px; } }
@@ -128,6 +93,7 @@
         .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, #1c1f26 0%, #12151c 100%); }
         .total-value-box { background: rgba(138, 43, 226, 0.1); border: 1px solid var(--purple); padding: 10px 20px; border-radius: 12px; margin-bottom: 10px; text-align: center; width: 100%; max-width: 250px;}
         .total-value-box span { font-size: 24px; font-weight: 900; color: var(--purple); }
+        
         .wheel-container { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; margin: 10px 0 20px 0; box-shadow: 0 0 40px rgba(255, 204, 0, 0.1); border-radius: 50%; }
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg); border: 2px solid #1a1d26; }
         .wheel-arc { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), #2a2d35 var(--chance-percent, 0%)); -webkit-mask: radial-gradient(transparent 60%, black 61%); mask: radial-gradient(transparent 60%, black 61%); }
@@ -136,9 +102,11 @@
         .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 90px; background: var(--yellow); }
         .wheel-center { position: absolute; width: 100px; height: 100px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid var(--border); z-index: 5; box-shadow: inset 0 0 20px #000; }
         .chance-text { font-size: 28px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.5); }
+
         .multipliers { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
         .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
+
         .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
         .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
@@ -148,9 +116,11 @@
         input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background: var(--yellow); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
         .slider-info { font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px;}
         .slider-info span { color: var(--yellow); font-weight: bold; }
+
         .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(255,153,0,0.4); margin-top: 20px; }
         .btn-upgrade:disabled { opacity: 0.5; background: #333; color: #888; box-shadow: none; cursor: not-allowed; }
         .btn-upgrade:active { transform: scale(0.98); }
+
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
         .catalog-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
         .catalog-card:hover { border-color: var(--white); }
@@ -165,7 +135,7 @@
         .nav-item.active { color: var(--yellow); transform: translateY(-2px); }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
 
-        /* МОДАЛЬНЕ ВІКНО РЕЗУЛЬТАТУ */
+        /* МОДАЛЬНЕ ВІКНО РЕЗУЛЬТАТУ (ГРА) */
         .result-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; flex-direction: column; }
         .result-overlay.active { display: flex; }
         .result-modal { background: var(--panel); border-radius: 24px; padding: 30px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; }
@@ -182,16 +152,23 @@
         .btn-close-result:hover { opacity: 0.8; }
         @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         .confetti-piece { position: absolute; width: 10px; height: 10px; opacity: 0; animation: fall 3s linear infinite; z-index: 1999; }
+
+        /* МОДАЛЬНЕ ВІКНО ПОКУПКИ */
+        .purchase-modal { border-color: var(--blue); box-shadow: 0 0 40px rgba(0, 191, 255, 0.2); }
+        .purchase-modal .result-title { color: var(--blue); }
+        .price-deducted { font-size: 18px; font-weight: bold; color: var(--red); margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <div class="logo">🔼 MintRadar</div>
-        <div class="balance">Баланс: <span id="top-balance" style="color:var(--yellow)">10 000</span> ⭐</div>
+        <div class="balance-area">
+            <div class="balance">Баланс: <span id="top-balance" style="color:var(--yellow)">10 000</span> ⭐</div>
+        </div>
     </div>
 
-    <!-- Вікно результату -->
+    <!-- Вікно результату ГРИ -->
     <div class="result-overlay" id="result-overlay">
         <div class="result-modal" id="result-modal-box">
             <div class="result-title" id="result-title-text">Вітаю!</div>
@@ -203,15 +180,25 @@
         </div>
     </div>
 
+    <!-- Вікно успішної покупки -->
+    <div class="result-overlay" id="purchase-overlay">
+        <div class="result-modal purchase-modal">
+            <div class="result-title">Успішно куплено!</div>
+            <div class="result-img-container">
+                <img id="purchase-image" class="result-img" src="" alt="NFT">
+            </div>
+            <div class="result-nft-name" id="purchase-nft-name">Назва NFT</div>
+            <div class="price-deducted" id="purchase-price">- 0 ⭐</div>
+            <button class="btn-close-result" onclick="closePurchase()">ОК</button>
+        </div>
+    </div>
+
     <!-- ================= ВКЛАДКА 1: МАРКЕТ ================= -->
     <div id="tab-market" class="tab-content active">
         <div class="market-controls">
             <input type="text" class="search-bar" placeholder="Пошук по назві NFT..." id="search-input" onkeyup="filterMarket()">
         </div>
-        
-        <div class="market-grid" id="market-grid">
-            <!-- Картки генеруються через JS -->
-        </div>
+        <div class="market-grid" id="market-grid"></div>
     </div>
 
     <!-- ================= ВКЛАДКА 2: АПГРЕЙДЕР ================= -->
@@ -219,6 +206,7 @@
         <div class="main-layout">
             <div class="panel">
                 <div class="panel-title" style="color: var(--purple);">Ваш інвентар <span>(Кілька)</span></div>
+                <div id="empty-inventory-msg" style="text-align:center; color:var(--muted); font-size:12px; margin-top:20px; display:none;">Інвентар порожній.<br>Купіть NFT у Маркеті!</div>
                 <div class="inventory-grid" id="inventory-grid"></div>
             </div>
 
@@ -283,43 +271,71 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // База всіх подарунків
+        // ВЕЛИЧЕЗНИЙ КАТАЛОГ З УСІМА ТВОЇМИ NFT
         const allGifts = [
-            { id: 1, name: "Стильна сумка", price: 100, img: "https://nft.fragment.com/gift/swagbag-232323.webp" },
-            { id: 2, name: "Свічка", price: 80, img: "https://nft.fragment.com/gift/bdaycandle-62063.webp" },
-            { id: 3, name: "Локшина", price: 50, img: "https://nft.fragment.com/gift/instantramen-147692.webp" },
-            { id: 4, name: "Фігурка Свободи", price: 150, img: "https://nft.fragment.com/gift/libertyfigure-34093.webp" },
-            { id: 5, name: "Великоднє яйце", price: 120, img: "https://nft.fragment.com/gift/easteregg-124942.webp" },
-            { id: 6, name: "Гриб-шпигун", price: 200, img: "https://nft.fragment.com/gift/spyagaric-72016.webp" },
-            { id: 7, name: "Ведмедик", price: 180, img: "https://nft.fragment.com/gift/toybear-14456.webp" },
-            { id: 8, name: "Капелюх відьми", price: 130, img: "https://nft.fragment.com/gift/witchhat-2555.webp" },
-            { id: 9, name: "Домашній торт", price: 90, img: "https://nft.fragment.com/gift/homemadecake-102256.webp" },
-            { id: 10, name: "Морозиво", price: 60, img: "https://nft.fragment.com/gift/icecream-248748.webp" },
-            { id: 11, name: "Холодне полум'я", price: 250, img: "https://nft.fragment.com/gift/chillflame-250222.webp" },
-            { id: 12, name: "Вайс-крім", price: 300, img: "https://nft.fragment.com/gift/vicecream-378511.webp" },
-            { id: 13, name: "Снуп Догг", price: 500, img: "https://nft.fragment.com/gift/snoopdogg-1.webp" },
-            { id: 14, name: "Лол Поп", price: 400, img: "https://nft.fragment.com/gift/lolpop-381198.webp" },
-            { id: 15, name: "Міфічна маска", price: 600, img: "https://nft.fragment.com/gift/mythmask-205987.webp" },
-            { id: 16, name: "Кубок інтелекту", price: 800, img: "https://nft.fragment.com/gift/intelligencecup-1.webp" },
-            { id: 17, name: "Кубок алгоритму", price: 1000, img: "https://nft.fragment.com/gift/algorithmcup-1.webp" },
-            { id: 18, name: "Вогняний факел", price: 1200, img: "https://nft.fragment.com/gift/torch-1.webp" },
-            { id: 19, name: "Plush Pepe", price: 2000, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
-            { id: 20, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" }
+            { id: 1, name: "Plush Pepe", price: 2500, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
+            { id: 2, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
+            { id: 3, name: "Scared Cat", price: 500, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
+            { id: 4, name: "Kissed Frog", price: 350, img: "https://nft.fragment.com/gift/kissedfrog-1887.webp" },
+            { id: 5, name: "Cupid Charm", price: 120, img: "https://nft.fragment.com/gift/cupidcharm-17957.webp" },
+            { id: 6, name: "Ionic Dryer", price: 90, img: "https://nft.fragment.com/gift/ionicdryer-12448.webp" },
+            { id: 7, name: "Sky Stilettos", price: 85, img: "https://nft.fragment.com/gift/skystilettos-17012.webp" },
+            { id: 8, name: "UFC Strike", price: 75, img: "https://nft.fragment.com/gift/ufcstrike-15935.webp" },
+            { id: 9, name: "Snoop Dogg", price: 65, img: "https://nft.fragment.com/gift/snoopdogg-234713.webp" },
+            { id: 10, name: "Party Sparkler", price: 60, img: "https://nft.fragment.com/gift/partysparkler-9251.webp" },
+            { id: 11, name: "Cookie Heart", price: 55, img: "https://nft.fragment.com/gift/cookieheart-168809.webp" },
+            { id: 12, name: "Snow Mittens", price: 50, img: "https://nft.fragment.com/gift/snowmittens-1185.webp" },
+            { id: 13, name: "Jolly Chimp", price: 45, img: "https://nft.fragment.com/gift/jollychimp-23685.webp" },
+            { id: 14, name: "Jack-in-the-Box", price: 40, img: "https://nft.fragment.com/gift/jackinthebox-43225.webp" },
+            { id: 15, name: "Myth Mask", price: 35, img: "https://nft.fragment.com/gift/mythmask-43407.webp" },
+            { id: 16, name: "Spring Basket", price: 30, img: "https://nft.fragment.com/gift/springbasket-10876.webp" },
+            { id: 17, name: "Restless Jar", price: 25, img: "https://nft.fragment.com/gift/restlessjar-85352.webp" },
+            { id: 18, name: "Star Notepad", price: 20, img: "https://nft.fragment.com/gift/starnotepad-53989.webp" },
+            { id: 19, name: "Timeless Book", price: 18, img: "https://nft.fragment.com/gift/timelessbook-75477.webp" },
+            { id: 20, name: "Lol Pop", price: 15, img: "https://nft.fragment.com/gift/lolpop-414670.webp" },
+            { id: 21, name: "Lunar Snake", price: 12, img: "https://nft.fragment.com/gift/lunarsnake-165531.webp" },
+            { id: 22, name: "Ice Cream", price: 10, img: "https://nft.fragment.com/gift/icecream-139470.webp" },
+            { id: 23, name: "Mirage Lamp", price: 8, img: "https://nft.fragment.com/gift/miragelamp-20120.webp" },
+            { id: 24, name: "Pet Snake", price: 50, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
+            { id: 25, name: "Instant Ramen", price: 45, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
+            { id: 26, name: "Snow Globe", price: 80, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
+            { id: 27, name: "Precious Peach", price: 200, img: "https://nft.fragment.com/gift/preciouspeach-1.webp" },
+            { id: 28, name: "Heart Locket", price: 250, img: "https://nft.fragment.com/gift/heartlocket-1.webp" },
+            { id: 29, name: "Nail Bracelet", price: 280, img: "https://nft.fragment.com/gift/nailbracelet-1.webp" },
+            { id: 30, name: "Sharp Tongue", price: 150, img: "https://nft.fragment.com/gift/sharptongue-1.webp" }
         ];
 
-        // Додаткові NFT спеціально для Маркету (як на скріншотах)
-        const marketGifts = [
-            { name: "Snow Mittens", idNum: 1185, price: 10.43, img: "https://nft.fragment.com/gift/snowmittens-1185.webp" },
-            { name: "Scared Cat", idNum: 13163, price: 287.64, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
-            { name: "Pet Snake", idNum: 8402, price: 5.40, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
-            { name: "Instant Ramen", idNum: 315088, price: 5.92, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
-            { name: "Snow Globe", idNum: 31057, price: 8.88, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
-            { name: "Spring Basket", idNum: 125602, price: 7.48, img: "https://nft.fragment.com/gift/springbasket-125602.webp" },
-            { name: "Plush Pepe", idNum: 1, price: 6500.00, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
-            { name: "Durov's Cap", idNum: 2, price: 430.50, img: "https://nft.fragment.com/gift/durovscap-1.webp" }
-        ];
+        // ІНВЕНТАР (Спочатку порожній!)
+        let myInventory = []; 
+        let selectedMyItems = []; 
+        let selectedTargetItem = null;
 
-        // === ІНІЦІАЛІЗАЦІЯ МАРКЕТУ ===
+        // БАЛАНС (10 000 на старті)
+        let userBalance = 10000;
+        let sliderBalance = 0;
+
+        function updateTopBalance() {
+            document.getElementById('top-balance').innerText = userBalance.toLocaleString('en-US');
+            document.getElementById('available-balance').innerText = userBalance.toLocaleString('en-US');
+            const slider = document.getElementById('balance-slider');
+            slider.max = userBalance;
+            if (sliderBalance > userBalance) {
+                sliderBalance = userBalance;
+                slider.value = userBalance;
+            }
+            document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        // ==========================================
+        // ЛОГІКА МАРКЕТУ
+        // ==========================================
         function renderMarket(items) {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = '';
@@ -334,10 +350,10 @@
                     </div>
                     <div class="market-info">
                         <div class="market-name">${item.name}</div>
-                        <div class="market-id">#${item.idNum}</div>
+                        <div class="market-id">#${Math.floor(Math.random() * 99999)}</div>
                         <div class="market-price-row">
-                            <div class="market-price-text">💎 ${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
-                            <button class="market-buy-btn" onclick="alert('Купівля NFT: ${item.name}')">Купити</button>
+                            <div class="market-price-text">⭐ ${item.price}</div>
+                            <button class="market-buy-btn" onclick="buyItem(${item.id})">Купити</button>
                         </div>
                     </div>
                 `;
@@ -345,44 +361,54 @@
             });
         }
 
-        // Пошук по маркету
         function filterMarket() {
             const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = marketGifts.filter(item => item.name.toLowerCase().includes(query));
+            const filtered = allGifts.filter(item => item.name.toLowerCase().includes(query));
             renderMarket(filtered);
         }
 
+        function buyItem(id) {
+            const item = allGifts.find(g => g.id === id);
+            if (!item) return;
 
-        // =========================================
-        // ЛОГІКА АПГРЕЙДЕРА (ЗАЛИШИЛАСЬ БЕЗ ЗМІН)
-        // =========================================
-        let myInventory = allGifts.map((g, index) => ({...g, uid: index})); 
-        myInventory.push({ ...allGifts[18], uid: 999 }); 
-        myInventory.push({ ...allGifts[0], uid: 1000 }); 
-
-        let selectedMyItems = []; 
-        let selectedTargetItem = null;
-        let userBalance = 10000;
-        let sliderBalance = 0;
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            if (element) element.classList.add('active');
+            if (userBalance >= item.price) {
+                // Списуємо баланс
+                userBalance -= item.price;
+                // Додаємо в інвентар
+                myInventory.push({ ...item, uid: Date.now() + Math.random() });
+                
+                updateTopBalance();
+                updateUI();
+                
+                // Показуємо вікно успішної покупки
+                showPurchaseModal(item);
+            } else {
+                alert("Недостатньо зірок для покупки цього NFT!");
+            }
         }
 
-        function updateTopBalance() {
-            document.getElementById('top-balance').innerText = userBalance.toLocaleString('en-US');
-            document.getElementById('available-balance').innerText = userBalance.toLocaleString('en-US');
-            const slider = document.getElementById('balance-slider');
-            slider.max = userBalance;
-            if (sliderBalance > userBalance) { sliderBalance = userBalance; slider.value = userBalance; }
-            document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
+        function showPurchaseModal(item) {
+            document.getElementById('purchase-image').src = item.img;
+            document.getElementById('purchase-nft-name').innerText = item.name;
+            document.getElementById('purchase-price').innerText = `- ${item.price} ⭐`;
+            document.getElementById('purchase-overlay').classList.add('active');
         }
 
+        function closePurchase() {
+            document.getElementById('purchase-overlay').classList.remove('active');
+        }
+
+
+        // ==========================================
+        // ЛОГІКА АПГРЕЙДЕРА
+        // ==========================================
         document.getElementById('balance-slider').addEventListener('input', function(e) {
-            if (selectedMyItems.length === 0) { e.target.value = 0; sliderBalance = 0; alert("Спочатку оберіть NFT!"); return; }
+            if (selectedMyItems.length === 0) { 
+                e.target.value = 0; 
+                sliderBalance = 0; 
+                alert("Спочатку оберіть NFT з інвентарю!"); 
+                return; 
+            }
             sliderBalance = parseInt(e.target.value);
             document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
             updateUI();
@@ -390,7 +416,12 @@
 
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
+            const emptyMsg = document.getElementById('empty-inventory-msg');
             grid.innerHTML = '';
+            
+            if (myInventory.length === 0) { emptyMsg.style.display = 'block'; } 
+            else { emptyMsg.style.display = 'none'; }
+
             myInventory.forEach(item => {
                 const isSelected = selectedMyItems.some(i => i.uid === item.uid);
                 const card = document.createElement('div');
@@ -549,8 +580,8 @@
             }
         }
 
-        // Запуск всього
-        renderMarket(marketGifts);
+        // Ініціалізація при старті
+        renderMarket(allGifts);
         updateUI();
     </script>
 </body>
