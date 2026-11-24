@@ -7,152 +7,142 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #0b0e14; --card: #1a1d26; --text: #ffffff; --muted: #8b8e96;
-            --accent: #ffcc00; --green: #00ff88; --border: #2a2d35; --blue: #00bfff;
-            --danger: #ff4d4d;
+            --bg: #0b0e14; --panel: #15181e; --card: #1c1f26; --text: #ffffff;
+            --muted: #8b8e96; --border: #2a2d35; 
+            --yellow: #ffcc00; --purple: #8a2be2; --red: #ff3333; --white: #ffffff;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg); color: var(--text);
-            margin: 0; padding: 15px; padding-bottom: 80px; overflow-x: hidden;
-        }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-        .item-card {
-            background: var(--card); border-radius: 12px; padding: 10px; text-align: center;
-            border: 1px solid var(--border); cursor: pointer; transition: 0.2s;
-        }
-        .item-card:active { transform: scale(0.95); }
-        .item-img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px; }
-        .item-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; height: 26px; overflow: hidden; }
-        .item-price { font-size: 12px; color: var(--accent); font-weight: bold; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: #0f1115; width: 95%; max-width: 500px; border-radius: 20px; padding: 20px;
-            border: 1px solid #2a2d35; position: relative;
-        }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--muted); }
-        
-        .upgrade-zone { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px 0; }
-        .upgrade-slot { width: 80px; text-align: center; background: #15181e; padding: 10px; border-radius: 12px; border: 1px solid #2a2d35; }
-        .upgrade-img { width: 50px; height: 50px; object-fit: contain; }
-        .upgrade-price { font-size: 11px; color: var(--accent); font-weight: bold; margin-top: 5px; }
-        
-        /* КОЛЕСО */
-        .wheel-container { position: relative; width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
-        
-        .wheel-bg {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg);
-            border: 2px solid #1a1d26;
+            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden;
         }
 
-        /* Кольорова дуга - ТЕПЕР ЗАПОВНЮЄТЬСЯ ЗНИЗУ (180deg) ЗА ГОДИННИКОВОЮ */
-        .wheel-arc {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from 180deg, #ffcc00 var(--chance-angle), #2a2d35 var(--chance-angle));
-            -webkit-mask: radial-gradient(transparent 55%, black 56%);
-            mask: radial-gradient(transparent 55%, black 56%);
-        }
+        /* Верхнє меню та Баланс (Чорний колір) */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .logo { font-size: 20px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px;}
+        .balance { font-size: 14px; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 5px; }
 
+        /* Основна сітка */
+        .main-layout { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 800px) { .main-layout { grid-template-columns: 300px 1fr 350px; } }
+
+        .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
+        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+
+        /* 1. ЛІВА КОЛОНКА: Інвентар (Фіолетовий) */
+        .inventory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;}
+        .inv-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+        .inv-card:hover { border-color: var(--purple); background: rgba(138, 43, 226, 0.1); }
+        .inv-card.selected { border-color: var(--purple); background: rgba(138, 43, 226, 0.2); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
+        .inv-img { width: 50px; height: 50px; object-fit: contain; }
+        .inv-name { font-size: 11px; font-weight: bold; margin: 5px 0; height: 26px; overflow: hidden; }
+        
+        /* Ціна предмету (Червоний) */
+        .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,51,51,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
+
+        /* 2. ЦЕНТР: Колесо (Жовтий) */
+        .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .upgrade-zone { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 20px; }
+        
+        /* Колесо */
+        .wheel-container { position: relative; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; }
+        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg); border: 2px solid #1a1d26; }
+        
+        /* ЗАЛИВКА КОЛЕСА (ЯК ВОДА) */
+        .wheel-arc { 
+            position: absolute; width: 100%; height: 100%; border-radius: 50%; 
+            /* Лінійний градієнт від низу до верху */
+            background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), #2a2d35 var(--chance-percent, 0%)); 
+            -webkit-mask: radial-gradient(transparent 60%, black 61%); 
+            mask: radial-gradient(transparent 60%, black 61%); 
+        }
+        
         /* Стрілка */
-        .wheel-arrow {
-            position: absolute; top: 0; left: 50%; margin-left: -10px;
-            width: 20px; height: 70px;
-            transform-origin: 50% 100%;
-            z-index: 10;
-        }
-        .wheel-arrow::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            border-left: 10px solid transparent; border-right: 10px solid transparent;
-            border-bottom: 15px solid #ffcc00;
-        }
-        .wheel-arrow::before {
-            content: ''; position: absolute; top: 15px; left: 9px; width: 2px; height: 55px; background: #ffcc00;
-        }
+        .wheel-arrow { position: absolute; top: 0; left: 50%; margin-left: -10px; width: 20px; height: 100px; transform-origin: 50% 100%; z-index: 10; }
+        .wheel-arrow::after { content: ''; position: absolute; top: 0; left: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--yellow); }
+        .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 80px; background: var(--yellow); }
+        
+        /* Центр колеса */
+        .wheel-center { position: absolute; width: 90px; height: 90px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid var(--border); z-index: 5; }
+        .chance-text { font-size: 24px; font-weight: 900; color: var(--yellow); }
 
-        .wheel-center {
-            position: absolute; width: 60px; height: 60px; background: #0f1115; border-radius: 50%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border: 2px solid #2a2d35; z-index: 5;
-        }
-        .chance-text { font-size: 18px; font-weight: bold; color: #ffcc00; }
+        /* Кнопка ПРОКАЧАТИ */
+        .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: var(--yellow); color: #000; cursor: pointer; transition: 0.2s; }
+        .btn-upgrade:disabled { opacity: 0.5; background: #333; color: #888; cursor: not-allowed; }
+        .btn-upgrade:active { transform: scale(0.98); }
 
-        .target-selector { margin-top: 10px; }
-        .target-title { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
-        .target-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: thin; }
-        .target-item { min-width: 75px; background: #15181e; padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; cursor: pointer; }
-        .target-item.selected { border-color: #ffcc00; background: rgba(255, 204, 0, 0.1); }
-        .target-item img { width: 40px; height: 40px; object-fit: contain; }
-        .target-item div { font-size: 10px; margin-top: 4px; }
+        /* Множники (Рожевий) */
+        .multipliers { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
+        .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; }
 
-        .btn {
-            width: 100%; padding: 16px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold;
-            cursor: pointer; background: #ffcc00; color: #000; margin-top: 15px;
-        }
-        .btn:disabled { opacity: 0.5; background: #555; color: #aaa; }
+        /* 3. ПРАВА КОЛОНКА: Каталог (Білий) */
+        .catalog-panel { display: flex; flex-direction: column; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
+        
+        .catalog-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
+        .catalog-card:hover { border-color: var(--white); }
+        .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        
+        /* Ціна цільового предмета (Білий) */
+        .cat-price { font-size: 11px; font-weight: bold; color: var(--white); margin-top: 5px; }
 
-        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(28, 31, 38, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); }
-        .nav-item.active { color: #ffcc00; }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
+        /* Результат */
+        .result-text { margin-top: 15px; font-weight: bold; text-align: center; font-size: 16px; min-height: 24px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo"><div style="color:#ffcc00">🔼</div> Upgrader</div>
+    <!-- Верхня панель -->
+    <div class="top-bar">
+        <div class="logo">🔼 Upgrader</div>
+        <div class="balance">Баланс: <span style="color:var(--yellow)">10 000</span> ⭐</div>
     </div>
 
-    <p style="color: var(--muted); font-size: 14px; margin-bottom: 15px;">Оберіть предмет зі свого інвентарю:</p>
-    <div class="grid" id="inventory-grid"></div>
+    <div class="main-layout">
+        
+        <!-- ЛІВА ПАНЕЛЬ (Інвентар) -->
+        <div class="panel">
+            <div class="panel-title" style="color: var(--purple);">Ваші NFT (Натисніть для вибору)</div>
+            <div class="inventory-grid" id="inventory-grid"></div>
+        </div>
 
-    <div class="modal-overlay" id="upgrade-modal">
-        <div class="modal-content">
-            <div class="close-btn" onclick="closeModal()">×</div>
-            
-            <div class="upgrade-zone">
-                <div class="upgrade-slot">
-                    <img id="modal-your-img" class="upgrade-img" src="">
-                    <div id="modal-your-price" class="upgrade-price">0 ⭐</div>
-                </div>
-
-                <div class="wheel-container">
-                    <div class="wheel-bg"></div>
-                    <div class="wheel-arc" id="spin-arc"></div>
-                    <div class="wheel-arrow" id="spin-arrow"></div>
-                    <div class="wheel-center">
-                        <div class="chance-text" id="modal-chance-text">0%</div>
-                    </div>
-                </div>
-
-                <div class="upgrade-slot" style="border-color: #ffcc00;">
-                    <img id="modal-target-img" class="upgrade-img" src="">
-                    <div id="modal-target-price" class="upgrade-price">0 ⭐</div>
+        <!-- ЦЕНТРАЛЬНА ПАНЕЛЬ (Колесо) -->
+        <div class="panel center-panel">
+            <div class="wheel-container">
+                <div class="wheel-bg"></div>
+                <div class="wheel-arc" id="spin-arc"></div>
+                <div class="wheel-arrow" id="spin-arrow"></div>
+                <div class="wheel-center">
+                    <div class="chance-text" id="modal-chance-text">0%</div>
                 </div>
             </div>
 
-            <div class="target-selector">
-                <div class="target-title">Оберіть бажаний предмет (тільки дорожчі):</div>
-                <div class="target-scroll" id="target-list"></div>
+            <!-- Множники -->
+            <div class="multipliers">
+                <button class="mult-btn" onclick="setMultiplier(2, this)">x2</button>
+                <button class="mult-btn" onclick="setMultiplier(4, this)">x4</button>
+                <button class="mult-btn" onclick="setMultiplier(8, this)">x8</button>
+                <button class="mult-btn" onclick="setMultiplier(100/35, this)">35%</button>
+                <button class="mult-btn" onclick="setMultiplier(100/55, this)">55%</button>
+                <button class="mult-btn" onclick="setMultiplier(100/75, this)">75%</button>
             </div>
 
-            <button class="btn" id="upgrade-btn" onclick="startUpgrade()">Прокачати</button>
-            <p id="result-text" style="margin-top:15px; font-weight:bold; text-align:center; height:20px;"></p>
+            <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()" style="margin-top: 20px;">Прокачати</button>
+            <div class="result-text" id="result-text"></div>
         </div>
+
+        <!-- ПРАВА ПАНЕЛЬ (Каталог) -->
+        <div class="panel catalog-panel">
+            <div class="panel-title" style="color: var(--white);">Оберіть цільовий NFT</div>
+            <div class="catalog-grid" id="catalog-grid"></div>
+        </div>
+
     </div>
 
-    <div class="nav">
-        <div class="nav-item active">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-2v-4H8v-2h4V8h2v4h4v2z"/></svg>Апгрейдер
-        </div>
+    <!-- Нижня панель -->
+    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--muted);">
+        <div style="font-weight: bold; color: var(--yellow); margin-bottom: 5px;">🔼 UPGRADER</div>
+        Працює на базі MintRadar
     </div>
 
     <script>
@@ -191,81 +181,117 @@
             grid.innerHTML = '';
             myInventory.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'item-card';
+                card.className = `inv-card ${selectedMyItem && selectedMyItem.id === item.id ? 'selected' : ''}`;
                 card.innerHTML = `
-                    <img src="${item.img}" class="item-img" onerror="this.src='https://via.placeholder.com/60?text=NFT'">
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-price">${item.price} ⭐</div>
+                    <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
+                    <div class="inv-name">${item.name}</div>
+                    <div class="inv-price">${item.price} ⭐</div>
                 `;
-                card.onclick = () => openUpgradeModal(item);
+                card.onclick = () => selectInventoryItem(item);
                 grid.appendChild(card);
             });
         }
 
-        function openUpgradeModal(myItem) {
-            selectedMyItem = myItem;
+        function renderCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            grid.innerHTML = '';
+            const sortedGifts = [...allGifts].sort((a, b) => a.price - b.price);
+
+            sortedGifts.forEach(item => {
+                if (selectedMyItem && item.id === selectedMyItem.id) return;
+
+                const card = document.createElement('div');
+                card.className = `catalog-card ${selectedTargetItem && selectedTargetItem.id === item.id ? 'selected' : ''}`;
+                card.innerHTML = `
+                    <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
+                    <div class="inv-name">${item.name}</div>
+                    <div class="cat-price">${item.price} ⭐</div>
+                `;
+                card.onclick = () => selectTargetItem(item);
+                grid.appendChild(card);
+            });
+        }
+
+        function selectInventoryItem(item) {
+            selectedMyItem = item;
             selectedTargetItem = null;
+            updateUI();
+        }
 
-            document.getElementById('modal-your-img').src = selectedMyItem.img;
-            document.getElementById('modal-your-price').innerText = selectedMyItem.price + ' ⭐';
-            
-            document.getElementById('modal-target-img').src = 'https://via.placeholder.com/60?text=?';
-            document.getElementById('modal-target-price').innerText = '0 ⭐';
-            document.getElementById('modal-chance-text').innerText = '0%';
-            document.getElementById('spin-arc').style.setProperty('--chance-angle', '0deg');
-            
-            // Скидаємо стрілку в початкове положення (вгору)
-            const arrow = document.getElementById('spin-arrow');
-            arrow.style.transition = 'none';
-            arrow.style.transform = 'rotate(0deg)';
+        function selectTargetItem(item) {
+            if (!selectedMyItem) {
+                alert("Спочатку виберіть предмет зліва, який будете прокачувати!");
+                return;
+            }
+            if (item.price < selectedMyItem.price) {
+                alert("Цільовий предмет має бути дорожчим або рівним за ціною!");
+                return;
+            }
+            selectedTargetItem = item;
+            updateUI();
+        }
 
-            const targetList = document.getElementById('target-list');
-            targetList.innerHTML = '';
-            
-            allGifts.forEach(target => {
-                if (target.id !== myItem.id && target.price >= myItem.price) {
-                    const div = document.createElement('div');
-                    div.className = 'target-item';
-                    div.innerHTML = `
-                        <img src="${target.img}" onerror="this.src='https://via.placeholder.com/40?text=NFT'">
-                        <div>${target.name}</div>
-                        <div style="color:#ffcc00; font-weight:bold;">${target.price} ⭐</div>
-                    `;
-                    div.onclick = () => selectTarget(target, div);
-                    targetList.appendChild(div);
+        function setMultiplier(mult, btnElement) {
+            if (!selectedMyItem) {
+                alert("Спочатку виберіть свій предмет!");
+                return;
+            }
+
+            document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+
+            const targetPrice = Math.round(selectedMyItem.price * mult);
+
+            let closestItem = allGifts[0];
+            let minDiff = Infinity;
+
+            allGifts.forEach(item => {
+                if (item.id === selectedMyItem.id) return;
+                const diff = Math.abs(item.price - targetPrice);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestItem = item;
                 }
             });
 
-            document.getElementById('upgrade-modal').style.display = 'flex';
-            document.getElementById('result-text').innerText = '';
-            document.getElementById('upgrade-btn').disabled = true;
+            if (closestItem.price < selectedMyItem.price) {
+                 closestItem = allGifts.find(i => i.price >= selectedMyItem.price) || allGifts[allGifts.length-1];
+            }
+
+            selectedTargetItem = closestItem;
+            updateUI();
         }
 
-        function selectTarget(target, element) {
-            selectedTargetItem = target;
-            
-            document.querySelectorAll('.target-item').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
+        function updateUI() {
+            renderInventory();
+            renderCatalog();
 
-            document.getElementById('modal-target-img').src = target.img;
-            document.getElementById('modal-target-price').innerText = target.price + ' ⭐';
+            const chanceText = document.getElementById('modal-chance-text');
+            const arc = document.getElementById('spin-arc');
+            const arrow = document.getElementById('spin-arrow');
+            const upgradeBtn = document.getElementById('upgrade-btn');
+            const resultText = document.getElementById('result-text');
 
-            let chance = (selectedMyItem.price / target.price) * 100;
-            if (chance >= 100) chance = 99; 
-            if (chance < 1) chance = 1;
+            arrow.style.transition = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+            resultText.innerText = '';
 
-            document.getElementById('modal-chance-text').innerText = Math.round(chance) + '%';
-            
-            // Малюємо жовту зону (від 180 градусів)
-            const arcAngle = (chance / 100) * 360;
-            document.getElementById('spin-arc').style.setProperty('--chance-angle', arcAngle + 'deg');
+            if (selectedMyItem && selectedTargetItem) {
+                let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
+                if (chance >= 100) chance = 99;
+                if (chance < 1) chance = 1;
 
-            document.getElementById('upgrade-btn').disabled = false;
-            document.getElementById('result-text').innerText = '';
-        }
+                chanceText.innerText = Math.round(chance) + '%';
+                
+                // ВОДА: передаємо відсоток заповнення (від 0% до 100%)
+                arc.style.setProperty('--chance-percent', chance + '%');
 
-        function closeModal() {
-            document.getElementById('upgrade-modal').style.display = 'none';
+                upgradeBtn.disabled = false;
+            } else {
+                chanceText.innerText = '0%';
+                arc.style.setProperty('--chance-percent', '0%');
+                upgradeBtn.disabled = true;
+            }
         }
 
         function startUpgrade() {
@@ -282,20 +308,19 @@
             let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
             if (chance >= 100) chance = 99;
 
-            const winWidth = chance * 3.6; // ширина жовтої зони в градусах
-            const startZone = 180; // жовта зона починається знизу (180 градусів)
-
+            // Рахуємо половину кута. Наприклад, для 50% це 90 градусів (від низу вліво і вправо)
+            const halfWidth = chance * 1.8; 
             const roll = Math.random() * 100;
             const isWin = roll <= chance;
 
             let targetAngle = 0;
 
             if (isWin) {
-                // Зупиняємось в жовтій зоні (від 180 і далі за годинниковою)
-                targetAngle = startZone + Math.random() * winWidth;
+                // Виграшна зона йде симетрично від низу (180 градусів) вліво і вправо
+                targetAngle = (180 - halfWidth) + (Math.random() * (halfWidth * 2));
             } else {
-                // Зупиняємось в сірій зоні (після жовтої і до 180)
-                targetAngle = startZone + winWidth + Math.random() * (360 - winWidth);
+                // Програшна зона - це все інше коло (верхня частина)
+                targetAngle = (180 + halfWidth) + (Math.random() * (360 - (halfWidth * 2)));
             }
 
             // Додаємо 5 повних обертів для ефекту
@@ -307,27 +332,34 @@
             setTimeout(() => {
                 if (isWin) {
                     resultText.innerText = `🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name}`;
-                    resultText.style.color = 'var(--green)';
+                    resultText.style.color = 'var(--yellow)';
                     
                     const index = myInventory.findIndex(i => i.id === selectedMyItem.id);
                     if (index !== -1) {
                         myInventory[index] = { ...selectedTargetItem };
                     }
-                    renderInventory();
-                    setTimeout(() => closeModal(), 2500);
+                    
+                    selectedMyItem = null;
+                    selectedTargetItem = null;
+                    updateUI();
 
                 } else {
                     resultText.innerText = '😢 Поразка. Предмет згорів.';
-                    resultText.style.color = 'var(--danger)';
+                    resultText.style.color = 'var(--red)';
                     
                     myInventory = myInventory.filter(i => i.id !== selectedMyItem.id);
-                    renderInventory();
-                    setTimeout(() => closeModal(), 2500);
+                    
+                    selectedMyItem = null;
+                    selectedTargetItem = null;
+                    updateUI();
                 }
+                btn.disabled = false;
             }, 3000);
         }
 
         renderInventory();
+        renderCatalog();
+
     </script>
 </body>
 </html>
