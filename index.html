@@ -72,7 +72,9 @@
         .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
 
         /* БАЛАНС ТА СЛАЙДЕР */
-        .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
+        .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
+        .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); } /* Візуальне блокування */
+        
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
         
         input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; margin: 10px 0; }
@@ -146,14 +148,15 @@
                 </div>
 
                 <!-- СЛАЙДЕР БАЛАНСУ -->
-                <div class="balance-section">
+                <div class="balance-section disabled" id="balance-section">
                     <div class="slider-header">
                         <span>Додати баланс:</span>
                         <span id="slider-val-display" style="color:var(--yellow); font-weight:bold;">0 ⭐</span>
                     </div>
-                    <input type="range" id="balance-slider" min="0" max="10000" value="0" step="10">
+                    <input type="range" id="balance-slider" min="0" max="10000" value="0" step="10" disabled>
                     <div class="slider-info">
-                        Доступно: <span id="available-balance">10 000</span> ⭐
+                        Доступно: <span id="available-balance">10 000</span> ⭐ <br>
+                        <span style="font-size:10px; color:#ff3333;">(Спочатку оберіть NFT)</span>
                     </div>
                 </div>
 
@@ -220,23 +223,20 @@
         ];
 
         let myInventory = allGifts.map((g, index) => ({...g, uid: index})); 
-        // Тестовий дублікат для перевірки (дві Plush Pepe)
         myInventory.push({ ...allGifts[18], uid: 999 }); 
-        myInventory.push({ ...allGifts[0], uid: 1000 }); // Друга Стильна сумка для тесту
+        myInventory.push({ ...allGifts[0], uid: 1000 }); 
 
         let selectedMyItems = []; 
         let selectedTargetItem = null;
 
-        // БАЛАНС ТА СЛАЙДЕР
+        // БАЛАНС
         let userBalance = 10000;
         let sliderBalance = 0;
 
-        // Оновлення тексту балансу зверху
         function updateTopBalance() {
             document.getElementById('top-balance').innerText = userBalance.toLocaleString('en-US');
             document.getElementById('available-balance').innerText = userBalance.toLocaleString('en-US');
             
-            // Оновлюємо максимальне значення слайдера
             const slider = document.getElementById('balance-slider');
             slider.max = userBalance;
             if (sliderBalance > userBalance) {
@@ -246,8 +246,14 @@
             document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
         }
 
-        // Слухач слайдера
+        // Слухач слайдера (з перевіркою, чи є NFT)
         document.getElementById('balance-slider').addEventListener('input', function(e) {
+            if (selectedMyItems.length === 0) {
+                e.target.value = 0;
+                sliderBalance = 0;
+                alert("Спочатку оберіть хоча б один NFT з інвентарю, щоб використовувати баланс!");
+                return;
+            }
             sliderBalance = parseInt(e.target.value);
             document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
             updateUI();
@@ -282,18 +288,22 @@
             const index = selectedMyItems.findIndex(i => i.uid === item.uid);
             
             if (index > -1) {
-                // Якщо вже вибраний - знімаємо
                 selectedMyItems.splice(index, 1);
             } else {
-                // ПЕРЕВІРКА ДЛЯ ВСІХ ПРЕДМЕТІВ: чи немає вже такого ТИПУ (id)
                 const typeExists = selectedMyItems.some(i => i.id === item.id);
                 if (typeExists) {
-                    alert("Ви вже вибрали предмет цього типу! Не можна додавати дублікати. Оберіть інший тип.");
-                    return; // Зупиняємо виконання, предмет не додається
+                    alert("Ви вже вибрали предмет цього типу! Не можна додавати дублікати.");
+                    return;
                 }
                 selectedMyItems.push(item);
             }
             
+            // Якщо всі NFT прибрані, скидаємо слайдер
+            if (selectedMyItems.length === 0) {
+                sliderBalance = 0;
+                document.getElementById('balance-slider').value = 0;
+            }
+
             updateUI();
         }
 
@@ -301,7 +311,6 @@
             const grid = document.getElementById('catalog-grid');
             grid.innerHTML = '';
             
-            // Фільтруємо: тільки те, що дорожче або дорівнює totalValue
             const sortedGifts = [...allGifts]
                 .filter(item => item.price >= totalValue) 
                 .sort((a, b) => a.price - b.price);
@@ -325,18 +334,15 @@
         }
 
         function setMultiplier(mult, btnElement) {
-            // Рахуємо суму тільки предметів для множника
-            const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
-            
-            if (itemsValue === 0 && sliderBalance === 0) {
-                alert("Спочатку виберіть предмети або додайте баланс!");
+            if (selectedMyItems.length === 0) {
+                alert("Спочатку виберіть предмети!");
                 return;
             }
 
             document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
 
-            // Множник застосовується до загальної суми (предмети + слайдер)
+            const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
             const totalValue = itemsValue + sliderBalance;
             const targetPrice = Math.round(totalValue * mult);
 
@@ -346,15 +352,27 @@
         }
 
         function updateUI() {
-            updateTopBalance(); // Оновлює текст балансу
+            updateTopBalance(); 
 
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
-            const totalValue = itemsValue + sliderBalance; // СУМА ВСЬОГО
+            const totalValue = itemsValue + sliderBalance; 
 
             document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US');
 
             renderInventory();
             renderCatalog(totalValue);
+
+            // БЛОКУВАННЯ СЛАЙДЕРА
+            const sliderSection = document.getElementById('balance-section');
+            const sliderInput = document.getElementById('balance-slider');
+            
+            if (selectedMyItems.length === 0) {
+                sliderSection.classList.add('disabled');
+                sliderInput.disabled = true;
+            } else {
+                sliderSection.classList.remove('disabled');
+                sliderInput.disabled = false;
+            }
 
             const chanceText = document.getElementById('modal-chance-text');
             const arc = document.getElementById('spin-arc');
@@ -366,12 +384,12 @@
             arrow.style.transform = 'rotate(0deg)';
             resultText.innerText = '';
 
-            // Якщо сума змінилася і цільовий предмет став дешевшим - скидаємо ціль
             if (selectedTargetItem && totalValue > selectedTargetItem.price) {
                 selectedTargetItem = null;
             }
 
-            if (totalValue > 0 && selectedTargetItem) {
+            // Для запуску треба ОБОВ'ЯЗКОВО мати NFT
+            if (selectedMyItems.length > 0 && totalValue > 0 && selectedTargetItem) {
                 let chance = (totalValue / selectedTargetItem.price) * 100;
                 if (chance >= 100) chance = 99;
                 if (chance < 1) chance = 1;
@@ -387,6 +405,11 @@
         }
 
         function startUpgrade() {
+            if (selectedMyItems.length === 0) {
+                alert("Потрібно вибрати хоча б один NFT!");
+                return;
+            }
+
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
             const totalValue = itemsValue + sliderBalance;
 
@@ -421,7 +444,6 @@
             arrow.style.transform = `rotate(${totalRotation}deg)`;
 
             setTimeout(() => {
-                // ВІДНІМАЄМО БАЛАНС ЗІРОК (якщо він використовувався)
                 if (sliderBalance > 0) {
                     userBalance -= sliderBalance;
                     sliderBalance = 0;
