@@ -7,87 +7,95 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #0b0e14; --panel: #15181e; --card: #1c1f26; --text: #ffffff;
+            --bg: #08090d; --panel: #12151c; --card: #1c1f26; --text: #ffffff;
             --muted: #8b8e96; --border: #2a2d35; 
             --yellow: #ffcc00; --purple: #8a2be2; --red: #ff3333; --white: #ffffff;
+            --green: #00ff88;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; overflow-x: hidden;
+            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; 
+            padding-bottom: 90px; /* Місце для нижнього меню */
+            overflow-x: hidden;
         }
 
-        /* Верхнє меню та Баланс (Чорний колір) */
+        /* Верхнє меню */
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .logo { font-size: 20px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px;}
         .balance { font-size: 14px; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 5px; }
 
+        /* Вкладки */
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         /* Основна сітка */
         .main-layout { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 800px) { .main-layout { grid-template-columns: 300px 1fr 350px; } }
+        @media (min-width: 800px) { .main-layout { grid-template-columns: 320px 1fr 350px; } }
 
         .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
-        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: flex; justify-content: space-between;}
 
-        /* 1. ЛІВА КОЛОНКА: Інвентар (Фіолетовий) */
+        /* ЛІВА КОЛОНКА: Інвентар */
         .inventory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;}
-        .inv-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
-        .inv-card:hover { border-color: var(--purple); background: rgba(138, 43, 226, 0.1); }
+        .inv-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
+        .inv-card:hover { border-color: var(--purple); }
         .inv-card.selected { border-color: var(--purple); background: rgba(138, 43, 226, 0.2); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
         .inv-img { width: 50px; height: 50px; object-fit: contain; }
         .inv-name { font-size: 11px; font-weight: bold; margin: 5px 0; height: 26px; overflow: hidden; }
-        
-        /* Ціна предмету (Червоний) */
         .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,51,51,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
-
-        /* 2. ЦЕНТР: Колесо (Жовтий) */
-        .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .upgrade-zone { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 20px; }
         
-        /* Колесо */
-        .wheel-container { position: relative; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; margin: 20px 0; }
+        /* Галочка вибору */
+        .check-badge { position: absolute; top: 5px; right: 5px; background: var(--purple); color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 12px; display: none; align-items: center; justify-content: center; font-weight: bold; }
+        .inv-card.selected .check-badge { display: flex; }
+
+        /* ЦЕНТР: Колесо */
+        .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, #1c1f26 0%, #12151c 100%); }
+        
+        /* Загальна сума вибраного */
+        .total-value-box { background: rgba(138, 43, 226, 0.1); border: 1px solid var(--purple); padding: 10px 20px; border-radius: 12px; margin-bottom: 10px; text-align: center; }
+        .total-value-box span { font-size: 24px; font-weight: 900; color: var(--purple); }
+
+        .wheel-container { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; margin: 10px 0 20px 0; box-shadow: 0 0 40px rgba(255, 204, 0, 0.1); border-radius: 50%; }
         .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg); border: 2px solid #1a1d26; }
         
-        /* ЗАЛИВКА КОЛЕСА (ЯК ВОДА) */
-        .wheel-arc { 
-            position: absolute; width: 100%; height: 100%; border-radius: 50%; 
-            /* Лінійний градієнт від низу до верху */
-            background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), #2a2d35 var(--chance-percent, 0%)); 
-            -webkit-mask: radial-gradient(transparent 60%, black 61%); 
-            mask: radial-gradient(transparent 60%, black 61%); 
-        }
+        /* Заливка водою */
+        .wheel-arc { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), #2a2d35 var(--chance-percent, 0%)); -webkit-mask: radial-gradient(transparent 60%, black 61%); mask: radial-gradient(transparent 60%, black 61%); }
         
-        /* Стрілка */
-        .wheel-arrow { position: absolute; top: 0; left: 50%; margin-left: -10px; width: 20px; height: 100px; transform-origin: 50% 100%; z-index: 10; }
+        .wheel-arrow { position: absolute; top: 0; left: 50%; margin-left: -10px; width: 20px; height: 110px; transform-origin: 50% 100%; z-index: 10; }
         .wheel-arrow::after { content: ''; position: absolute; top: 0; left: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--yellow); }
-        .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 80px; background: var(--yellow); }
+        .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 90px; background: var(--yellow); }
         
-        /* Центр колеса */
-        .wheel-center { position: absolute; width: 90px; height: 90px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid var(--border); z-index: 5; }
-        .chance-text { font-size: 24px; font-weight: 900; color: var(--yellow); }
+        .wheel-center { position: absolute; width: 100px; height: 100px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid var(--border); z-index: 5; box-shadow: inset 0 0 20px #000; }
+        .chance-text { font-size: 28px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.5); }
 
         /* Кнопка ПРОКАЧАТИ */
-        .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: var(--yellow); color: #000; cursor: pointer; transition: 0.2s; }
-        .btn-upgrade:disabled { opacity: 0.5; background: #333; color: #888; cursor: not-allowed; }
+        .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(255,153,0,0.4); }
+        .btn-upgrade:disabled { opacity: 0.5; background: #333; color: #888; box-shadow: none; cursor: not-allowed; }
         .btn-upgrade:active { transform: scale(0.98); }
 
-        /* Множники (Рожевий) */
+        /* Множники */
         .multipliers { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
         .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; }
+        .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
 
-        /* 3. ПРАВА КОЛОНКА: Каталог (Білий) */
-        .catalog-panel { display: flex; flex-direction: column; }
-        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
-        
-        .catalog-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
+        /* ПРАВА КОЛОНКА: Каталог */
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
+        .catalog-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
         .catalog-card:hover { border-color: var(--white); }
-        .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        
-        /* Ціна цільового предмета (Білий) */
+        .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .cat-price { font-size: 11px; font-weight: bold; color: var(--white); margin-top: 5px; }
 
-        /* Результат */
         .result-text { margin-top: 15px; font-weight: bold; text-align: center; font-size: 16px; min-height: 24px; }
+
+        /* НИЖНЄ МЕНЮ */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18, 21, 28, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); cursor: pointer; transition: 0.2s; }
+        .nav-item.active { color: var(--yellow); transform: translateY(-2px); }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
+        
+        /* Заглушки для інших вкладок */
+        .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
     </style>
 </head>
 <body>
@@ -98,51 +106,91 @@
         <div class="balance">Баланс: <span style="color:var(--yellow)">10 000</span> ⭐</div>
     </div>
 
-    <div class="main-layout">
-        
-        <!-- ЛІВА ПАНЕЛЬ (Інвентар) -->
-        <div class="panel">
-            <div class="panel-title" style="color: var(--purple);">Ваші NFT (Натисніть для вибору)</div>
-            <div class="inventory-grid" id="inventory-grid"></div>
+    <!-- ВКЛАДКА: ГОЛОВНА -->
+    <div id="tab-home" class="tab-content">
+        <div class="placeholder-tab">
+            <h2>📡 Головна</h2>
+            <p>Тут скоро буде радар цін та новини.</p>
         </div>
-
-        <!-- ЦЕНТРАЛЬНА ПАНЕЛЬ (Колесо) -->
-        <div class="panel center-panel">
-            <div class="wheel-container">
-                <div class="wheel-bg"></div>
-                <div class="wheel-arc" id="spin-arc"></div>
-                <div class="wheel-arrow" id="spin-arrow"></div>
-                <div class="wheel-center">
-                    <div class="chance-text" id="modal-chance-text">0%</div>
-                </div>
-            </div>
-
-            <!-- Множники -->
-            <div class="multipliers">
-                <button class="mult-btn" onclick="setMultiplier(2, this)">x2</button>
-                <button class="mult-btn" onclick="setMultiplier(4, this)">x4</button>
-                <button class="mult-btn" onclick="setMultiplier(8, this)">x8</button>
-                <button class="mult-btn" onclick="setMultiplier(100/35, this)">35%</button>
-                <button class="mult-btn" onclick="setMultiplier(100/55, this)">55%</button>
-                <button class="mult-btn" onclick="setMultiplier(100/75, this)">75%</button>
-            </div>
-
-            <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()" style="margin-top: 20px;">Прокачати</button>
-            <div class="result-text" id="result-text"></div>
-        </div>
-
-        <!-- ПРАВА ПАНЕЛЬ (Каталог) -->
-        <div class="panel catalog-panel">
-            <div class="panel-title" style="color: var(--white);">Оберіть цільовий NFT</div>
-            <div class="catalog-grid" id="catalog-grid"></div>
-        </div>
-
     </div>
 
-    <!-- Нижня панель -->
-    <div style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--muted);">
-        <div style="font-weight: bold; color: var(--yellow); margin-bottom: 5px;">🔼 UPGRADER</div>
-        Працює на базі MintRadar
+    <!-- ВКЛАДКА: АПГРЕЙДЕР -->
+    <div id="tab-upgrader" class="tab-content active">
+        <div class="main-layout">
+            
+            <!-- ЛІВА ПАНЕЛЬ (Інвентар) -->
+            <div class="panel">
+                <div class="panel-title" style="color: var(--purple);">Ваш інвентар <span>(Обирайте кілька)</span></div>
+                <div class="inventory-grid" id="inventory-grid"></div>
+            </div>
+
+            <!-- ЦЕНТРАЛЬНА ПАНЕЛЬ -->
+            <div class="panel center-panel">
+                <div class="total-value-box">
+                    Сума: <span id="total-price-val">0</span> ⭐
+                </div>
+
+                <div class="wheel-container">
+                    <div class="wheel-bg"></div>
+                    <div class="wheel-arc" id="spin-arc"></div>
+                    <div class="wheel-arrow" id="spin-arrow"></div>
+                    <div class="wheel-center">
+                        <div class="chance-text" id="modal-chance-text">0%</div>
+                    </div>
+                </div>
+
+                <div class="multipliers">
+                    <button class="mult-btn" onclick="setMultiplier(2, this)">x2</button>
+                    <button class="mult-btn" onclick="setMultiplier(4, this)">x4</button>
+                    <button class="mult-btn" onclick="setMultiplier(8, this)">x8</button>
+                    <button class="mult-btn" onclick="setMultiplier(100/35, this)">35%</button>
+                    <button class="mult-btn" onclick="setMultiplier(100/55, this)">55%</button>
+                    <button class="mult-btn" onclick="setMultiplier(100/75, this)">75%</button>
+                </div>
+
+                <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()" style="margin-top: 20px;">Прокачати</button>
+                <div class="result-text" id="result-text"></div>
+            </div>
+
+            <!-- ПРАВА ПАНЕЛЬ (Каталог) -->
+            <div class="panel">
+                <div class="panel-title" style="color: var(--white);">Оберіть цільовий NFT</div>
+                <div class="catalog-grid" id="catalog-grid"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА: ГАМАНЕЦЬ -->
+    <div id="tab-wallet" class="tab-content">
+        <div class="placeholder-tab">
+            <h2>💼 Гаманець</h2>
+            <p>Тут буде підключення TON Connect.</p>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА: ПРОФІЛЬ -->
+    <div id="tab-profile" class="tab-content">
+        <div class="placeholder-tab">
+            <h2>👤 Профіль</h2>
+            <p>Тут буде ваш профіль та історія.</p>
+        </div>
+    </div>
+
+    <!-- НИЖНЄ МЕНЮ -->
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="switchTab('home', this)">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Головна
+        </div>
+        <div class="nav-item active" onclick="switchTab('upgrader', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 3L4 9v12h16V9l-8-6zm0 2.5l6 4.5v9H6v-9l6-4.5zM12 12l-3 2.5v4.5h6v-4.5L12 12z"/></svg>Апгрейдер
+        </div>
+        <div class="nav-item" onclick="switchTab('wallet', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9z"/></svg>Гаманець
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Профіль
+        </div>
     </div>
 
     <script>
@@ -173,33 +221,65 @@
         ];
 
         let myInventory = [...allGifts]; 
-        let selectedMyItem = null;
+        let selectedMyItems = []; // МАСИВ ДЛЯ МУЛЬТИВИБОРУ
         let selectedTargetItem = null;
 
+        // Перемикання вкладок
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        // Рендер інвентарю
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             grid.innerHTML = '';
             myInventory.forEach(item => {
+                const isSelected = selectedMyItems.some(i => i.id === item.id);
                 const card = document.createElement('div');
-                card.className = `inv-card ${selectedMyItem && selectedMyItem.id === item.id ? 'selected' : ''}`;
+                card.className = `inv-card ${isSelected ? 'selected' : ''}`;
                 card.innerHTML = `
+                    <div class="check-badge">✓</div>
                     <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
                     <div class="inv-name">${item.name}</div>
                     <div class="inv-price">${item.price} ⭐</div>
                 `;
-                card.onclick = () => selectInventoryItem(item);
+                card.onclick = () => toggleInventoryItem(item);
                 grid.appendChild(card);
             });
         }
 
-        function renderCatalog() {
+        // ДОДАВАННЯ/ВИДАЛЕННЯ ПРЕДМЕТА З ВИБОРУ
+        function toggleInventoryItem(item) {
+            const index = selectedMyItems.findIndex(i => i.id === item.id);
+            if (index > -1) {
+                selectedMyItems.splice(index, 1); // Прибрати, якщо вже вибраний
+            } else {
+                selectedMyItems.push(item); // Додати
+            }
+            
+            // Якщо сума вибраних предметів перевищує цільовий, скасовуємо ціль
+            const total = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            if (selectedTargetItem && total > selectedTargetItem.price) {
+                selectedTargetItem = null;
+            }
+
+            updateUI();
+        }
+
+        // Рендер каталогу (тільки те, що дорожче або дорівнює сумі)
+        function renderCatalog(totalValue) {
             const grid = document.getElementById('catalog-grid');
             grid.innerHTML = '';
-            const sortedGifts = [...allGifts].sort((a, b) => a.price - b.price);
+            
+            const sortedGifts = [...allGifts]
+                .filter(item => item.price >= totalValue) // ФІЛЬТР
+                .sort((a, b) => a.price - b.price);
 
             sortedGifts.forEach(item => {
-                if (selectedMyItem && item.id === selectedMyItem.id) return;
-
                 const card = document.createElement('div');
                 card.className = `catalog-card ${selectedTargetItem && selectedTargetItem.id === item.id ? 'selected' : ''}`;
                 card.innerHTML = `
@@ -212,59 +292,36 @@
             });
         }
 
-        function selectInventoryItem(item) {
-            selectedMyItem = item;
-            selectedTargetItem = null;
-            updateUI();
-        }
-
         function selectTargetItem(item) {
-            if (!selectedMyItem) {
-                alert("Спочатку виберіть предмет зліва, який будете прокачувати!");
-                return;
-            }
-            if (item.price < selectedMyItem.price) {
-                alert("Цільовий предмет має бути дорожчим або рівним за ціною!");
-                return;
-            }
             selectedTargetItem = item;
             updateUI();
         }
 
         function setMultiplier(mult, btnElement) {
-            if (!selectedMyItem) {
-                alert("Спочатку виберіть свій предмет!");
+            if (selectedMyItems.length === 0) {
+                alert("Спочатку виберіть хоча б один предмет зліва!");
                 return;
             }
 
             document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
 
-            const targetPrice = Math.round(selectedMyItem.price * mult);
+            const totalValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            const targetPrice = Math.round(totalValue * mult);
 
-            let closestItem = allGifts[0];
-            let minDiff = Infinity;
-
-            allGifts.forEach(item => {
-                if (item.id === selectedMyItem.id) return;
-                const diff = Math.abs(item.price - targetPrice);
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    closestItem = item;
-                }
-            });
-
-            if (closestItem.price < selectedMyItem.price) {
-                 closestItem = allGifts.find(i => i.price >= selectedMyItem.price) || allGifts[allGifts.length-1];
-            }
-
+            let closestItem = allGifts.find(i => i.price >= targetPrice) || allGifts[allGifts.length-1];
+            
             selectedTargetItem = closestItem;
             updateUI();
         }
 
         function updateUI() {
+            // Рахуємо загальну суму
+            const totalValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US');
+
             renderInventory();
-            renderCatalog();
+            renderCatalog(totalValue);
 
             const chanceText = document.getElementById('modal-chance-text');
             const arc = document.getElementById('spin-arc');
@@ -276,16 +333,13 @@
             arrow.style.transform = 'rotate(0deg)';
             resultText.innerText = '';
 
-            if (selectedMyItem && selectedTargetItem) {
-                let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
+            if (selectedMyItems.length > 0 && selectedTargetItem) {
+                let chance = (totalValue / selectedTargetItem.price) * 100;
                 if (chance >= 100) chance = 99;
                 if (chance < 1) chance = 1;
 
                 chanceText.innerText = Math.round(chance) + '%';
-                
-                // ВОДА: передаємо відсоток заповнення (від 0% до 100%)
                 arc.style.setProperty('--chance-percent', chance + '%');
-
                 upgradeBtn.disabled = false;
             } else {
                 chanceText.innerText = '0%';
@@ -295,7 +349,7 @@
         }
 
         function startUpgrade() {
-            if (!selectedMyItem || !selectedTargetItem) return;
+            if (selectedMyItems.length === 0 || !selectedTargetItem) return;
 
             const btn = document.getElementById('upgrade-btn');
             const resultText = document.getElementById('result-text');
@@ -305,10 +359,10 @@
             resultText.innerText = 'Крутимо...';
             resultText.style.color = 'var(--text)';
 
-            let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
+            const totalValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            let chance = (totalValue / selectedTargetItem.price) * 100;
             if (chance >= 100) chance = 99;
 
-            // Рахуємо половину кута. Наприклад, для 50% це 90 градусів (від низу вліво і вправо)
             const halfWidth = chance * 1.8; 
             const roll = Math.random() * 100;
             const isWin = roll <= chance;
@@ -316,14 +370,11 @@
             let targetAngle = 0;
 
             if (isWin) {
-                // Виграшна зона йде симетрично від низу (180 градусів) вліво і вправо
                 targetAngle = (180 - halfWidth) + (Math.random() * (halfWidth * 2));
             } else {
-                // Програшна зона - це все інше коло (верхня частина)
                 targetAngle = (180 + halfWidth) + (Math.random() * (360 - (halfWidth * 2)));
             }
 
-            // Додаємо 5 повних обертів для ефекту
             const totalRotation = (360 * 5) + targetAngle;
 
             arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)';
@@ -334,31 +385,31 @@
                     resultText.innerText = `🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name}`;
                     resultText.style.color = 'var(--yellow)';
                     
-                    const index = myInventory.findIndex(i => i.id === selectedMyItem.id);
-                    if (index !== -1) {
-                        myInventory[index] = { ...selectedTargetItem };
-                    }
+                    // Видаляємо ВСІ вибрані предмети
+                    myInventory = myInventory.filter(invItem => !selectedMyItems.some(sel => sel.id === invItem.id));
                     
-                    selectedMyItem = null;
-                    selectedTargetItem = null;
-                    updateUI();
-
+                    // Додаємо новий предмет
+                    myInventory.push({ ...selectedTargetItem });
                 } else {
-                    resultText.innerText = '😢 Поразка. Предмет згорів.';
+                    resultText.innerText = '😢 Поразка. Всі предмети згоріли.';
                     resultText.style.color = 'var(--red)';
                     
-                    myInventory = myInventory.filter(i => i.id !== selectedMyItem.id);
-                    
-                    selectedMyItem = null;
-                    selectedTargetItem = null;
-                    updateUI();
+                    // Видаляємо ВСІ вибрані предмети
+                    myInventory = myInventory.filter(invItem => !selectedMyItems.some(sel => sel.id === invItem.id));
                 }
+
+                // Скидаємо вибір
+                selectedMyItems = [];
+                selectedTargetItem = null;
+                document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
+                
+                updateUI();
                 btn.disabled = false;
             }, 3000);
         }
 
-        renderInventory();
-        renderCatalog();
+        // Ініціалізація
+        updateUI();
 
     </script>
 </body>
