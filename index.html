@@ -73,7 +73,7 @@
 
         /* БАЛАНС ТА СЛАЙДЕР */
         .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
-        .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); } /* Візуальне блокування */
+        .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
         
@@ -95,14 +95,58 @@
         .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .cat-price { font-size: 11px; font-weight: bold; color: var(--white); margin-top: 5px; }
 
-        .result-text { margin-top: 15px; font-weight: bold; text-align: center; font-size: 16px; min-height: 24px; }
-
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18, 21, 28, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); cursor: pointer; transition: 0.2s; }
         .nav-item.active { color: var(--yellow); transform: translateY(-2px); }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
         
         .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
+
+        /* МОДАЛЬНЕ ВІКНО РЕЗУЛЬТАТУ */
+        .result-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+            flex-direction: column;
+        }
+        .result-overlay.active { display: flex; }
+        
+        .result-modal {
+            background: var(--panel); border-radius: 24px; padding: 30px; text-align: center;
+            width: 90%; max-width: 350px; border: 2px solid var(--border);
+            transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; z-index: 2001;
+        }
+        .result-overlay.active .result-modal { transform: scale(1); opacity: 1; }
+
+        .result-modal.win { border-color: var(--green); box-shadow: 0 0 40px rgba(0, 255, 136, 0.2); }
+        .result-modal.lose { border-color: var(--red); box-shadow: 0 0 40px rgba(255, 51, 51, 0.2); }
+
+        .result-title { font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .result-modal.win .result-title { color: var(--green); }
+        .result-modal.lose .result-title { color: var(--red); }
+
+        .result-img-container { width: 120px; height: 120px; margin: 0 auto 20px auto; background: rgba(0,0,0,0.3); border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
+        .result-img { width: 80px; height: 80px; object-fit: contain; }
+        
+        .result-nft-name { font-size: 18px; font-weight: bold; color: var(--text); margin-bottom: 25px; }
+
+        .btn-close-result {
+            background: var(--text); color: var(--bg); border: none; padding: 15px 40px;
+            border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase;
+            width: 100%; transition: 0.2s;
+        }
+        .btn-close-result:hover { opacity: 0.8; }
+
+        /* Конфеті при виграші */
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti-piece {
+            position: absolute; width: 10px; height: 10px; opacity: 0;
+            animation: fall 3s linear infinite; z-index: 1999;
+        }
     </style>
 </head>
 <body>
@@ -110,6 +154,21 @@
     <div class="top-bar">
         <div class="logo">🔼 Upgrader</div>
         <div class="balance">Баланс: <span id="top-balance" style="color:var(--yellow)">10 000</span> ⭐</div>
+    </div>
+
+    <!-- Вікно результату -->
+    <div class="result-overlay" id="result-overlay">
+        <div class="result-modal" id="result-modal-box">
+            <div class="result-title" id="result-title-text">Вітаю!</div>
+            
+            <div class="result-img-container">
+                <img id="result-image" class="result-img" src="" alt="NFT">
+            </div>
+            
+            <div class="result-nft-name" id="result-nft-name">Plush Pepe</div>
+            
+            <button class="btn-close-result" onclick="closeResult()">Забрати</button>
+        </div>
     </div>
 
     <div id="tab-home" class="tab-content">
@@ -147,7 +206,6 @@
                     <button class="mult-btn" onclick="setMultiplier(100/75, this)">75%</button>
                 </div>
 
-                <!-- СЛАЙДЕР БАЛАНСУ -->
                 <div class="balance-section disabled" id="balance-section">
                     <div class="slider-header">
                         <span>Додати баланс:</span>
@@ -161,7 +219,6 @@
                 </div>
 
                 <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()">Прокачати</button>
-                <div class="result-text" id="result-text"></div>
             </div>
 
             <div class="panel">
@@ -229,7 +286,6 @@
         let selectedMyItems = []; 
         let selectedTargetItem = null;
 
-        // БАЛАНС
         let userBalance = 10000;
         let sliderBalance = 0;
 
@@ -246,7 +302,6 @@
             document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
         }
 
-        // Слухач слайдера (з перевіркою, чи є NFT)
         document.getElementById('balance-slider').addEventListener('input', function(e) {
             if (selectedMyItems.length === 0) {
                 e.target.value = 0;
@@ -298,7 +353,6 @@
                 selectedMyItems.push(item);
             }
             
-            // Якщо всі NFT прибрані, скидаємо слайдер
             if (selectedMyItems.length === 0) {
                 sliderBalance = 0;
                 document.getElementById('balance-slider').value = 0;
@@ -362,7 +416,6 @@
             renderInventory();
             renderCatalog(totalValue);
 
-            // БЛОКУВАННЯ СЛАЙДЕРА
             const sliderSection = document.getElementById('balance-section');
             const sliderInput = document.getElementById('balance-slider');
             
@@ -378,17 +431,14 @@
             const arc = document.getElementById('spin-arc');
             const arrow = document.getElementById('spin-arrow');
             const upgradeBtn = document.getElementById('upgrade-btn');
-            const resultText = document.getElementById('result-text');
 
             arrow.style.transition = 'none';
             arrow.style.transform = 'rotate(0deg)';
-            resultText.innerText = '';
 
             if (selectedTargetItem && totalValue > selectedTargetItem.price) {
                 selectedTargetItem = null;
             }
 
-            // Для запуску треба ОБОВ'ЯЗКОВО мати NFT
             if (selectedMyItems.length > 0 && totalValue > 0 && selectedTargetItem) {
                 let chance = (totalValue / selectedTargetItem.price) * 100;
                 if (chance >= 100) chance = 99;
@@ -405,10 +455,7 @@
         }
 
         function startUpgrade() {
-            if (selectedMyItems.length === 0) {
-                alert("Потрібно вибрати хоча б один NFT!");
-                return;
-            }
+            if (selectedMyItems.length === 0) return;
 
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
             const totalValue = itemsValue + sliderBalance;
@@ -416,12 +463,9 @@
             if (totalValue === 0 || !selectedTargetItem) return;
 
             const btn = document.getElementById('upgrade-btn');
-            const resultText = document.getElementById('result-text');
             const arrow = document.getElementById('spin-arrow');
             
             btn.disabled = true;
-            resultText.innerText = 'Крутимо...';
-            resultText.style.color = 'var(--text)';
 
             let chance = (totalValue / selectedTargetItem.price) * 100;
             if (chance >= 100) chance = 99;
@@ -443,6 +487,9 @@
             arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)';
             arrow.style.transform = `rotate(${totalRotation}deg)`;
 
+            // ЗБЕРІГАЄМО ПРЕДМЕТ, ЩОБ ВІН НЕ ЗНИК ДО ПОКАЗУ ВІКНА
+            const wonItem = selectedTargetItem;
+
             setTimeout(() => {
                 if (sliderBalance > 0) {
                     userBalance -= sliderBalance;
@@ -450,19 +497,18 @@
                     document.getElementById('balance-slider').value = 0;
                 }
 
+                // ВИДАЛЯЄМО СТАРІ ПРЕДМЕТИ
+                myInventory = myInventory.filter(invItem => !selectedMyItems.some(sel => sel.uid === invItem.uid));
+
                 if (isWin) {
-                    resultText.innerText = `🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name}`;
-                    resultText.style.color = 'var(--yellow)';
-                    
-                    myInventory = myInventory.filter(invItem => !selectedMyItems.some(sel => sel.uid === invItem.uid));
-                    myInventory.push({ ...selectedTargetItem, uid: Date.now() });
+                    // ДОДАЄМО НОВИЙ
+                    myInventory.push({ ...wonItem, uid: Date.now() });
+                    showResultModal(true, wonItem);
                 } else {
-                    resultText.innerText = '😢 Поразка. Всі предмети та баланс згоріли.';
-                    resultText.style.color = 'var(--red)';
-                    
-                    myInventory = myInventory.filter(invItem => !selectedMyItems.some(sel => sel.uid === invItem.uid));
+                    showResultModal(false, null);
                 }
 
+                // ОЧИЩУЄМО ВИБІР
                 selectedMyItems = [];
                 selectedTargetItem = null;
                 document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
@@ -470,6 +516,47 @@
                 updateUI();
                 btn.disabled = false;
             }, 3000);
+        }
+
+        function showResultModal(isWin, item) {
+            const overlay = document.getElementById('result-overlay');
+            const modalBox = document.getElementById('result-modal-box');
+            const title = document.getElementById('result-title-text');
+            const img = document.getElementById('result-image');
+            const name = document.getElementById('result-nft-name');
+
+            if (isWin) {
+                modalBox.className = 'result-modal win';
+                title.innerText = 'Вітаю ви перемогли!';
+                img.src = item.img;
+                name.innerText = item.name;
+                createConfetti();
+            } else {
+                modalBox.className = 'result-modal lose';
+                title.innerText = 'На жаль, ви програли';
+                img.src = 'https://via.placeholder.com/80/1c1f26/ff3333?text=X';
+                name.innerText = 'Предмети згоріли';
+            }
+
+            overlay.classList.add('active');
+        }
+
+        function closeResult() {
+            document.getElementById('result-overlay').classList.remove('active');
+            document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
+        }
+
+        function createConfetti() {
+            const colors = ['#ffcc00', '#00ff88', '#00bfff', '#ff69b4', '#ffffff'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                document.getElementById('result-overlay').appendChild(confetti);
+            }
         }
 
         updateUI();
