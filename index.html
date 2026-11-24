@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <title>MintRadar Upgrader</title>
+ <title>MintRadar - Upgrader</title>
  <script src="https://telegram.org/js/telegram-web-app.js"></script>
  <style>
  :root {
@@ -14,63 +14,78 @@
  body {
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
  background-color: var(--bg); color: var(--text);
- margin: 0; padding: 15px; padding-bottom: 80px;
+ margin: 0; padding: 15px; padding-bottom: 80px; overflow-x: hidden;
  }
  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
  .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
  .dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; }
- .badge { background: rgba(0, 255, 136, 0.1); color: var(--green); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid var(--green); }
+ 
+ /* Вкладки */
+ .tab-content { display: none; }
+ .tab-content.active { display: block; animation: fadeIn 0.3s; }
+ @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
  /* Сітка предметів */
  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
  .item-card {
  background: var(--card); border-radius: 12px; padding: 10px; text-align: center;
- border: 2px solid var(--border); cursor: pointer; transition: 0.2s; position: relative;
+ border: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative;
  }
- .item-card:hover { border-color: var(--blue); }
- .item-card.selected { border-color: var(--green); box-shadow: 0 0 10px rgba(0,255,136,0.3); }
+ .item-card:active { transform: scale(0.95); }
  .item-img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px; }
  .item-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; line-height: 1.2; height: 26px; overflow: hidden; }
- .item-price { font-size: 11px; color: var(--accent); font-weight: bold; }
+ .item-price { font-size: 12px; color: var(--accent); font-weight: bold; }
 
- /* Модальне вікно апгрейду */
+ /* Модальне вікно Апгрейду */
  .modal-overlay {
  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
- background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000;
+ background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: flex-end; z-index: 1000;
  }
  .modal-content {
- background: var(--card); width: 90%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center;
- border: 1px solid var(--border); position: relative;
+ background: var(--bg); width: 100%; max-width: 500px; border-radius: 24px 24px 0 0; padding: 20px; padding-bottom: 40px;
+ border-top: 1px solid var(--border); position: relative; max-height: 90vh; overflow-y: auto;
  }
- .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: var(--muted); }
+ .close-btn { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: var(--muted); }
  
- /* Зона апгрейду */
- .upgrade-zone { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
- .upgrade-slot { width: 100px; text-align: center; }
- .upgrade-img { width: 80px; height: 80px; object-fit: contain; }
+ /* Зона апгрейду (Твій предмет -> Колесо -> Ціль) */
+ .upgrade-zone { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; padding: 0 10px; }
+ .upgrade-slot { width: 90px; text-align: center; background: var(--card); padding: 10px; border-radius: 12px; border: 1px solid var(--border); }
+ .upgrade-img { width: 60px; height: 60px; object-fit: contain; }
+ .upgrade-price { font-size: 11px; color: var(--accent); font-weight: bold; margin-top: 5px; }
  
  /* Колесо */
- .wheel-container { position: relative; width: 100px; height: 100px; }
+ .wheel-container { position: relative; width: 90px; height: 90px; }
  .wheel {
  width: 100%; height: 100%; border-radius: 50%;
  background: conic-gradient(var(--green) 0deg, var(--green) var(--chance-angle), var(--danger) var(--chance-angle), var(--danger) 360deg);
  display: flex; justify-content: center; align-items: center;
  transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1);
+ box-shadow: 0 0 15px rgba(0,255,136,0.2);
  }
  .wheel-inner {
- width: 80%; height: 80%; background: var(--card); border-radius: 50%;
+ width: 76px; height: 76px; background: var(--bg); border-radius: 50%;
  display: flex; flex-direction: column; justify-content: center; align-items: center;
  }
- .chance-text { font-size: 18px; font-weight: bold; color: var(--green); }
- .chance-label { font-size: 10px; color: var(--muted); }
+ .chance-text { font-size: 16px; font-weight: bold; color: var(--green); }
+ .chance-label { font-size: 9px; color: var(--muted); text-transform: uppercase; }
  
+ /* Вибір цільового предмета */
+ .target-selector { margin-top: 20px; }
+ .target-title { font-size: 14px; color: var(--muted); margin-bottom: 10px; text-align: center; }
+ .target-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+ .target-scroll::-webkit-scrollbar { display: none; }
+ .target-item { min-width: 80px; background: var(--card); padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; cursor: pointer; }
+ .target-item.selected { border-color: var(--blue); background: rgba(0, 191, 255, 0.1); }
+ .target-item img { width: 40px; height: 40px; object-fit: contain; }
+ .target-item div { font-size: 10px; margin-top: 4px; }
+
  /* Кнопка */
  .btn {
- width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold;
- cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
+ width: 100%; padding: 16px; border-radius: 14px; border: none; font-size: 16px; font-weight: bold;
+ cursor: pointer; display: flex; justify-content: center; align-items: center; margin-top: 20px;
  }
  .btn-primary { background: linear-gradient(90deg, #ff9900, #ff5500); color: #000; }
- .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+ .btn:disabled { opacity: 0.5; }
 
  /* Навігація */
  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(28, 31, 38, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 100; }
@@ -78,81 +93,88 @@
  .nav-item.active { color: var(--blue); }
  .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
 
- /* Анімація тряски при поразці */
- @keyframes shake {
- 0% { transform: translateX(0); }
- 25% { transform: translateX(-5px); }
- 50% { transform: translateX(5px); }
- 75% { transform: translateX(-5px); }
- 100% { transform: translateX(0); }
- }
- .shake { animation: shake 0.5s; }
+ @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+ .shake { animation: shake 0.4s; }
  </style>
 </head>
 <body>
 
  <div class="header">
  <div class="logo"><div class="dot"></div>Upgrader</div>
- <div class="badge">NFT GIFTS</div>
  </div>
 
- <!-- Сітка предметів -->
- <div class="grid" id="inventory-grid">
- <!-- Заповнюється через JS -->
+ <!-- ВКЛАДКА 1: АПГРЕЙДЕР -->
+ <div id="tab-upgrader" class="tab-content active">
+ <p style="color: var(--muted); font-size: 14px; margin-bottom: 15px;">Оберіть предмет зі свого інвентарю, щоб почати апгрейд:</p>
+ <div class="grid" id="inventory-grid"></div>
  </div>
 
- <!-- Модальне вікно -->
+ <!-- ІНШІ ВКЛАДКИ (Заглушки для прикладу) -->
+ <div id="tab-radar" class="tab-content">
+ <h2>📡 Радар</h2>
+ <p style="color: var(--muted);">Тут буде відображатися курс TON та список NFT.</p>
+ </div>
+ <div id="tab-wallet" class="tab-content">
+ <h2>💼 Гаманець</h2>
+ <p style="color: var(--muted);">Тут буде підключення TON Connect.</p>
+ </div>
+ <div id="tab-profile" class="tab-content">
+ <h2>👤 Профіль</h2>
+ <p style="color: var(--muted);">Ваш профіль та баланс зірок.</p>
+ </div>
+
+ <!-- МОДАЛЬНЕ ВІКНО АПГРЕЙДУ -->
  <div class="modal-overlay" id="upgrade-modal">
  <div class="modal-content">
  <div class="close-btn" onclick="closeModal()">×</div>
- <h3 style="margin-top:0;">Апгрейд предмета</h3>
  
  <div class="upgrade-zone">
  <!-- Твій предмет -->
  <div class="upgrade-slot">
- <img id="modal-your-img" class="upgrade-img" src="" alt="">
- <div id="modal-your-price" style="font-size:12px; color:var(--accent); margin-top:5px;">0 ⭐</div>
+ <img id="modal-your-img" class="upgrade-img" src="">
+ <div id="modal-your-price" class="upgrade-price">0 ⭐</div>
  </div>
 
  <!-- Колесо -->
  <div class="wheel-container">
  <div class="wheel" id="spin-wheel">
  <div class="wheel-inner">
- <div class="chance-text" id="modal-chance-text">50%</div>
+ <div class="chance-text" id="modal-chance-text">0%</div>
  <div class="chance-label">ШАНС</div>
  </div>
  </div>
  </div>
 
  <!-- Цільовий предмет -->
- <div class="upgrade-slot">
- <img id="modal-target-img" class="upgrade-img" src="" alt="">
- <div id="modal-target-price" style="font-size:12px; color:var(--accent); margin-top:5px;">0 ⭐</div>
+ <div class="upgrade-slot" style="border-color: var(--blue);">
+ <img id="modal-target-img" class="upgrade-img" src="">
+ <div id="modal-target-price" class="upgrade-price">0 ⭐</div>
  </div>
+ </div>
+
+ <div class="target-selector">
+ <div class="target-title">Оберіть, на що хочете обміняти:</div>
+ <div class="target-scroll" id="target-list"></div>
  </div>
 
  <button class="btn btn-primary" id="upgrade-btn" onclick="startUpgrade()">UPGRADE</button>
- <p id="result-text" style="margin-top:15px; font-weight:bold; height:20px;"></p>
+ <p id="result-text" style="margin-top:15px; font-weight:bold; text-align:center; height:20px;"></p>
  </div>
  </div>
 
- <!-- Навігація -->
+ <!-- НАВІГАЦІЯ -->
  <div class="nav">
- <div class="nav-item" onclick="window.location.href='index.html'">
- <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-13c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/></svg>
- Радар
+ <div class="nav-item" onclick="switchTab('radar')">
+ <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Радар
  </div>
- <div class="nav-item active">
- <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-2v-4H8v-2h4V8h2v4h4v2z"/></svg>
- Апгрейдер
+ <div class="nav-item active" onclick="switchTab('upgrader')">
+ <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-2v-4H8v-2h4V8h2v4h4v2z"/></svg>Апгрейдер
  </div>
- <div class="nav-item" onclick="window.location.href='index.html'">
- <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
- Гаманець
+ <div class="nav-item" onclick="switchTab('wallet')">
+ <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9z"/></svg>Гаманець
  </div>
- <div class="nav-item" onclick="window.location.href='index.html'">
- <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
- Профіль
+ <div class="nav-item" onclick="switchTab('profile')">
+ <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Профіль
  </div>
  </div>
 
@@ -160,16 +182,16 @@
  const tg = window.Telegram.WebApp;
  tg.expand();
 
- // Дані предметів (Ціни в зірках)
- const gifts = [
+ // База всіх подарунків (ціни в зірках)
+ const allGifts = [
  { id: 1, name: "Стильна сумка", price: 100, img: "https://nft.fragment.com/gift/swagbag-232323.webp" },
- { id: 2, name: "Свічка до дня народження", price: 80, img: "https://nft.fragment.com/gift/bdaycandle-62063.webp" },
- { id: 3, name: "Локшина швидкого приготування", price: 50, img: "https://nft.fragment.com/gift/instantramen-147692.webp" },
+ { id: 2, name: "Свічка", price: 80, img: "https://nft.fragment.com/gift/bdaycandle-62063.webp" },
+ { id: 3, name: "Локшина", price: 50, img: "https://nft.fragment.com/gift/instantramen-147692.webp" },
  { id: 4, name: "Фігурка Свободи", price: 150, img: "https://nft.fragment.com/gift/libertyfigure-34093.webp" },
  { id: 5, name: "Великоднє яйце", price: 120, img: "https://nft.fragment.com/gift/easteregg-124942.webp" },
  { id: 6, name: "Гриб-шпигун", price: 200, img: "https://nft.fragment.com/gift/spyagaric-72016.webp" },
- { id: 7, name: "Іграшковий ведмедик", price: 180, img: "https://nft.fragment.com/gift/toybear-14456.webp" },
- { id: 8, name: "Відьомський капелюх", price: 130, img: "https://nft.fragment.com/gift/witchhat-2555.webp" },
+ { id: 7, name: "Ведмедик", price: 180, img: "https://nft.fragment.com/gift/toybear-14456.webp" },
+ { id: 8, name: "Капелюх відьми", price: 130, img: "https://nft.fragment.com/gift/witchhat-2555.webp" },
  { id: 9, name: "Домашній торт", price: 90, img: "https://nft.fragment.com/gift/homemadecake-102256.webp" },
  { id: 10, name: "Морозиво", price: 60, img: "https://nft.fragment.com/gift/icecream-248748.webp" },
  { id: 11, name: "Холодне полум'я", price: 250, img: "https://nft.fragment.com/gift/chillflame-250222.webp" },
@@ -179,118 +201,177 @@
  { id: 15, name: "Міфічна маска", price: 600, img: "https://nft.fragment.com/gift/mythmask-205987.webp" },
  { id: 16, name: "Кубок інтелекту", price: 800, img: "https://nft.fragment.com/gift/intelligencecup-1.webp" },
  { id: 17, name: "Кубок алгоритму", price: 1000, img: "https://nft.fragment.com/gift/algorithmcup-1.webp" },
+ { id: 18, name: "Вогняний факел", price: 1200, img: "https://nft.fragment.com/gift/torch-1.webp" },
+ { id: 19, name: "Plush Pepe", price: 2000, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
+ { id: 20, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" }
  ];
 
- let selectedItem = null;
- let targetItem = null;
+ // Інвентар гравця (що у нього є). Для тесту дамо йому всі предмети.
+ let myInventory = [...allGifts]; 
 
- // Ініціалізація сітки
- function initGrid() {
+ let selectedMyItem = null;
+ let selectedTargetItem = null;
+
+ // Перемикання вкладок
+ function switchTab(tabId) {
+ document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+ document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+ 
+ document.getElementById('tab-' + tabId).classList.add('active');
+ event.currentTarget.classList.add('active');
+ }
+
+ // Малюємо інвентар
+ function renderInventory() {
  const grid = document.getElementById('inventory-grid');
  grid.innerHTML = '';
- gifts.forEach(item => {
+ myInventory.forEach(item => {
  const card = document.createElement('div');
  card.className = 'item-card';
  card.innerHTML = `
- <img src="${item.img}" class="item-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/60?text=NFT'">
+ <img src="${item.img}" class="item-img" onerror="this.src='https://via.placeholder.com/60?text=NFT'">
  <div class="item-name">${item.name}</div>
  <div class="item-price">${item.price} ⭐</div>
  `;
- card.onclick = () => openModal(item);
+ card.onclick = () => openUpgradeModal(item);
  grid.appendChild(card);
  });
  }
 
- // Відкриття модального вікна
- function openModal(item) {
- selectedItem = item;
- 
- // Знаходимо найдорожчий предмет для апгрейду (ціль)
- targetItem = gifts.reduce((max, g) => g.price > max.price ? g : max, gifts[0]);
+ // Відкриття вікна
+ function openUpgradeModal(myItem) {
+ selectedMyItem = myItem;
+ selectedTargetItem = null; // Спочатку ціль не вибрана
 
- document.getElementById('modal-your-img').src = selectedItem.img;
- document.getElementById('modal-your-price').innerText = selectedItem.price + ' ⭐';
+ // Заповнюємо ліву частину (твій предмет)
+ document.getElementById('modal-your-img').src = selectedMyItem.img;
+ document.getElementById('modal-your-price').innerText = selectedMyItem.price + ' ⭐';
  
- document.getElementById('modal-target-img').src = targetItem.img;
- document.getElementById('modal-target-price').innerText = targetItem.price + ' ⭐';
+ // Очищаємо праву частину, поки не вибрано ціль
+ document.getElementById('modal-target-img').src = 'https://via.placeholder.com/60?text=?';
+ document.getElementById('modal-target-price').innerText = '0 ⭐';
+ document.getElementById('modal-chance-text').innerText = '0%';
+ document.getElementById('spin-wheel').style.setProperty('--chance-angle', '0deg');
 
- // Розрахунок шансу (не може бути більше 90%)
- let chance = (selectedItem.price / targetItem.price) * 100;
- if (chance > 90) chance = 90;
+ // Малюємо список цілей (всі предмети, крім того, що ми вибрали)
+ const targetList = document.getElementById('target-list');
+ targetList.innerHTML = '';
  
+ allGifts.forEach(target => {
+ if (target.id !== myItem.id) {
+ const div = document.createElement('div');
+ div.className = 'target-item';
+ div.innerHTML = `
+ <img src="${target.img}" onerror="this.src='https://via.placeholder.com/40?text=NFT'">
+ <div>${target.name}</div>
+ <div style="color:var(--accent); font-weight:bold;">${target.price} ⭐</div>
+ `;
+ div.onclick = () => selectTarget(target, div);
+ targetList.appendChild(div);
+ }
+ });
+
+ document.getElementById('upgrade-modal').style.display = 'flex';
+ document.getElementById('result-text').innerText = '';
+ document.getElementById('upgrade-btn').disabled = true; // Кнопка вимкнена, поки не вибрано ціль
+ }
+
+ // Вибір цільового предмета
+ function selectTarget(target, element) {
+ selectedTargetItem = target;
+ 
+ // Підсвічуємо вибраний елемент у списку
+ document.querySelectorAll('.target-item').forEach(el => el.classList.remove('selected'));
+ element.classList.add('selected');
+
+ // Оновлюємо праву частину
+ document.getElementById('modal-target-img').src = target.img;
+ document.getElementById('modal-target-price').innerText = target.price + ' ⭐';
+
+ // Рахуємо шанс
+ let chance = (selectedMyItem.price / target.price) * 100;
+ 
+ // Якщо ціль дешевша, шанс не може бути більше 90% (щоб не було 100% вічного виграшу)
+ if (chance > 90) chance = 90; 
+ if (chance < 1) chance = 1; // Мінімальний шанс 1%
+
  const chanceText = document.getElementById('modal-chance-text');
  const wheel = document.getElementById('spin-wheel');
  
  chanceText.innerText = Math.round(chance) + '%';
  wheel.style.setProperty('--chance-angle', (chance * 3.6) + 'deg');
- 
- document.getElementById('result-text').innerText = '';
- document.getElementById('upgrade-btn').disabled = false;
- document.getElementById('spin-wheel').style.transform = 'rotate(0deg)';
 
- document.getElementById('upgrade-modal').style.display = 'flex';
+ // Вмикаємо кнопку
+ document.getElementById('upgrade-btn').disabled = false;
+ document.getElementById('result-text').innerText = '';
+ document.getElementById('spin-wheel').style.transform = 'rotate(0deg)';
  }
 
  function closeModal() {
  document.getElementById('upgrade-modal').style.display = 'none';
  }
 
- // Логіка апгрейду
+ // Логіка гри
  function startUpgrade() {
+ if (!selectedMyItem || !selectedTargetItem) return;
+
  const btn = document.getElementById('upgrade-btn');
  const resultText = document.getElementById('result-text');
  const wheel = document.getElementById('spin-wheel');
  
  btn.disabled = true;
  resultText.innerText = 'Крутимо...';
+ resultText.style.color = 'var(--text)';
 
- let chance = (selectedItem.price / targetItem.price) * 100;
+ let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
  if (chance > 90) chance = 90;
 
- // Випадкове випадання (0-100)
+ // Випадковість
  const roll = Math.random() * 100;
  const isWin = roll <= chance;
 
- // Анімація колеса
- const spinDegrees = 360 * 5 + (isWin ? 0 : 180); // 5 обертів + зупинка
+ // Крутимо колесо
+ const spinDegrees = 360 * 5 + (isWin ? 0 : 180); 
  wheel.style.transform = `rotate(${spinDegrees}deg)`;
 
- // Затримка для завершення анімації
  setTimeout(() => {
  if (isWin) {
- resultText.innerText = '🎉 ВІТАЮ! Ви отримали ' + targetItem.name;
+ resultText.innerText = `🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name}`;
  resultText.style.color = 'var(--green)';
  
- // Оновлюємо предмет в інвентарі (візуально)
- selectedItem.price = targetItem.price;
- selectedItem.img = targetItem.img;
- selectedItem.name = targetItem.name;
- 
- // Оновлюємо картку в сітці
- const cards = document.querySelectorAll('.item-card');
- cards.forEach(card => {
- if (card.querySelector('.item-name').innerText === selectedItem.name) {
- card.querySelector('.item-price').innerText = selectedItem.price + ' ⭐';
- card.querySelector('.item-img').src = selectedItem.img;
+ // Оновлюємо інвентар (міняємо предмет на новий)
+ const index = myInventory.findIndex(i => i.id === selectedMyItem.id);
+ if (index !== -1) {
+ myInventory[index] = { ...selectedTargetItem }; // Замінюємо
  }
- });
+ 
+ // Оновлюємо сітку
+ renderInventory();
+ 
+ // Закриваємо модалку через 2 секунди
+ setTimeout(() => {
+ closeModal();
+ }, 2000);
+
  } else {
- resultText.innerText = '😢 Поразка. Спробуй ще!';
+ resultText.innerText = '😢 Поразка. Предмет згорів.';
  resultText.style.color = 'var(--danger)';
  wheel.classList.add('shake');
  setTimeout(() => wheel.classList.remove('shake'), 500);
+ 
+ // Видаляємо предмет з інвентаря
+ myInventory = myInventory.filter(i => i.id !== selectedMyItem.id);
+ renderInventory();
+
+ setTimeout(() => {
+ closeModal();
+ }, 2000);
  }
- 
- // Оновлюємо модальне вікно
- document.getElementById('modal-your-img').src = selectedItem.img;
- document.getElementById('modal-your-price').innerText = selectedItem.price + ' ⭐';
- 
- btn.disabled = false;
  }, 3000);
  }
 
- // Запуск
- initGrid();
+ // Ініціалізація
+ renderInventory();
 
  </script>
 </body>
