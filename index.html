@@ -70,7 +70,7 @@
         .wheel-arrow {
             position: absolute; top: 0; left: 50%; margin-left: -10px;
             width: 20px; height: 70px; /* довжина стрілки = радіус */
-     transform-origin: 50% 100%; /* обертається навколо центру */
+            transform-origin: 50% 100%; /* обертається навколо центру */
             z-index: 10;
         }
         .wheel-arrow::after {
@@ -149,7 +149,9 @@
                     <img id="modal-target-img" class="upgrade-img" src="">
                     <div id="modal-target-price" class="upgrade-price">0 ⭐</div>
                 </div>
-            </div><div class="target-selector">
+            </div>
+
+            <div class="target-selector">
                 <div class="target-title">Оберіть бажаний предмет (тільки дорожчі):</div>
                 <div class="target-scroll" id="target-list"></div>
             </div>
@@ -202,11 +204,11 @@
             myInventory.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'item-card';
-                card.innerHTML = 
+                card.innerHTML = `
                     <img src="${item.img}" class="item-img" onerror="this.src='https://via.placeholder.com/60?text=NFT'">
                     <div class="item-name">${item.name}</div>
                     <div class="item-price">${item.price} ⭐</div>
-                ;
+                `;
                 card.onclick = () => openUpgradeModal(item);
                 grid.appendChild(card);
             });
@@ -214,7 +216,9 @@
 
         function openUpgradeModal(myItem) {
             selectedMyItem = myItem;
-            selectedTargetItem = null;document.getElementById('modal-your-img').src = selectedMyItem.img;
+            selectedTargetItem = null;
+
+            document.getElementById('modal-your-img').src = selectedMyItem.img;
             document.getElementById('modal-your-price').innerText = selectedMyItem.price + ' ⭐';
             
             document.getElementById('modal-target-img').src = 'https://via.placeholder.com/60?text=?';
@@ -230,11 +234,11 @@
                 if (target.id !== myItem.id && target.price >= myItem.price) {
                     const div = document.createElement('div');
                     div.className = 'target-item';
-                    div.innerHTML = 
+                    div.innerHTML = `
                         <img src="${target.img}" onerror="this.src='https://via.placeholder.com/40?text=NFT'">
                         <div>${target.name}</div>
                         <div style="color:#ffcc00; font-weight:bold;">${target.price} ⭐</div>
-                    ;
+                    `;
                     div.onclick = () => selectTarget(target, div);
                     targetList.appendChild(div);
                 }
@@ -293,7 +297,8 @@
             const isWin = roll <= chance;
 
             // Рахуємо кут зупинки стрілки
-            // Стрілка починає з 0 (вгорі). Наша кольорова зона починається знизу.// Тому зона виграшу знаходиться в межах [180 - (chance*1.8), 180 + (chance*1.8)]
+            // Стрілка починає з 0 (вгорі). Наша кольорова зона починається знизу.
+            // Тому зона виграшу знаходиться в межах [180 - (chance*1.8), 180 + (chance*1.8)]
             let targetAngle = 0;
             
             if (isWin) {
@@ -319,11 +324,11 @@
             const totalRotation = (360 * 5) + targetAngle;
 
             arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)';
-            arrow.style.transform = rotate(${totalRotation}deg);
+            arrow.style.transform = `rotate(${totalRotation}deg)`;
 
             setTimeout(() => {
                 if (isWin) {
-                    resultText.innerText = 🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name};
+                    resultText.innerText = `🎉 ВІТАЮ! Ви отримали ${selectedTargetItem.name}`;
                     resultText.style.color = 'var(--green)';
                     
                     const index = myInventory.findIndex(i => i.id === selectedMyItem.id);
