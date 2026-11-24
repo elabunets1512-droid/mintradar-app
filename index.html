@@ -19,7 +19,6 @@
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
         
-        /* Сітка предметів */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
         .item-card {
             background: var(--card); border-radius: 12px; padding: 10px; text-align: center;
@@ -30,7 +29,6 @@
         .item-name { font-size: 11px; font-weight: bold; margin-bottom: 2px; height: 26px; overflow: hidden; }
         .item-price { font-size: 12px; color: var(--accent); font-weight: bold; }
 
-        /* Модальне вікно */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
@@ -42,35 +40,33 @@
         }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--muted); }
         
-        /* Зона апгрейду */
         .upgrade-zone { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px 0; }
         .upgrade-slot { width: 80px; text-align: center; background: #15181e; padding: 10px; border-radius: 12px; border: 1px solid #2a2d35; }
         .upgrade-img { width: 50px; height: 50px; object-fit: contain; }
         .upgrade-price { font-size: 11px; color: var(--accent); font-weight: bold; margin-top: 5px; }
         
-        /* НОВЕ КОЛЕСО */
+        /* КОЛЕСО */
         .wheel-container { position: relative; width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
         
-        /* Шкала радара */
         .wheel-bg {
             position: absolute; width: 100%; height: 100%; border-radius: 50%;
             background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg);
             border: 2px solid #1a1d26;
         }
 
-        /* Кольорова дуга (шанс) */
+        /* Кольорова дуга - ТЕПЕР ЗАПОВНЮЄТЬСЯ ЗНИЗУ (180deg) ЗА ГОДИННИКОВОЮ */
         .wheel-arc {
             position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from 135deg, #ffcc00 var(--chance-angle), #2a2d35 var(--chance-angle));
+            background: conic-gradient(from 180deg, #ffcc00 var(--chance-angle), #2a2d35 var(--chance-angle));
             -webkit-mask: radial-gradient(transparent 55%, black 56%);
             mask: radial-gradient(transparent 55%, black 56%);
         }
 
-        /* Стрілка, що крутиться */
+        /* Стрілка */
         .wheel-arrow {
             position: absolute; top: 0; left: 50%; margin-left: -10px;
-            width: 20px; height: 70px; /* довжина стрілки = радіус */
-            transform-origin: 50% 100%; /* обертається навколо центру */
+            width: 20px; height: 70px;
+            transform-origin: 50% 100%;
             z-index: 10;
         }
         .wheel-arrow::after {
@@ -82,7 +78,6 @@
             content: ''; position: absolute; top: 15px; left: 9px; width: 2px; height: 55px; background: #ffcc00;
         }
 
-        /* Центр */
         .wheel-center {
             position: absolute; width: 60px; height: 60px; background: #0f1115; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -90,7 +85,6 @@
         }
         .chance-text { font-size: 18px; font-weight: bold; color: #ffcc00; }
 
-        /* Вибір цілі */
         .target-selector { margin-top: 10px; }
         .target-title { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
         .target-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: thin; }
@@ -99,14 +93,12 @@
         .target-item img { width: 40px; height: 40px; object-fit: contain; }
         .target-item div { font-size: 10px; margin-top: 4px; }
 
-        /* Кнопка */
         .btn {
             width: 100%; padding: 16px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold;
             cursor: pointer; background: #ffcc00; color: #000; margin-top: 15px;
         }
         .btn:disabled { opacity: 0.5; background: #555; color: #aaa; }
 
-        /* Навігація */
         .nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(28, 31, 38, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); }
         .nav-item.active { color: #ffcc00; }
@@ -122,19 +114,16 @@
     <p style="color: var(--muted); font-size: 14px; margin-bottom: 15px;">Оберіть предмет зі свого інвентарю:</p>
     <div class="grid" id="inventory-grid"></div>
 
-    <!-- МОДАЛЬНЕ ВІКНО -->
     <div class="modal-overlay" id="upgrade-modal">
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal()">×</div>
             
             <div class="upgrade-zone">
-                <!-- Твій предмет -->
                 <div class="upgrade-slot">
                     <img id="modal-your-img" class="upgrade-img" src="">
                     <div id="modal-your-price" class="upgrade-price">0 ⭐</div>
                 </div>
 
-                <!-- Колесо -->
                 <div class="wheel-container">
                     <div class="wheel-bg"></div>
                     <div class="wheel-arc" id="spin-arc"></div>
@@ -144,7 +133,6 @@
                     </div>
                 </div>
 
-                <!-- Цільовий предмет -->
                 <div class="upgrade-slot" style="border-color: #ffcc00;">
                     <img id="modal-target-img" class="upgrade-img" src="">
                     <div id="modal-target-price" class="upgrade-price">0 ⭐</div>
@@ -225,7 +213,11 @@
             document.getElementById('modal-target-price').innerText = '0 ⭐';
             document.getElementById('modal-chance-text').innerText = '0%';
             document.getElementById('spin-arc').style.setProperty('--chance-angle', '0deg');
-            document.getElementById('spin-arrow').style.transform = 'rotate(0deg)';
+            
+            // Скидаємо стрілку в початкове положення (вгору)
+            const arrow = document.getElementById('spin-arrow');
+            arrow.style.transition = 'none';
+            arrow.style.transform = 'rotate(0deg)';
 
             const targetList = document.getElementById('target-list');
             targetList.innerHTML = '';
@@ -264,15 +256,12 @@
 
             document.getElementById('modal-chance-text').innerText = Math.round(chance) + '%';
             
-            // Малюємо кольорову дугу. Починаємо знизу (135deg), щоб було як на скріншоті
-            // 360 градусів = 100%, тому chance * 3.6
+            // Малюємо жовту зону (від 180 градусів)
             const arcAngle = (chance / 100) * 360;
             document.getElementById('spin-arc').style.setProperty('--chance-angle', arcAngle + 'deg');
 
             document.getElementById('upgrade-btn').disabled = false;
             document.getElementById('result-text').innerText = '';
-            document.getElementById('spin-arrow').style.transform = 'rotate(0deg)';
-            document.getElementById('spin-arrow').style.transition = 'none';
         }
 
         function closeModal() {
@@ -293,34 +282,23 @@
             let chance = (selectedMyItem.price / selectedTargetItem.price) * 100;
             if (chance >= 100) chance = 99;
 
+            const winWidth = chance * 3.6; // ширина жовтої зони в градусах
+            const startZone = 180; // жовта зона починається знизу (180 градусів)
+
             const roll = Math.random() * 100;
             const isWin = roll <= chance;
 
-            // Рахуємо кут зупинки стрілки
-            // Стрілка починає з 0 (вгорі). Наша кольорова зона починається знизу.
-            // Тому зона виграшу знаходиться в межах [180 - (chance*1.8), 180 + (chance*1.8)]
             let targetAngle = 0;
-            
+
             if (isWin) {
-                // Зупиняємось в кольоровій зоні
-                const minWin = 180 - (chance * 1.8);
-                const maxWin = 180 + (chance * 1.8);
-                targetAngle = minWin + Math.random() * (maxWin - minWin);
+                // Зупиняємось в жовтій зоні (від 180 і далі за годинниковою)
+                targetAngle = startZone + Math.random() * winWidth;
             } else {
-                // Зупиняємось в сірій зоні
-                const winSize = chance * 1.8;
-                const minWin = 180 - winSize;
-                const maxWin = 180 + winSize;
-                
-                // Вибираємо випадковий кут поза зоною виграшу
-                let randomAngle = Math.random() * 360;
-                while (randomAngle > minWin && randomAngle < maxWin) {
-                    randomAngle = Math.random() * 360;
-                }
-                targetAngle = randomAngle;
+                // Зупиняємось в сірій зоні (після жовтої і до 180)
+                targetAngle = startZone + winWidth + Math.random() * (360 - winWidth);
             }
 
-            // Додаємо 5 повних обертів для краси
+            // Додаємо 5 повних обертів для ефекту
             const totalRotation = (360 * 5) + targetAngle;
 
             arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)';
