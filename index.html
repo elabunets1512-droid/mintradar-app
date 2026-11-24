@@ -29,9 +29,7 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ========================================= */
         /* ДИЗАЙН МАРКЕТУ */
-        /* ========================================= */
         .market-controls { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-bar { 
             flex: 1; background: var(--card); border: 1px solid var(--border); 
@@ -74,9 +72,7 @@
         .market-buy-btn:hover { background: #0080ff; }
         .market-buy-btn:active { transform: scale(0.95); }
 
-        /* ========================================= */
         /* ДИЗАЙН АПГРЕЙДЕРА */
-        /* ========================================= */
         .main-layout { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 800px) { .main-layout { grid-template-columns: 320px 1fr 350px; } }
         .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
@@ -90,11 +86,10 @@
         .inv-name { font-size: 11px; font-weight: bold; margin: 5px 0; height: 26px; overflow: hidden; }
         .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,51,51,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
         
-        .check-badge { position: absolute; top: 5px; right: 5px; background: var(--purple); color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 12px; display: none; align-items: center; justify-content: center; font-weight: bold; }
-        .inv-card.selected .check-badge { display: flex; }
-
-        /* Бейджик кількості */
+        /* Бейджики в інвентарі */
         .count-badge { position: absolute; top: 5px; left: 5px; background: var(--yellow); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; }
+        .selected-badge { position: absolute; top: 5px; right: 5px; background: var(--purple); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; display: none; }
+        .inv-card.selected .selected-badge { display: block; }
 
         .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, #1c1f26 0%, #12151c 100%); }
         .total-value-box { background: rgba(138, 43, 226, 0.1); border: 1px solid var(--purple); padding: 10px 20px; border-radius: 12px; margin-bottom: 10px; text-align: center; width: 100%; max-width: 250px;}
@@ -116,10 +111,13 @@
         .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
         .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+        
+        /* Слайдери (баланс та кількість) */
         input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; margin: 10px 0; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #2a2d35; border-radius: 3px; }
         input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background: var(--yellow); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+        
         .slider-info { font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px;}
         .slider-info span { color: var(--yellow); font-weight: bold; }
 
@@ -144,22 +142,24 @@
         /* МОДАЛЬНІ ВІКНА */
         .result-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; flex-direction: column; }
         .result-overlay.active { display: flex; }
-        .result-modal { background: var(--panel); border-radius: 24px; padding: 30px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; }
+        .result-modal { background: var(--panel); border-radius: 24px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; }
         .result-overlay.active .result-modal { transform: scale(1); opacity: 1; }
         
         .result-modal.win { border-color: var(--green); box-shadow: 0 0 40px rgba(0, 255, 136, 0.2); }
         .result-modal.lose { border-color: var(--red); box-shadow: 0 0 40px rgba(255, 51, 51, 0.2); }
         .result-modal.purchase { border-color: var(--blue); box-shadow: 0 0 40px rgba(0, 191, 255, 0.2); }
         .result-modal.buy-qty { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255, 204, 0, 0.2); }
+        .result-modal.up-qty { border-color: var(--purple); box-shadow: 0 0 40px rgba(138, 43, 226, 0.2); }
 
-        .result-title { font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .result-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
         .result-modal.win .result-title { color: var(--green); }
         .result-modal.lose .result-title { color: var(--red); }
         .result-modal.purchase .result-title { color: var(--blue); }
         .result-modal.buy-qty .result-title { color: var(--yellow); }
+        .result-modal.up-qty .result-title { color: var(--purple); }
 
-        .result-img-container { width: 120px; height: 120px; margin: 0 auto 20px auto; background: rgba(0,0,0,0.3); border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
-        .result-img { width: 80px; height: 80px; object-fit: contain; }
+        .result-img-container { width: 100px; height: 100px; margin: 0 auto 15px auto; background: rgba(0,0,0,0.3); border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
+        .result-img { width: 70px; height: 70px; object-fit: contain; }
         .result-nft-name { font-size: 18px; font-weight: bold; color: var(--text); margin-bottom: 10px; }
         
         .price-deducted { font-size: 18px; font-weight: bold; color: var(--red); margin-bottom: 20px; }
@@ -167,11 +167,11 @@
         .btn-close-result { background: var(--text); color: var(--bg); border: none; padding: 15px 40px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
         .btn-close-result:hover { opacity: 0.8; }
 
-        /* Кнопки кількості у вікні покупки */
-        .qty-btn-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        .qty-btn { background: #1a1d26; color: white; border: 1px solid var(--border); padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        /* Кнопки кількості */
+        .qty-btn-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .qty-btn { background: #1a1d26; color: white; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .qty-btn.active { background: var(--yellow); border-color: var(--yellow); color: #000; }
-        .qty-total-text { font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+        .qty-total-text { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
         .qty-total-text span { color: var(--yellow); }
 
         @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -199,15 +199,15 @@
         </div>
     </div>
 
-    <!-- Вікно вибору кількості -->
+    <!-- Вікно покупки в МАРКЕТІ (кількість) -->
     <div class="result-overlay" id="qty-overlay">
         <div class="result-modal buy-qty">
             <div class="result-title">Скільки купити?</div>
-            <div class="result-img-container" style="width: 100px; height: 100px; margin-bottom: 15px;">
-                <img id="qty-image" class="result-img" src="" alt="NFT" style="width: 60px; height: 60px;">
+            <div class="result-img-container">
+                <img id="qty-image" class="result-img" src="" alt="NFT">
             </div>
-            <div class="result-nft-name" id="qty-name" style="margin-bottom: 5px;">Назва</div>
-            <div style="font-size: 14px; color: var(--muted); margin-bottom: 20px;">Ціна за 1 шт: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
+            <div class="result-nft-name" id="qty-name">Назва</div>
+            <div style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Ціна за 1 шт: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
             
             <div class="qty-btn-row">
                 <button class="qty-btn active" onclick="setBuyQty(1, this)">1</button>
@@ -237,6 +237,37 @@
         </div>
     </div>
 
+    <!-- Вікно вибору КІЛЬКОСТІ ДЛЯ АПГРЕЙДУ (НОВЕ) -->
+    <div class="result-overlay" id="upgrade-qty-overlay">
+        <div class="result-modal up-qty">
+            <div class="result-title">Скільки додати?</div>
+            <div class="result-img-container">
+                <img id="up-qty-image" class="result-img" src="" alt="NFT">
+            </div>
+            <div class="result-nft-name" id="up-qty-name">Назва</div>
+            
+            <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">
+                Доступно: <span id="up-qty-max" style="color: var(--yellow); font-weight: bold;">0</span> шт.
+            </div>
+
+            <!-- Повзунок -->
+            <div class="balance-section" style="margin-top: 10px; margin-bottom: 20px;">
+                <div class="slider-header">
+                    <span>Обрано:</span>
+                    <span id="up-qty-val-display" style="color:var(--purple); font-weight:bold;">0 шт.</span>
+                </div>
+                <input type="range" id="upgrade-qty-slider" min="1" max="10" value="1">
+            </div>
+
+            <div class="qty-total-text" style="color: var(--white);">
+                Сума: <span id="up-qty-total-price" style="color: var(--purple);">0</span> ⭐
+            </div>
+
+            <button class="btn-upgrade" onclick="confirmUpgradeQty()" style="margin-top: 0; margin-bottom: 10px; background: linear-gradient(90deg, #8a2be2, #4b0082); color: #fff;">Додати в гру</button>
+            <button class="btn-close-result" onclick="closeUpgradeQtyModal()" style="background: transparent; color: var(--muted); border: 1px solid var(--border);">Скасувати</button>
+        </div>
+    </div>
+
     <!-- ================= ВКЛАДКА 1: МАРКЕТ ================= -->
     <div id="tab-market" class="tab-content active">
         <div class="market-controls">
@@ -249,7 +280,7 @@
     <div id="tab-upgrader" class="tab-content">
         <div class="main-layout">
             <div class="panel">
-                <div class="panel-title" style="color: var(--purple);">Ваш інвентар <span>(Кілька)</span></div>
+                <div class="panel-title" style="color: var(--purple);">Ваш інвентар</div>
                 <div id="empty-inventory-msg" style="text-align:center; color:var(--muted); font-size:12px; margin-top:20px; display:none;">Інвентар порожній.<br>Купіть NFT у Маркеті!</div>
                 <div class="inventory-grid" id="inventory-grid"></div>
             </div>
@@ -315,7 +346,7 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // МАЙСТЕР-СПИСОК УСІХ NFT
+        // БАЗА ДАНИХ NFT
         const allGifts = [
             { id: 1, name: "Plush Pepe", price: 2500, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
             { id: 2, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
@@ -350,16 +381,21 @@
         ];
 
         // СТАН ГРИ
-        let marketGifts = [...allGifts]; // Товари в маркеті
-        let myInventory = []; // Інвентар
-        let selectedMyItems = []; // Вибрані для апгрейду
+        let marketGifts = [...allGifts]; 
+        let myInventory = []; 
+        // selectedMyItems: [{id: 21, name: "Lunar Snake", price: 12, count: 24, selectedQty: 5}]
+        let selectedMyItems = []; 
         
         let userBalance = 10000;
         let sliderBalance = 0;
+        let selectedTargetItem = null;
 
-        // Змінні для вікна покупки
+        // Змінні для покупки
         let currentBuyItem = null;
         let currentBuyQty = 1;
+
+        // Змінні для вибору кількості в Апгрейдер
+        let currentUpgradeItem = null;
 
         function updateTopBalance() {
             document.getElementById('top-balance').innerText = userBalance.toLocaleString('en-US');
@@ -418,7 +454,6 @@
 
         function filterMarket() { renderMarket(); }
 
-        // --- ВІКНО ВИБОРУ КІЛЬКОСТІ ---
         function openQtyModal(id) {
             currentBuyItem = marketGifts.find(g => g.id === id);
             currentBuyQty = 1;
@@ -457,13 +492,9 @@
                 return;
             }
 
-            // Списуємо баланс
             userBalance -= totalPrice;
-
-            // Видаляємо з маркету
             marketGifts = marketGifts.filter(g => g.id !== currentBuyItem.id);
 
-            // Додаємо в інвентар (збільшуємо кількість)
             let invItem = myInventory.find(i => i.id === currentBuyItem.id);
             if (invItem) {
                 invItem.count += currentBuyQty;
@@ -476,14 +507,9 @@
             renderMarket();
             updateUI();
             
-            // Показуємо вікно успіху
-            showPurchaseModal(currentBuyItem, currentBuyQty, totalPrice);
-        }
-
-        function showPurchaseModal(item, qty, total) {
-            document.getElementById('purchase-image').src = item.img;
-            document.getElementById('purchase-nft-name').innerText = `${item.name} (x${qty})`;
-            document.getElementById('purchase-price').innerText = `- ${total} ⭐`;
+            document.getElementById('purchase-image').src = currentBuyItem.img;
+            document.getElementById('purchase-nft-name').innerText = `${currentBuyItem.name} (x${currentBuyQty})`;
+            document.getElementById('purchase-price').innerText = `- ${totalPrice} ⭐`;
             document.getElementById('purchase-overlay').classList.add('active');
         }
 
@@ -494,18 +520,7 @@
         // ==========================================
         // ЛОГІКА АПГРЕЙДЕРА
         // ==========================================
-        document.getElementById('balance-slider').addEventListener('input', function(e) {
-            if (selectedMyItems.length === 0) { 
-                e.target.value = 0; 
-                sliderBalance = 0; 
-                alert("Спочатку оберіть NFT з інвентарю!"); 
-                return; 
-            }
-            sliderBalance = parseInt(e.target.value);
-            document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
-            updateUI();
-        });
-
+        
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             const emptyMsg = document.getElementById('empty-inventory-msg');
@@ -515,34 +530,86 @@
             else { emptyMsg.style.display = 'none'; }
 
             myInventory.forEach(item => {
-                const isSelected = selectedMyItems.some(i => i.uid === item.uid); // use uid for safety, though we only select 1
+                const selectedItemData = selectedMyItems.find(i => i.id === item.id);
+                const isSelected = !!selectedItemData;
+                
                 const card = document.createElement('div');
                 card.className = `inv-card ${isSelected ? 'selected' : ''}`;
                 card.innerHTML = `
-                    <div class="check-badge">✓</div>
                     <div class="count-badge">x${item.count}</div>
+                    ${isSelected ? `<div class="selected-badge">${selectedItemData.selectedQty} обрано</div>` : ''}
                     <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
                     <div class="inv-name">${item.name}</div>
                     <div class="inv-price">${item.price} ⭐</div>
                 `;
-                card.onclick = () => toggleInventoryItem(item);
+                card.onclick = () => openUpgradeQtyModal(item);
                 grid.appendChild(card);
             });
         }
 
-        function toggleInventoryItem(item) {
-            const index = selectedMyItems.findIndex(i => i.id === item.id);
-            if (index > -1) {
-                // Знімаємо виділення
-                selectedMyItems.splice(index, 1);
+        // ВІДКРИТТЯ ВІКНА ВИБОРУ КІЛЬКОСТІ ДЛЯ АПГРЕЙДУ
+        function openUpgradeQtyModal(item) {
+            currentUpgradeItem = item;
+            
+            // Перевіряємо, чи вже вибраний
+            const existingSelection = selectedMyItems.find(i => i.id === item.id);
+            const initialQty = existingSelection ? existingSelection.selectedQty : 1;
+
+            document.getElementById('up-qty-image').src = item.img;
+            document.getElementById('up-qty-name').innerText = item.name;
+            document.getElementById('up-qty-max').innerText = item.count;
+            
+            const slider = document.getElementById('upgrade-qty-slider');
+            slider.max = item.count;
+            slider.value = initialQty;
+
+            // Оновлюємо текст
+            updateUpgradeQtyDisplay(initialQty, item.price);
+            document.getElementById('upgrade-qty-overlay').classList.add('active');
+        }
+
+        // Слухач повзунка в апгрейдері
+        document.getElementById('upgrade-qty-slider').addEventListener('input', function(e) {
+            const qty = parseInt(e.target.value);
+            updateUpgradeQtyDisplay(qty, currentUpgradeItem.price);
+        });
+
+        function updateUpgradeQtyDisplay(qty, price) {
+            document.getElementById('up-qty-val-display').innerText = qty + ' шт.';
+            document.getElementById('up-qty-total-price').innerText = (qty * price).toLocaleString('en-US');
+        }
+
+        function closeUpgradeQtyModal() {
+            document.getElementById('upgrade-qty-overlay').classList.remove('active');
+        }
+
+        function confirmUpgradeQty() {
+            const qty = parseInt(document.getElementById('upgrade-qty-slider').value);
+            
+            if (qty > 0) {
+                const existingIndex = selectedMyItems.findIndex(i => i.id === currentUpgradeItem.id);
+                if (existingIndex > -1) {
+                    // Оновлюємо кількість
+                    selectedMyItems[existingIndex].selectedQty = qty;
+                } else {
+                    // Додаємо новий
+                    selectedMyItems.push({ ...currentUpgradeItem, selectedQty: qty });
+                }
             } else {
-                // Додаємо в вибір (тільки 1 екземпляр даного типу)
-                selectedMyItems.push({ ...item, uid: Date.now() });
+                // Якщо 0 - видаляємо
+                selectedMyItems = selectedMyItems.filter(i => i.id !== currentUpgradeItem.id);
             }
-            if (selectedMyItems.length === 0) { sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
+
+            if (selectedMyItems.length === 0) { 
+                sliderBalance = 0; 
+                document.getElementById('balance-slider').value = 0; 
+            }
+
+            closeUpgradeQtyModal();
             updateUI();
         }
 
+        // --- РЕНДЕР КАТАЛОГУ (ЦІЛЬОВІ NFT) ---
         function renderCatalog(totalValue) {
             const grid = document.getElementById('catalog-grid');
             grid.innerHTML = '';
@@ -560,23 +627,14 @@
             });
         }
 
-        let selectedTargetItem = null;
-
-        function setMultiplier(mult, btnElement) {
-            if (selectedMyItems.length === 0) { alert("Спочатку виберіть предмети!"); return; }
-            document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
-            const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
-            const targetPrice = Math.round((itemsValue + sliderBalance) * mult);
-            let closestItem = allGifts.find(i => i.price >= targetPrice) || allGifts[allGifts.length-1];
-            selectedTargetItem = closestItem;
-            updateUI();
-        }
-
+        // --- ГОЛОВНИЙ ОНОВЛЮВАЧ UI ---
         function updateUI() {
             updateTopBalance(); 
-            const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            
+            // Рахуємо суму предметів з урахуванням обраної кількості
+            const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
             const totalValue = itemsValue + sliderBalance; 
+            
             document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US');
             renderInventory();
             renderCatalog(totalValue);
@@ -604,9 +662,10 @@
             }
         }
 
+        // --- ЗАПУСК ГРИ ---
         function startUpgrade() {
             if (selectedMyItems.length === 0) return;
-            const itemsValue = selectedMyItems.reduce((sum, i) => sum + i.price, 0);
+            const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
             const totalValue = itemsValue + sliderBalance;
             if (totalValue === 0 || !selectedTargetItem) return;
 
@@ -630,11 +689,11 @@
             setTimeout(() => {
                 if (sliderBalance > 0) { userBalance -= sliderBalance; sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
                 
-                // ВИДАЛЕННЯ З ІНВЕНТАРЮ (віднімаємо кількість)
+                // ВИДАЛЕННЯ З ІНВЕНТАРЮ (віднімаємо обрану кількість)
                 selectedMyItems.forEach(selItem => {
                     const invItem = myInventory.find(i => i.id === selItem.id);
                     if (invItem) {
-                        invItem.count -= 1;
+                        invItem.count -= selItem.selectedQty;
                         if (invItem.count <= 0) {
                             myInventory = myInventory.filter(i => i.id !== invItem.id);
                         }
@@ -689,6 +748,31 @@
                 document.getElementById('result-overlay').appendChild(confetti);
             }
         }
+
+        // Функція множника (для кнопок x2, x4 і т.д.)
+        function setMultiplier(mult, btnElement) {
+            if (selectedMyItems.length === 0) { alert("Спочатку виберіть предмети!"); return; }
+            document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
+            const targetPrice = Math.round((itemsValue + sliderBalance) * mult);
+            let closestItem = allGifts.find(i => i.price >= targetPrice) || allGifts[allGifts.length-1];
+            selectedTargetItem = closestItem;
+            updateUI();
+        }
+
+        // Слухач слайдера балансу
+        document.getElementById('balance-slider').addEventListener('input', function(e) {
+            if (selectedMyItems.length === 0) { 
+                e.target.value = 0; 
+                sliderBalance = 0; 
+                alert("Спочатку оберіть NFT з інвентарю!"); 
+                return; 
+            }
+            sliderBalance = parseInt(e.target.value);
+            document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
+            updateUI();
+        });
 
         // Ініціалізація при старті
         renderMarket();
