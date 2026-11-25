@@ -207,7 +207,7 @@
     <div class="top-bar">
         <div class="logo">🔼 MintRadar</div>
         <div class="balance-area">
-            <div class="balance">Баланс: <span id="top-balance" style="color:var(--yellow)">10 000</span> ⭐</div>
+            <div class="balance">Баланс: <span id="top-balance" style="color:var(--yellow)">100 000</span> ⭐</div>
         </div>
     </div>
 
@@ -233,7 +233,6 @@
             <div class="result-nft-name" id="qty-name">Назва</div>
             <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">Ціна за 1 шт: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
             
-            <!-- НОВИЙ СТЕППЕР -->
             <div class="stepper-container">
                 <button class="step-btn" id="btn-minus" onclick="changeBuyQty(-1)">−</button>
                 <div class="step-value" id="qty-display">1</div>
@@ -325,8 +324,8 @@
                 </div>
                 <div class="balance-section disabled" id="balance-section">
                     <div class="slider-header"><span>Додати баланс:</span><span id="slider-val-display" style="color:var(--yellow); font-weight:bold;">0 ⭐</span></div>
-                    <input type="range" id="balance-slider" min="0" max="10000" value="0" step="10" disabled>
-                    <div class="slider-info">Доступно: <span id="available-balance">10 000</span> ⭐<br><span style="font-size:10px; color:#ff3333;">(Спочатку оберіть NFT)</span></div>
+                    <input type="range" id="balance-slider" min="0" max="100000" value="0" step="10" disabled>
+                    <div class="slider-info">Доступно: <span id="available-balance">100 000</span> ⭐<br><span style="font-size:10px; color:#ff3333;">(Спочатку оберіть NFT)</span></div>
                 </div>
                 <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()">Прокачати</button>
             </div>
@@ -368,49 +367,47 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // БАЗА ДАНИХ NFT (Всі старі + всі нові зі скріншотів)
+        // БАЗА ДАНИХ NFT (ТВОЇ СТАРІ ЦІНИ + НОВІ NFT)
         const allGifts = [
-            { id: 1, name: "Plush Pepe", price: 2500, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
-            { id: 2, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
-            { id: 3, name: "Scared Cat", price: 500, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
-            { id: 4, name: "Kissed Frog", price: 350, img: "https://nft.fragment.com/gift/kissedfrog-1887.webp" },
-            { id: 5, name: "Cupid Charm", price: 120, img: "https://nft.fragment.com/gift/cupidcharm-17957.webp" },
-            { id: 6, name: "Ionic Dryer", price: 90, img: "https://nft.fragment.com/gift/ionicdryer-12448.webp" },
-            { id: 7, name: "Sky Stilettos", price: 85, img: "https://nft.fragment.com/gift/skystilettos-17012.webp" },
-            { id: 8, name: "UFC Strike", price: 75, img: "https://nft.fragment.com/gift/ufcstrike-15935.webp" },
-            { id: 9, name: "Snoop Dogg", price: 65, img: "https://nft.fragment.com/gift/snoopdogg-234713.webp" },
-            { id: 10, name: "Party Sparkler", price: 60, img: "https://nft.fragment.com/gift/partysparkler-9251.webp" },
-            { id: 11, name: "Cookie Heart", price: 55, img: "https://nft.fragment.com/gift/cookieheart-168809.webp" },
-            { id: 12, name: "Jolly Chimp", price: 45, img: "https://nft.fragment.com/gift/jollychimp-23685.webp" },
-            { id: 13, name: "Jack-in-the-Box", price: 40, img: "https://nft.fragment.com/gift/jackinthebox-43225.webp" },
-            { id: 14, name: "Myth Mask", price: 35, img: "https://nft.fragment.com/gift/mythmask-43407.webp" },
-            { id: 15, name: "Spring Basket", price: 30, img: "https://nft.fragment.com/gift/springbasket-10876.webp" },
-            { id: 16, name: "Restless Jar", price: 25, img: "https://nft.fragment.com/gift/restlessjar-85352.webp" },
-            { id: 17, name: "Star Notepad", price: 20, img: "https://nft.fragment.com/gift/starnotepad-53989.webp" },
-            { id: 18, name: "Timeless Book", price: 18, img: "https://nft.fragment.com/gift/timelessbook-75477.webp" },
-            { id: 19, name: "Lol Pop", price: 15, img: "https://nft.fragment.com/gift/lolpop-414670.webp" },
-            { id: 20, name: "Lunar Snake", price: 12, img: "https://nft.fragment.com/gift/lunarsnake-165531.webp" },
-            { id: 21, name: "Pet Snake", price: 50, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
-            { id: 22, name: "Instant Ramen", price: 45, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
-            { id: 23, name: "Snow Globe", price: 80, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
-            { id: 24, name: "Precious Peach", price: 200, img: "https://nft.fragment.com/gift/preciouspeach-1.webp" },
-            { id: 25, name: "Heart Locket", price: 250, img: "https://nft.fragment.com/gift/heartlocket-1.webp" },
-            { id: 26, name: "Nail Bracelet", price: 280, img: "https://nft.fragment.com/gift/nailbracelet-1.webp" },
-            { id: 27, name: "Sharp Tongue", price: 150, img: "https://nft.fragment.com/gift/sharptongue-1.webp" },
+            { id: 1, name: "Plush Pepe", price: 921825, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
+            { id: 2, name: "Durov's Cap", price: 30107, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
+            { id: 3, name: "Scared Cat", price: 19000, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
+            { id: 4, name: "Kissed Frog", price: 4117, img: "https://nft.fragment.com/gift/kissedfrog-1887.webp" },
+            { id: 5, name: "Cupid Charm", price: 1500, img: "https://nft.fragment.com/gift/cupidcharm-17957.webp" },
+            { id: 6, name: "Ionic Dryer", price: 1590, img: "https://nft.fragment.com/gift/ionicdryer-12448.webp" },
+            { id: 7, name: "Sky Stilettos", price: 2177, img: "https://nft.fragment.com/gift/skystilettos-17012.webp" },
+            { id: 8, name: "UFC Strike", price: 1750, img: "https://nft.fragment.com/gift/ufcstrike-15935.webp" },
+            { id: 9, name: "Snoop Dogg", price: 698, img: "https://nft.fragment.com/gift/snoopdogg-234713.webp" },
+            { id: 10, name: "Party Sparkler", price: 550, img: "https://nft.fragment.com/gift/partysparkler-9251.webp" },
+            { id: 11, name: "Cookie Heart", price: 640, img: "https://nft.fragment.com/gift/cookieheart-168809.webp" },
+            { id: 12, name: "Snow Mittens", price: 850, img: "https://nft.fragment.com/gift/snowmittens-1185.webp" },
+            { id: 13, name: "Jolly Chimp", price: 300, img: "https://nft.fragment.com/gift/jollychimp-23685.webp" },
+            { id: 14, name: "Jack-in-the-Box", price: 500, img: "https://nft.fragment.com/gift/jackinthebox-43225.webp" },
+            { id: 15, name: "Myth Mask", price: 900, img: "https://nft.fragment.com/gift/mythmask-43407.webp" },
+            { id: 16, name: "Spring Basket", price: 664, img: "https://nft.fragment.com/gift/springbasket-10876.webp" },
+            { id: 17, name: "Restless Jar", price: 600, img: "https://nft.fragment.com/gift/restlessjar-85352.webp" },
+            { id: 18, name: "Star Notepad", price: 550, img: "https://nft.fragment.com/gift/starnotepad-53989.webp" },
+            { id: 19, name: "Timeless Book", price: 550, img: "https://nft.fragment.com/gift/timelessbook-75477.webp" },
+            { id: 20, name: "Lol Pop", price: 525, img: "https://nft.fragment.com/gift/lolpop-414670.webp" },
+            { id: 21, name: "Lunar Snake", price: 410, img: "https://nft.fragment.com/gift/lunarsnake-165531.webp" },
+            { id: 22, name: "Ice Cream", price: 500, img: "https://nft.fragment.com/gift/icecream-139470.webp" },
+            { id: 23, name: "Mirage Lamp", price: 625, img: "https://nft.fragment.com/gift/miragelamp-20120.webp" },
+            { id: 24, name: "Pet Snake", price: 547, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
+            { id: 25, name: "Instant Ramen", price: 536, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
+            { id: 26, name: "Snow Globe", price: 792, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
+            { id: 27, name: "Precious Peach", price: 21836, img: "https://nft.fragment.com/gift/preciouspeach-1.webp" },
+            { id: 28, name: "Heart Locket", price: 289439, img: "https://nft.fragment.com/gift/heartlocket-1.webp" },
+            { id: 29, name: "Nail Bracelet", price: 15000, img: "https://nft.fragment.com/gift/nailbracelet-1.webp" },
+            { id: 30, name: "Sharp Tongue", price: 5000, img: "https://nft.fragment.com/gift/sharptongue-1.webp" },
 
-            // НОВІ NFT З ТВОЇХ СКРІНШОТІВ
-            { id: 28, name: "Witch Hat", price: 7.12, img: "https://nft.fragment.com/gift/witchhat-11343.webp" },
-            { id: 29, name: "Jingle Bells", price: 12.45, img: "https://nft.fragment.com/gift/jinglebells-77148.webp" },
-            { id: 30, name: "Chill Flame", price: 8.16, img: "https://nft.fragment.com/gift/chillflame-250400.webp" },
-            { id: 31, name: "Hanging Star", price: 14.28, img: "https://nft.fragment.com/gift/hangingstar-1924.webp" },
-            { id: 32, name: "Mirage Lamp", price: 5.33, img: "https://nft.fragment.com/gift/miragelamp-31545.webp" },
-            { id: 33, name: "Mad Pumpkin", price: 14, img: "https://nft.fragment.com/gift/madpumpkin-940.webp" },
-            { id: 34, name: "Snow Mittens", price: 12.24, img: "https://nft.fragment.com/gift/snowmittens-3977.webp" },
-            { id: 35, name: "Ice Cream", price: 5.09, img: "https://nft.fragment.com/gift/icecream-308826.webp" },
+            // НОВІ NFT ЗІ СКРІНШОТІВ (ЦІНИ НЕ ЧІПАЄМО)
+            { id: 31, name: "Witch Hat", price: 7.12, img: "https://nft.fragment.com/gift/witchhat-11343.webp" },
+            { id: 32, name: "Jingle Bells", price: 12.45, img: "https://nft.fragment.com/gift/jinglebells-77148.webp" },
+            { id: 33, name: "Chill Flame", price: 8.16, img: "https://nft.fragment.com/gift/chillflame-250400.webp" },
+            { id: 34, name: "Hanging Star", price: 14.28, img: "https://nft.fragment.com/gift/hangingstar-1924.webp" },
+            { id: 35, name: "Mad Pumpkin", price: 14, img: "https://nft.fragment.com/gift/madpumpkin-940.webp" },
             { id: 36, name: "Victory Medal", price: 8.16, img: "https://nft.fragment.com/gift/victorymedal-30785.webp" },
             { id: 37, name: "Liberty Figure", price: 22.44, img: "https://nft.fragment.com/gift/libertyfigure-194484.webp" },
-
-            // RESISTANCE DOG (Різні скіни)
             { id: 38, name: "Resistance Dog (Base)", price: 525, img: "https://nft.fragment.com/gift/resistancedog-4023.webp" },
             { id: 39, name: "Resistance Dog (Reaper)", price: 1836, img: "https://nft.fragment.com/gift/resistancedog-3569.webp" },
             { id: 40, name: "Resistance Dog (White)", price: 720, img: "https://nft.fragment.com/gift/resistancedog-13936.webp" },
@@ -428,15 +425,13 @@
         let myInventory = []; 
         let selectedMyItems = []; 
         
-        let userBalance = 10000;
+        // БАЛАНС ЗМІНЕНО НА 100 000
+        let userBalance = 100000;
         let sliderBalance = 0;
         let selectedTargetItem = null;
 
-        // Змінні для покупки
         let currentBuyItem = null;
         let currentBuyQty = 1;
-
-        // Змінні для вибору кількості в Апгрейдер
         let currentUpgradeItem = null;
 
         function updateTopBalance() {
@@ -458,13 +453,10 @@
             if (element) element.classList.add('active');
         }
 
-        // ==========================================
-        // ЛОГІКА МАРКЕТУ
-        // ==========================================
+        // МАРКЕТ
         function renderMarket() {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = '';
-            
             const query = document.getElementById('search-input').value.toLowerCase();
             const itemsToShow = marketGifts.filter(item => item.name.toLowerCase().includes(query));
 
@@ -485,7 +477,7 @@
                         <div class="market-name">${item.name}</div>
                         <div class="market-id">#${Math.floor(Math.random() * 99999)}</div>
                         <div class="market-price-row">
-                            <div class="market-price-text">⭐ ${item.price}</div>
+                            <div class="market-price-text">⭐ ${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})}</div>
                             <button class="market-buy-btn" onclick="openQtyModal(${item.id})">Купити</button>
                         </div>
                     </div>
@@ -502,13 +494,12 @@
             
             document.getElementById('qty-image').src = currentBuyItem.img;
             document.getElementById('qty-name').innerText = currentBuyItem.name;
-            document.getElementById('qty-price-per').innerText = currentBuyItem.price;
+            document.getElementById('qty-price-per').innerText = currentBuyItem.price.toLocaleString('en-US', {maximumFractionDigits: 2});
             
             updateQtyDisplay();
             document.getElementById('qty-overlay').classList.add('active');
         }
 
-        // НОВА ФУНКЦІЯ ДЛЯ СТЕППЕРА
         function changeBuyQty(amount) {
             currentBuyQty += amount;
             if (currentBuyQty < 1) currentBuyQty = 1;
@@ -521,7 +512,6 @@
             let total = currentBuyItem.price * currentBuyQty;
             document.getElementById('qty-total-price').innerText = total.toLocaleString('en-US', {maximumFractionDigits: 2});
             
-            // Блокуємо кнопки на межах
             document.getElementById('btn-minus').disabled = currentBuyQty <= 1;
             document.getElementById('btn-plus').disabled = currentBuyQty >= 25;
         }
@@ -562,10 +552,7 @@
             document.getElementById('purchase-overlay').classList.remove('active');
         }
 
-        // ==========================================
-        // ЛОГІКА АПГРЕЙДЕРА
-        // ==========================================
-        
+        // АПГРЕЙДЕР
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             const emptyMsg = document.getElementById('empty-inventory-msg');
@@ -585,11 +572,31 @@
                     ${isSelected ? `<div class="selected-badge">${selectedItemData.selectedQty}</div>` : ''}
                     <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
                     <div class="inv-name">${item.name}</div>
-                    <div class="inv-price">${item.price} ⭐</div>
+                    <div class="inv-price">${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐</div>
                 `;
-                card.onclick = () => openUpgradeQtyModal(item);
+                card.onclick = () => handleInventoryClick(item);
                 grid.appendChild(card);
             });
+        }
+
+        function handleInventoryClick(item) {
+            const existingIndex = selectedMyItems.findIndex(i => i.id === item.id);
+
+            if (existingIndex > -1) {
+                selectedMyItems.splice(existingIndex, 1);
+                if (selectedMyItems.length === 0) {
+                    sliderBalance = 0;
+                    document.getElementById('balance-slider').value = 0;
+                }
+                updateUI();
+            } else {
+                if (item.count === 1) {
+                    selectedMyItems.push({ ...item, selectedQty: 1 });
+                    updateUI();
+                } else {
+                    openUpgradeQtyModal(item);
+                }
+            }
         }
 
         function openUpgradeQtyModal(item) {
@@ -655,7 +662,7 @@
                 card.innerHTML = `
                     <img src="${item.img}" class="inv-img" onerror="this.src='https://via.placeholder.com/50?text=NFT'">
                     <div class="inv-name">${item.name}</div>
-                    <div class="cat-price">${item.price} ⭐</div>
+                    <div class="cat-price">${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐</div>
                 `;
                 card.onclick = () => { selectedTargetItem = item; updateUI(); };
                 grid.appendChild(card);
