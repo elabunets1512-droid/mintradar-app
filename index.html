@@ -72,7 +72,7 @@
         .market-buy-btn:hover { background: #0080ff; }
         .market-buy-btn:active { transform: scale(0.95); }
 
-        /* ДИЗАЙН АПГРЕЙДЕРА (БАЗОВИЙ - ДЛЯ КОМП'ЮТЕРА) */
+        /* ДИЗАЙН АПГРЕЙДЕРА */
         .main-layout { display: grid; grid-template-columns: 320px 1fr 350px; gap: 15px; }
         .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
         .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: flex; justify-content: space-between;}
@@ -162,10 +162,19 @@
         .btn-close-result { background: var(--text); color: var(--bg); border: none; padding: 15px 40px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
         .btn-close-result:hover { opacity: 0.8; }
 
-        .qty-btn-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
-        .qty-btn { background: #1a1d26; color: white; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .qty-btn.active { background: var(--yellow); border-color: var(--yellow); color: #000; }
-        .qty-total-text { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        /* СТЕППЕР (ПЛЮС/МІНУС) */
+        .stepper-container { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0; }
+        .step-btn { 
+            width: 50px; height: 50px; border-radius: 50%; background: #1a1d26; color: white; 
+            border: 1px solid var(--border); font-size: 28px; font-weight: bold; cursor: pointer; 
+            display: flex; justify-content: center; align-items: center; transition: 0.2s;
+        }
+        .step-btn:active { transform: scale(0.9); }
+        .step-btn:hover { background: #2a2d35; }
+        .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .step-value { font-size: 32px; font-weight: 900; color: var(--yellow); min-width: 60px; text-align: center; }
+
+        .qty-total-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
         .qty-total-text span { color: var(--yellow); }
 
         @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -173,31 +182,17 @@
         
         .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
 
-        /* ========================================= */
-        /* МОБІЛЬНА ВЕРСІЯ (ТЕЛЕФОН) */
-        /* ========================================= */
+        /* МОБІЛЬНА ВЕРСІЯ */
         @media (max-width: 800px) {
-            .main-layout { 
-                display: flex; 
-                flex-direction: column; 
-            }
-            /* Робимо так, щоб колесо було зверху на телефоні */
-            .center-panel { 
-                order: -1; 
-                margin-bottom: 5px;
-            }
-            /* Збільшуємо колесо для телефону */
+            .main-layout { display: flex; flex-direction: column; }
+            .center-panel { order: -1; margin-bottom: 5px; }
             .wheel-container { width: 260px; height: 260px; margin-top: 15px;}
             .wheel-arrow { height: 130px; }
             .wheel-arrow::before { height: 110px; }
             .wheel-center { width: 120px; height: 120px; }
             .chance-text { font-size: 32px; }
-            
-            /* Каталог та інвентар по 3 колонки */
             .inventory-grid { grid-template-columns: repeat(3, 1fr); }
             .catalog-grid { grid-template-columns: repeat(3, 1fr); }
-            
-            /* Маркет на телефоні по 2 колонки */
             .market-grid { grid-template-columns: repeat(2, 1fr); }
             .market-info { padding: 10px; }
             .market-name { font-size: 13px; }
@@ -228,7 +223,7 @@
         </div>
     </div>
 
-    <!-- Вікно покупки в МАРКЕТІ (кількість) -->
+    <!-- Вікно покупки в МАРКЕТІ (СТЕППЕР) -->
     <div class="result-overlay" id="qty-overlay">
         <div class="result-modal buy-qty">
             <div class="result-title">Скільки купити?</div>
@@ -236,14 +231,13 @@
                 <img id="qty-image" class="result-img" src="" alt="NFT">
             </div>
             <div class="result-nft-name" id="qty-name">Назва</div>
-            <div style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">Ціна за 1 шт: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
+            <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">Ціна за 1 шт: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
             
-            <div class="qty-btn-row">
-                <button class="qty-btn active" onclick="setBuyQty(1, this)">1</button>
-                <button class="qty-btn" onclick="setBuyQty(5, this)">5</button>
-                <button class="qty-btn" onclick="setBuyQty(10, this)">10</button>
-                <button class="qty-btn" onclick="setBuyQty(20, this)">20</button>
-                <button class="qty-btn" onclick="setBuyQty(25, this)">25</button>
+            <!-- НОВИЙ СТЕППЕР -->
+            <div class="stepper-container">
+                <button class="step-btn" id="btn-minus" onclick="changeBuyQty(-1)">−</button>
+                <div class="step-value" id="qty-display">1</div>
+                <button class="step-btn" id="btn-plus" onclick="changeBuyQty(1)">+</button>
             </div>
 
             <div class="qty-total-text">Разом: <span id="qty-total-price">0</span> ⭐</div>
@@ -374,49 +368,75 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // БАЗА ДАНИХ NFT (Всі старі + всі нові зі скріншотів)
         const allGifts = [
-            { id: 1, name: "Plush Pepe", price: 921825, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
-            { id: 2, name: "Durov's Cap", price: 30107, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
-            { id: 3, name: "Scared Cat", price: 19000, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
-            { id: 4, name: "Kissed Frog", price: 4117, img: "https://nft.fragment.com/gift/kissedfrog-1887.webp" },
-            { id: 5, name: "Cupid Charm", price: 1500, img: "https://nft.fragment.com/gift/cupidcharm-17957.webp" },
-            { id: 6, name: "Ionic Dryer", price: 1590, img: "https://nft.fragment.com/gift/ionicdryer-12448.webp" },
-            { id: 7, name: "Sky Stilettos", price: 2177, img: "https://nft.fragment.com/gift/skystilettos-17012.webp" },
-            { id: 8, name: "UFC Strike", price: 1750, img: "https://nft.fragment.com/gift/ufcstrike-15935.webp" },
-            { id: 9, name: "Snoop Dogg", price: 698, img: "https://nft.fragment.com/gift/snoopdogg-234713.webp" },
-            { id: 10, name: "Party Sparkler", price: 550, img: "https://nft.fragment.com/gift/partysparkler-9251.webp" },
-            { id: 11, name: "Cookie Heart", price: 640, img: "https://nft.fragment.com/gift/cookieheart-168809.webp" },
-            { id: 12, name: "Snow Mittens", price: 850, img: "https://nft.fragment.com/gift/snowmittens-1185.webp" },
-            { id: 13, name: "Jolly Chimp", price: 300, img: "https://nft.fragment.com/gift/jollychimp-23685.webp" },
-            { id: 14, name: "Jack-in-the-Box", price: 500, img: "https://nft.fragment.com/gift/jackinthebox-43225.webp" },
-            { id: 15, name: "Myth Mask", price: 900, img: "https://nft.fragment.com/gift/mythmask-43407.webp" },
-            { id: 16, name: "Spring Basket", price: 664, img: "https://nft.fragment.com/gift/springbasket-10876.webp" },
-            { id: 17, name: "Restless Jar", price: 600, img: "https://nft.fragment.com/gift/restlessjar-85352.webp" },
-            { id: 18, name: "Star Notepad", price: 550, img: "https://nft.fragment.com/gift/starnotepad-53989.webp" },
-            { id: 19, name: "Timeless Book", price: 550, img: "https://nft.fragment.com/gift/timelessbook-75477.webp" },
-            { id: 20, name: "Lol Pop", price: 525, img: "https://nft.fragment.com/gift/lolpop-414670.webp" },
-            { id: 21, name: "Lunar Snake", price: 410, img: "https://nft.fragment.com/gift/lunarsnake-165531.webp" },
-            { id: 22, name: "Ice Cream", price: 500, img: "https://nft.fragment.com/gift/icecream-139470.webp" },
-            { id: 23, name: "Mirage Lamp", price: 625, img: "https://nft.fragment.com/gift/miragelamp-20120.webp" },
-            { id: 24, name: "Pet Snake", price: 547, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
-            { id: 25, name: "Instant Ramen", price: 536, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
-            { id: 26, name: "Snow Globe", price: 792, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
-            { id: 27, name: "Precious Peach", price: 21836, img: "https://nft.fragment.com/gift/preciouspeach-1.webp" },
-            { id: 28, name: "Heart Locket", price: 289439, img: "https://nft.fragment.com/gift/heartlocket-1.webp" },
-            { id: 29, name: "Nail Bracelet", price: 15000, img: "https://nft.fragment.com/gift/nailbracelet-1.webp" },
-            { id: 30, name: "Sharp Tongue", price: 5000, img: "https://nft.fragment.com/gift/sharptongue-1.webp" }
+            { id: 1, name: "Plush Pepe", price: 2500, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
+            { id: 2, name: "Durov's Cap", price: 1500, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
+            { id: 3, name: "Scared Cat", price: 500, img: "https://nft.fragment.com/gift/scaredcat-13163.webp" },
+            { id: 4, name: "Kissed Frog", price: 350, img: "https://nft.fragment.com/gift/kissedfrog-1887.webp" },
+            { id: 5, name: "Cupid Charm", price: 120, img: "https://nft.fragment.com/gift/cupidcharm-17957.webp" },
+            { id: 6, name: "Ionic Dryer", price: 90, img: "https://nft.fragment.com/gift/ionicdryer-12448.webp" },
+            { id: 7, name: "Sky Stilettos", price: 85, img: "https://nft.fragment.com/gift/skystilettos-17012.webp" },
+            { id: 8, name: "UFC Strike", price: 75, img: "https://nft.fragment.com/gift/ufcstrike-15935.webp" },
+            { id: 9, name: "Snoop Dogg", price: 65, img: "https://nft.fragment.com/gift/snoopdogg-234713.webp" },
+            { id: 10, name: "Party Sparkler", price: 60, img: "https://nft.fragment.com/gift/partysparkler-9251.webp" },
+            { id: 11, name: "Cookie Heart", price: 55, img: "https://nft.fragment.com/gift/cookieheart-168809.webp" },
+            { id: 12, name: "Jolly Chimp", price: 45, img: "https://nft.fragment.com/gift/jollychimp-23685.webp" },
+            { id: 13, name: "Jack-in-the-Box", price: 40, img: "https://nft.fragment.com/gift/jackinthebox-43225.webp" },
+            { id: 14, name: "Myth Mask", price: 35, img: "https://nft.fragment.com/gift/mythmask-43407.webp" },
+            { id: 15, name: "Spring Basket", price: 30, img: "https://nft.fragment.com/gift/springbasket-10876.webp" },
+            { id: 16, name: "Restless Jar", price: 25, img: "https://nft.fragment.com/gift/restlessjar-85352.webp" },
+            { id: 17, name: "Star Notepad", price: 20, img: "https://nft.fragment.com/gift/starnotepad-53989.webp" },
+            { id: 18, name: "Timeless Book", price: 18, img: "https://nft.fragment.com/gift/timelessbook-75477.webp" },
+            { id: 19, name: "Lol Pop", price: 15, img: "https://nft.fragment.com/gift/lolpop-414670.webp" },
+            { id: 20, name: "Lunar Snake", price: 12, img: "https://nft.fragment.com/gift/lunarsnake-165531.webp" },
+            { id: 21, name: "Pet Snake", price: 50, img: "https://nft.fragment.com/gift/petsnake-8402.webp" },
+            { id: 22, name: "Instant Ramen", price: 45, img: "https://nft.fragment.com/gift/instantramen-315088.webp" },
+            { id: 23, name: "Snow Globe", price: 80, img: "https://nft.fragment.com/gift/snowglobe-31057.webp" },
+            { id: 24, name: "Precious Peach", price: 200, img: "https://nft.fragment.com/gift/preciouspeach-1.webp" },
+            { id: 25, name: "Heart Locket", price: 250, img: "https://nft.fragment.com/gift/heartlocket-1.webp" },
+            { id: 26, name: "Nail Bracelet", price: 280, img: "https://nft.fragment.com/gift/nailbracelet-1.webp" },
+            { id: 27, name: "Sharp Tongue", price: 150, img: "https://nft.fragment.com/gift/sharptongue-1.webp" },
+
+            // НОВІ NFT З ТВОЇХ СКРІНШОТІВ
+            { id: 28, name: "Witch Hat", price: 7.12, img: "https://nft.fragment.com/gift/witchhat-11343.webp" },
+            { id: 29, name: "Jingle Bells", price: 12.45, img: "https://nft.fragment.com/gift/jinglebells-77148.webp" },
+            { id: 30, name: "Chill Flame", price: 8.16, img: "https://nft.fragment.com/gift/chillflame-250400.webp" },
+            { id: 31, name: "Hanging Star", price: 14.28, img: "https://nft.fragment.com/gift/hangingstar-1924.webp" },
+            { id: 32, name: "Mirage Lamp", price: 5.33, img: "https://nft.fragment.com/gift/miragelamp-31545.webp" },
+            { id: 33, name: "Mad Pumpkin", price: 14, img: "https://nft.fragment.com/gift/madpumpkin-940.webp" },
+            { id: 34, name: "Snow Mittens", price: 12.24, img: "https://nft.fragment.com/gift/snowmittens-3977.webp" },
+            { id: 35, name: "Ice Cream", price: 5.09, img: "https://nft.fragment.com/gift/icecream-308826.webp" },
+            { id: 36, name: "Victory Medal", price: 8.16, img: "https://nft.fragment.com/gift/victorymedal-30785.webp" },
+            { id: 37, name: "Liberty Figure", price: 22.44, img: "https://nft.fragment.com/gift/libertyfigure-194484.webp" },
+
+            // RESISTANCE DOG (Різні скіни)
+            { id: 38, name: "Resistance Dog (Base)", price: 525, img: "https://nft.fragment.com/gift/resistancedog-4023.webp" },
+            { id: 39, name: "Resistance Dog (Reaper)", price: 1836, img: "https://nft.fragment.com/gift/resistancedog-3569.webp" },
+            { id: 40, name: "Resistance Dog (White)", price: 720, img: "https://nft.fragment.com/gift/resistancedog-13936.webp" },
+            { id: 41, name: "Resistance Dog (Orange)", price: 620, img: "https://nft.fragment.com/gift/resistancedog-2940.webp" },
+            { id: 42, name: "Resistance Dog (Purple)", price: 1199.03, img: "https://nft.fragment.com/gift/resistancedog-14353.webp" },
+            { id: 43, name: "Resistance Dog (Blue)", price: 2550, img: "https://nft.fragment.com/gift/resistancedog-5544.webp" },
+            { id: 44, name: "Resistance Dog (Anubis)", price: 3111, img: "https://nft.fragment.com/gift/resistancedog-386.webp" },
+            { id: 45, name: "Resistance Dog (Matrix)", price: 1300.01, img: "https://nft.fragment.com/gift/resistancedog-14660.webp" },
+            { id: 46, name: "Resistance Dog (Pink)", price: 2550, img: "https://nft.fragment.com/gift/resistancedog-5752.webp" },
+            { id: 47, name: "Resistance Dog (Soldier)", price: 525.96, img: "https://nft.fragment.com/gift/resistancedog-3566.webp" }
         ];
 
+        // СТАН ГРИ
         let marketGifts = [...allGifts]; 
         let myInventory = []; 
         let selectedMyItems = []; 
         
-        let userBalance = 100000;
+        let userBalance = 10000;
         let sliderBalance = 0;
         let selectedTargetItem = null;
 
+        // Змінні для покупки
         let currentBuyItem = null;
         let currentBuyQty = 1;
+
+        // Змінні для вибору кількості в Апгрейдер
         let currentUpgradeItem = null;
 
         function updateTopBalance() {
@@ -438,10 +458,13 @@
             if (element) element.classList.add('active');
         }
 
-        // МАРКЕТ
+        // ==========================================
+        // ЛОГІКА МАРКЕТУ
+        // ==========================================
         function renderMarket() {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = '';
+            
             const query = document.getElementById('search-input').value.toLowerCase();
             const itemsToShow = marketGifts.filter(item => item.name.toLowerCase().includes(query));
 
@@ -476,50 +499,73 @@
         function openQtyModal(id) {
             currentBuyItem = marketGifts.find(g => g.id === id);
             currentBuyQty = 1;
+            
             document.getElementById('qty-image').src = currentBuyItem.img;
             document.getElementById('qty-name').innerText = currentBuyItem.name;
             document.getElementById('qty-price-per').innerText = currentBuyItem.price;
-            document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.qty-btn')[0].classList.add('active');
-            updateQtyTotal();
+            
+            updateQtyDisplay();
             document.getElementById('qty-overlay').classList.add('active');
         }
 
-        function setBuyQty(qty, btn) {
-            currentBuyQty = qty;
-            document.querySelectorAll('.qty-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            updateQtyTotal();
+        // НОВА ФУНКЦІЯ ДЛЯ СТЕППЕРА
+        function changeBuyQty(amount) {
+            currentBuyQty += amount;
+            if (currentBuyQty < 1) currentBuyQty = 1;
+            if (currentBuyQty > 25) currentBuyQty = 25;
+            updateQtyDisplay();
         }
 
-        function updateQtyTotal() {
-            document.getElementById('qty-total-price').innerText = currentBuyItem.price * currentBuyQty;
+        function updateQtyDisplay() {
+            document.getElementById('qty-display').innerText = currentBuyQty;
+            let total = currentBuyItem.price * currentBuyQty;
+            document.getElementById('qty-total-price').innerText = total.toLocaleString('en-US', {maximumFractionDigits: 2});
+            
+            // Блокуємо кнопки на межах
+            document.getElementById('btn-minus').disabled = currentBuyQty <= 1;
+            document.getElementById('btn-plus').disabled = currentBuyQty >= 25;
         }
 
-        function closeQtyModal() { document.getElementById('qty-overlay').classList.remove('active'); }
+        function closeQtyModal() {
+            document.getElementById('qty-overlay').classList.remove('active');
+        }
 
         function confirmBuy() {
             let totalPrice = currentBuyItem.price * currentBuyQty;
-            if (userBalance < totalPrice) { alert("Недостатньо зірок!"); return; }
+            if (userBalance < totalPrice) {
+                alert("Недостатньо зірок для покупки!");
+                return;
+            }
 
             userBalance -= totalPrice;
             marketGifts = marketGifts.filter(g => g.id !== currentBuyItem.id);
-            
-            let invItem = myInventory.find(i => i.id === currentBuyItem.id);
-            if (invItem) { invItem.count += currentBuyQty; } 
-            else { myInventory.push({ ...currentBuyItem, count: currentBuyQty }); }
 
-            updateTopBalance(); closeQtyModal(); renderMarket(); updateUI();
+            let invItem = myInventory.find(i => i.id === currentBuyItem.id);
+            if (invItem) {
+                invItem.count += currentBuyQty;
+            } else {
+                myInventory.push({ ...currentBuyItem, count: currentBuyQty });
+            }
+
+            updateTopBalance();
+            closeQtyModal();
+            renderMarket();
+            updateUI();
             
             document.getElementById('purchase-image').src = currentBuyItem.img;
             document.getElementById('purchase-nft-name').innerText = `${currentBuyItem.name} (x${currentBuyQty})`;
-            document.getElementById('purchase-price').innerText = `- ${totalPrice} ⭐`;
+            document.getElementById('purchase-price').innerText = `- ${totalPrice.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐`;
             document.getElementById('purchase-overlay').classList.add('active');
         }
 
-        function closePurchase() { document.getElementById('purchase-overlay').classList.remove('active'); }
+        function closePurchase() {
+            document.getElementById('purchase-overlay').classList.remove('active');
+        }
 
-        // АПГРЕЙДЕР
+        // ==========================================
+        // ЛОГІКА АПГРЕЙДЕРА
+        // ==========================================
+        
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             const emptyMsg = document.getElementById('empty-inventory-msg');
@@ -569,22 +615,34 @@
 
         function updateUpgradeQtyDisplay(qty, price) {
             document.getElementById('up-qty-val-display').innerText = qty + ' шт.';
-            document.getElementById('up-qty-total-price').innerText = (qty * price).toLocaleString('en-US');
+            document.getElementById('up-qty-total-price').innerText = (qty * price).toLocaleString('en-US', {maximumFractionDigits: 2});
         }
 
-        function closeUpgradeQtyModal() { document.getElementById('upgrade-qty-overlay').classList.remove('active'); }
+        function closeUpgradeQtyModal() {
+            document.getElementById('upgrade-qty-overlay').classList.remove('active');
+        }
 
         function confirmUpgradeQty() {
             const qty = parseInt(document.getElementById('upgrade-qty-slider').value);
+            
             if (qty > 0) {
                 const existingIndex = selectedMyItems.findIndex(i => i.id === currentUpgradeItem.id);
-                if (existingIndex > -1) { selectedMyItems[existingIndex].selectedQty = qty; } 
-                else { selectedMyItems.push({ ...currentUpgradeItem, selectedQty: qty }); }
+                if (existingIndex > -1) {
+                    selectedMyItems[existingIndex].selectedQty = qty;
+                } else {
+                    selectedMyItems.push({ ...currentUpgradeItem, selectedQty: qty });
+                }
             } else {
                 selectedMyItems = selectedMyItems.filter(i => i.id !== currentUpgradeItem.id);
             }
-            if (selectedMyItems.length === 0) { sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
-            closeUpgradeQtyModal(); updateUI();
+
+            if (selectedMyItems.length === 0) { 
+                sliderBalance = 0; 
+                document.getElementById('balance-slider').value = 0; 
+            }
+
+            closeUpgradeQtyModal();
+            updateUI();
         }
 
         function renderCatalog(totalValue) {
@@ -606,9 +664,11 @@
 
         function updateUI() {
             updateTopBalance(); 
+            
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
             const totalValue = itemsValue + sliderBalance; 
-            document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US');
+            
+            document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US', {maximumFractionDigits: 2});
             renderInventory();
             renderCatalog(totalValue);
 
@@ -665,7 +725,9 @@
                     const invItem = myInventory.find(i => i.id === selItem.id);
                     if (invItem) {
                         invItem.count -= selItem.selectedQty;
-                        if (invItem.count <= 0) myInventory = myInventory.filter(i => i.id !== invItem.id);
+                        if (invItem.count <= 0) {
+                            myInventory = myInventory.filter(i => i.id !== invItem.id);
+                        }
                     }
                 });
 
