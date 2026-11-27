@@ -8,13 +8,13 @@
     <style>
         :root {
             --bg: #08090d; --panel: #12151c; --card: #1c1f26; --text: #ffffff;
-            --muted: #8b8e96; --border: #2a2d35; 
+            --muted: #8b8e96; --border: #2a2d35;
             --yellow: #ffcc00; --purple: #8a2be2; --red: #ff3333; --white: #ffffff;
             --green: #00ff88; --blue: #00bfff;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px; 
+            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px;
             padding-bottom: 90px; overflow-x: hidden;
         }
 
@@ -31,60 +31,32 @@
 
         /* ДИЗАЙН МАРКЕТУ */
         .market-controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-bar { 
-            flex: 1; background: var(--card); border: 1px solid var(--border); 
-            border-radius: 10px; padding: 12px 15px; color: white; font-size: 14px;
-            outline: none; transition: 0.2s;
-        }
-        .search-bar:focus { border-color: var(--blue); }
-        
-        .market-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .market-card {
-            background: #14171f; border-radius: 16px; overflow: hidden;
-            border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s;
-        }
+        .search-bar { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 15px; color: white; font-size: 14px; outline: none; }
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .market-card { background: #14171f; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: 0.2s; }
         .market-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: var(--blue); }
-
-        .market-img-box {
-            width: 100%; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center;
-            background: #1c1f26; position: relative; padding: 20px; box-sizing: border-box;
-        }
+        .market-img-box { width: 100%; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; background: #1c1f26; position: relative; padding: 20px; box-sizing: border-box; }
         .market-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); }
-        .market-badge {
-            position: absolute; bottom: 10px; left: 10px;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            color: #ccc; font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
-        }
-
+        .market-badge { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: #ccc; font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
         .market-info { padding: 15px; background: #101218; }
         .market-name { font-size: 16px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .market-id { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-
         .market-price-row { display: flex; justify-content: space-between; align-items: center; background: #1a1d26; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
         .market-price-text { font-size: 14px; font-weight: bold; color: var(--yellow); display: flex; align-items: center; gap: 5px; }
-        
-        .market-buy-btn { background: var(--blue); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.2s; }
-        .market-buy-btn:hover { background: #0080ff; }
+        .market-buy-btn { background: var(--blue); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .market-buy-btn:active { transform: scale(0.95); }
 
         /* ДИЗАЙН АПГРЕЙДЕРА */
         .main-layout { display: grid; grid-template-columns: 320px 1fr 350px; gap: 15px; }
         .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
-        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: flex; justify-content: space-between;}
-        
-        .inventory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;}
+        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .inventory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .inv-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
         .inv-card:hover { border-color: var(--purple); }
         .inv-card.selected { border-color: var(--purple); background: rgba(138, 43, 226, 0.2); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
         .inv-img { width: 50px; height: 50px; object-fit: contain; }
         .inv-name { font-size: 11px; font-weight: bold; margin: 5px 0; height: 26px; overflow: hidden; }
         .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,51,51,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
-        
         .count-badge { position: absolute; top: 5px; left: 5px; background: var(--yellow); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; }
         .selected-badge { position: absolute; top: 5px; right: 5px; background: var(--purple); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; display: none; }
         .inv-card.selected .selected-badge { display: block; }
@@ -103,18 +75,16 @@
         .chance-text { font-size: 28px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.5); }
 
         .multipliers { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
-        .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
         .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
 
         .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
         .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-        
         input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; margin: 10px 0; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #2a2d35; border-radius: 3px; }
         input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background: var(--yellow); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
-        
         .slider-info { font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px;}
         .slider-info span { color: var(--yellow); font-weight: bold; }
 
@@ -129,7 +99,7 @@
         .cat-price { font-size: 11px; font-weight: bold; color: var(--white); margin-top: 5px; }
 
         /* ПРОФІЛЬ (ІНВЕНТАР) */
-        .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .profile-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); position: relative; }
         .profile-card img { width: 60px; height: 60px; object-fit: contain; }
         .profile-card .name { font-weight: bold; font-size: 12px; margin: 5px 0; }
@@ -139,6 +109,32 @@
         .action-btn svg { width: 16px; height: 16px; fill: white; }
         .action-btn.withdraw:hover { background: var(--blue); border-color: var(--blue); }
         .action-btn.sell:hover { background: var(--red); border-color: var(--red); }
+        
+        /* БОНУСИ ТА ПРОМОКОДИ */
+        .bonus-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .promo-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .promo-input { display: flex; gap: 10px; margin-top: 10px; }
+        .promo-input input { flex: 1; padding: 12px; background: #1a1d26; border: 1px solid var(--border); border-radius: 8px; color: white; outline: none;}
+        .promo-input button { padding: 12px 20px; background: var(--green); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* ГАМАНЕЦЬ */
+        .wallet-container { max-width: 500px; margin: 0 auto; }
+        .wallet-card { background: var(--panel); border-radius: 16px; padding: 25px; border: 1px solid var(--border); }
+        .wallet-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: center; color: var(--yellow); }
+        .quick-amounts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        .amount-btn { background: #1a1d26; border: 1px solid var(--border); color: white; padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .amount-btn:hover { border-color: var(--yellow); }
+        .amount-btn.active { background: var(--yellow); color: #000; border-color: var(--yellow); }
+        .custom-amount-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .custom-amount-input { flex: 1; background: #1a1d26; border: 1px solid var(--border); border-radius: 10px; padding: 15px; color: white; font-size: 18px; font-weight: bold; outline: none; }
+        .usd-equivalent { font-size: 18px; font-weight: bold; color: var(--green); min-width: 80px; text-align: right; }
+        .usd-label { font-size: 12px; color: var(--muted); text-align: right; }
+        .payment-method { margin-bottom: 20px; }
+        .payment-option { display: flex; align-items: center; gap: 10px; padding: 15px; background: #1a1d26; border-radius: 10px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .payment-option.active { border-color: var(--blue); background: rgba(0, 191, 255, 0.1); }
+        .payment-icon { font-size: 24px; }
+        .btn-topup { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; background: linear-gradient(90deg, #00ff88, #00bfff); color: #000; cursor: pointer; transition: 0.2s; }
+        .btn-topup:active { transform: scale(0.98); }
 
         /* НИЖНЄ МЕНЮ */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18, 21, 28, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 1000; }
@@ -151,26 +147,21 @@
         .result-overlay.active { display: flex; }
         .result-modal { background: var(--panel); border-radius: 24px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; }
         .result-overlay.active .result-modal { transform: scale(1); opacity: 1; }
-        
         .result-modal.win { border-color: var(--green); box-shadow: 0 0 40px rgba(0, 255, 136, 0.2); }
         .result-modal.lose { border-color: var(--red); box-shadow: 0 0 40px rgba(255, 51, 51, 0.2); }
         .result-modal.purchase { border-color: var(--blue); box-shadow: 0 0 40px rgba(0, 191, 255, 0.2); }
         .result-modal.buy-qty { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255, 204, 0, 0.2); }
         .result-modal.up-qty { border-color: var(--purple); box-shadow: 0 0 40px rgba(138, 43, 226, 0.2); }
-
         .result-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
         .result-modal.win .result-title { color: var(--green); }
         .result-modal.lose .result-title { color: var(--red); }
         .result-modal.purchase .result-title { color: var(--blue); }
         .result-modal.buy-qty .result-title { color: var(--yellow); }
         .result-modal.up-qty .result-title { color: var(--purple); }
-
         .result-img-container { width: 100px; height: 100px; margin: 0 auto 15px auto; background: rgba(0,0,0,0.3); border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
         .result-img { width: 70px; height: 70px; object-fit: contain; }
         .result-nft-name { font-size: 18px; font-weight: bold; color: var(--text); margin-bottom: 10px; }
-        
         .price-deducted { font-size: 18px; font-weight: bold; color: var(--red); margin-bottom: 20px; }
-
         .btn-close-result { background: var(--text); color: var(--bg); border: none; padding: 15px 40px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
         .btn-close-result:hover { opacity: 0.8; }
 
@@ -180,17 +171,13 @@
         .step-btn:hover { background: #2a2d35; }
         .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .step-value { font-size: 32px; font-weight: 900; color: var(--yellow); min-width: 60px; text-align: center; }
-
         .qty-total-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
         .qty-total-text span { color: var(--yellow); }
-
-        /* Вікно виведення */
         .withdraw-input { width: 100%; padding: 12px; background: #1a1d26; border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
 
         @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         .confetti-piece { position: absolute; width: 10px; height: 10px; opacity: 0; animation: fall 3s linear infinite; z-index: 1999; }
-        
-        .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
 
         /* МОБІЛЬНА ВЕРСІЯ */
         @media (max-width: 800px) {
@@ -210,6 +197,7 @@
             .market-price-row { padding: 5px; flex-direction: column; align-items: flex-start; gap: 5px;}
             .market-buy-btn { width: 100%; padding: 8px; }
             .profile-grid { grid-template-columns: repeat(2, 1fr); }
+            .bonus-section { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
@@ -239,13 +227,11 @@
             <div class="result-img-container"><img id="qty-image" class="result-img" src=""></div>
             <div class="result-nft-name" id="qty-name">Назва</div>
             <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">Ціна: <span id="qty-price-per" style="color: var(--yellow);">0</span> ⭐</div>
-            
             <div class="stepper-container">
                 <button class="step-btn" id="btn-minus" onclick="changeBuyQty(-1)">−</button>
                 <div class="step-value" id="qty-display">1</div>
                 <button class="step-btn" id="btn-plus" onclick="changeBuyQty(1)">+</button>
             </div>
-
             <div class="qty-total-text">Разом: <span id="qty-total-price">0</span> ⭐</div>
             <button class="btn-upgrade" onclick="confirmBuy()" style="margin-top: 0; margin-bottom: 10px;">Купити</button>
             <button class="btn-close-result" onclick="closeQtyModal()" style="background: transparent; color: var(--muted); border: 1px solid var(--border);">Скасувати</button>
@@ -286,10 +272,8 @@
             <div class="result-title" style="color: var(--blue);">Виведення NFT</div>
             <div class="result-img-container"><img id="withdraw-image" class="result-img" src=""></div>
             <div class="result-nft-name" id="withdraw-nft-name" style="margin-bottom: 15px;">Назва</div>
-            
             <input type="text" class="withdraw-input" id="withdraw-user" placeholder="Введіть Telegram ID / @нікнейм">
             <input type="number" class="withdraw-input" id="withdraw-price" placeholder="Введіть ціну (⭐)">
-            
             <div style="display:flex; gap:10px;">
                 <button class="btn-upgrade" onclick="confirmWithdraw()" style="margin-top: 10px; flex:1; background: var(--blue); color: white;">+</button>
                 <button class="btn-close-result" onclick="closeWithdrawModal()" style="margin-top: 10px; flex:1; background: transparent; color: var(--muted); border: 1px solid var(--border);">X</button>
@@ -345,12 +329,66 @@
 
     <!-- ================= ВКЛАДКА 3: ГАМАНЕЦЬ ================= -->
     <div id="tab-wallet" class="tab-content">
-        <div class="placeholder-tab"><h2>💼 Гаманець</h2><p>Тут буде підключення TON Connect.</p></div>
+        <div class="wallet-container">
+            <div class="wallet-card">
+                <div class="wallet-title">Поповнення балансу</div>
+                
+                <div class="quick-amounts">
+                    <button class="amount-btn" onclick="setTopupAmount(50)">50 ⭐</button>
+                    <button class="amount-btn" onclick="setTopupAmount(100)">100 ⭐</button>
+                    <button class="amount-btn" onclick="setTopupAmount(250)">250 ⭐</button>
+                    <button class="amount-btn active" onclick="setTopupAmount(500)">500 ⭐</button>
+                    <button class="amount-btn" onclick="setTopupAmount(1000)">1000 ⭐</button>
+                    <button class="amount-btn" onclick="setTopupAmount(10000)">10 000 ⭐</button>
+                </div>
+
+                <div class="custom-amount-row">
+                    <input type="number" class="custom-amount-input" id="custom-amount" value="500" min="50" max="10000" oninput="updateUsdEquivalent()">
+                    <div>
+                        <div class="usd-equivalent" id="usd-equivalent">$10.00</div>
+                        <div class="usd-label">USD</div>
+                    </div>
+                </div>
+
+                <div class="payment-method">
+                    <div class="payment-option active" onclick="selectPayment('stars', this)">
+                        <span class="payment-icon">⭐</span>
+                        <div>
+                            <div style="font-weight: bold;">Telegram Stars (XTR)</div>
+                            <div style="font-size: 12px; color: var(--muted);">Офіційна валюта Telegram</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-topup" onclick="initiateTopup()">Поповнити</button>
+            </div>
+        </div>
     </div>
 
     <!-- ================= ВКЛАДКА 4: ПРОФІЛЬ ================= -->
     <div id="tab-profile" class="tab-content">
         <h2 style="text-align: center; margin-bottom: 20px;">Мій Профіль</h2>
+        
+        <!-- Щоденний бонус -->
+        <div class="bonus-section">
+            <div>
+                <div style="font-weight: bold; font-size: 18px;">🎁 Щоденний бонус</div>
+                <div style="color: var(--muted); font-size: 12px;">Забирайте 500 ⭐ раз на 24 години</div>
+            </div>
+            <button class="btn-upgrade" id="bonus-btn" onclick="claimDailyBonus()" style="margin-top: 0; width: auto; padding: 10px 20px; font-size: 14px;">Забрати</button>
+        </div>
+
+        <!-- Промокоди -->
+        <div class="promo-section">
+            <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">🔑 Промокод</div>
+            <div style="color: var(--muted); font-size: 12px;">Введіть секретний код, щоб отримати бонус</div>
+            <div class="promo-input">
+                <input type="text" id="promo-code" placeholder="MINT100">
+                <button onclick="applyPromo()">Активувати</button>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px;">Мої NFT</h3>
         <div id="empty-profile-msg" style="text-align:center; color:var(--muted); margin-top:20px;">У вас поки немає NFT для продажу або виведення.</div>
         <div class="profile-grid" id="profile-grid"></div>
     </div>
@@ -375,7 +413,57 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // БАЗА ДАНИХ NFT (ТВОЇ ЦІНИ)
+        // === СИСТЕМА ЗВУКІВ (Web Audio API) ===
+        let audioCtx;
+        function playSound(type) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'tab') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'spin') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(400, audioCtx.currentTime + 3);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
+                osc.start(); osc.stop(audioCtx.currentTime + 3);
+            } else if (type === 'win') {
+                // Мажорний акорд
+                [440, 554, 659, 880].forEach((freq, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination);
+                    o.type = 'sine'; o.frequency.value = freq;
+                    g.gain.setValueAtTime(0.1, audioCtx.currentTime + i*0.1);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i*0.1 + 0.3);
+                    o.start(audioCtx.currentTime + i*0.1); o.stop(audioCtx.currentTime + i*0.1 + 0.3);
+                });
+            } else if (type === 'lose') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
+
+        // БАЗА ДАНИХ NFT
         const allGifts = [
             { id: 1, name: "Plush Pepe", price: 921825, img: "https://nft.fragment.com/gift/plushpepe-1.webp" },
             { id: 2, name: "Durov's Cap", price: 30107, img: "https://nft.fragment.com/gift/durovscap-1.webp" },
@@ -427,9 +515,9 @@
         ];
 
         // ЗМІННІ СТАНУ
-        let marketGifts = []; 
-        let myInventory = []; 
-        let selectedMyItems = []; 
+        let marketGifts = [];
+        let myInventory = [];
+        let selectedMyItems = [];
         let userBalance = 0;
         let sliderBalance = 0;
         let selectedTargetItem = null;
@@ -438,13 +526,18 @@
         let currentBuyQty = 1;
         let currentUpgradeItem = null;
         let currentWithdrawItem = null;
+        
+        // Змінні для гаманця
+        let topupAmount = 500;
+        let selectedPaymentMethod = 'stars';
 
         // === СИСТЕМА ЗБЕРЕЖЕННЯ ===
         function saveState() {
             const state = {
                 balance: userBalance,
                 market: marketGifts,
-                inventory: myInventory
+                inventory: myInventory,
+                lastBonus: localStorage.getItem('last_bonus_time') || 0
             };
             localStorage.setItem('mintradar_state', JSON.stringify(state));
         }
@@ -457,12 +550,12 @@
                 marketGifts = state.market;
                 myInventory = state.inventory;
             } else {
-                // Якщо збережень немає - перший запуск
                 userBalance = 100000;
                 marketGifts = [...allGifts];
                 myInventory = [];
-                saveState(); // Зберігаємо початковий стан
+                saveState();
             }
+            checkBonusStatus();
         }
 
         function updateTopBalance() {
@@ -478,13 +571,111 @@
         }
 
         function switchTab(tabId, element) {
+            playSound('tab');
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             if (element) element.classList.add('active');
         }
 
-        // МАРКЕТ
+        // === ГАМАНЕЦЬ ===
+        function setTopupAmount(amount) {
+            playSound('click');
+            topupAmount = amount;
+            document.getElementById('custom-amount').value = amount;
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateUsdEquivalent();
+        }
+
+        function updateUsdEquivalent() {
+            const input = document.getElementById('custom-amount');
+            let amount = parseInt(input.value);
+            if (isNaN(amount) || amount < 50) amount = 50;
+            if (amount > 10000) amount = 10000;
+            input.value = amount;
+            topupAmount = amount;
+            
+            // Курс: 10 USD = 500 зірок
+            const usd = (amount * 0.02).toFixed(2);
+            document.getElementById('usd-equivalent').innerText = '$' + usd;
+        }
+
+        function selectPayment(method, element) {
+            playSound('click');
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
+
+        function initiateTopup() {
+            playSound('click');
+            if (selectedPaymentMethod === 'stars') {
+                tg.sendData(JSON.stringify({ 
+                    action: 'topup_stars', 
+                    amount: topupAmount,
+                    usd: (topupAmount * 0.02).toFixed(2)
+                }));
+                tg.close();
+            }
+        }
+
+        // === ПРОМОКОДИ ТА БОНУСИ ===
+        function applyPromo() {
+            playSound('click');
+            const code = document.getElementById('promo-code').value.trim().toUpperCase();
+            if (code === 'MINT100') {
+                userBalance += 5;
+                alert('Промокод активовано! +5 ⭐');
+                playSound('win');
+                document.getElementById('promo-code').value = '';
+                saveState();
+                updateUI();
+            } else if (code === 'PEPE500') {
+                userBalance += 10;
+                alert('Промокод активовано! +10 ⭐');
+                playSound('win');
+                document.getElementById('promo-code').value = '';
+                saveState();
+                updateUI();
+            } else {
+                alert('Невірний промокод!');
+                playSound('lose');
+            }
+        }
+
+        function checkBonusStatus() {
+            const lastBonus = localStorage.getItem('last_bonus_time');
+            const now = Date.now();
+            const btn = document.getElementById('bonus-btn');
+            if (lastBonus && (now - lastBonus < 24 * 60 * 60 * 1000)) {
+                btn.disabled = true;
+                btn.innerText = 'Вже отримано';
+                btn.style.background = '#333';
+                btn.style.color = '#888';
+            } else {
+                btn.disabled = false;
+                btn.innerText = 'Забрати';
+                btn.style.background = 'linear-gradient(90deg, #ffcc00, #ff9900)';
+                btn.style.color = '#000';
+            }
+        }
+
+        function claimDailyBonus() {
+            const lastBonus = localStorage.getItem('last_bonus_time');
+            const now = Date.now();
+            if (!lastBonus || (now - lastBonus >= 24 * 60 * 60 * 1000)) {
+                userBalance += 10;
+                localStorage.setItem('last_bonus_time', now);
+                alert('Щоденний бонус отримано! +10 ⭐');
+                playSound('win');
+                saveState();
+                updateUI();
+                checkBonusStatus();
+            }
+        }
+
+        // === МАРКЕТ ===
         function renderMarket() {
             const grid = document.getElementById('market-grid');
             grid.innerHTML = '';
@@ -520,6 +711,7 @@
         function filterMarket() { renderMarket(); }
 
         function openQtyModal(id) {
+            playSound('click');
             currentBuyItem = marketGifts.find(g => g.id === id);
             currentBuyQty = 1;
             document.getElementById('qty-image').src = currentBuyItem.img;
@@ -530,6 +722,7 @@
         }
 
         function changeBuyQty(amount) {
+            playSound('click');
             currentBuyQty += amount;
             if (currentBuyQty < 1) currentBuyQty = 1;
             if (currentBuyQty > 25) currentBuyQty = 25;
@@ -544,9 +737,13 @@
             document.getElementById('btn-plus').disabled = currentBuyQty >= 25;
         }
 
-        function closeQtyModal() { document.getElementById('qty-overlay').classList.remove('active'); }
+        function closeQtyModal() { 
+            playSound('click');
+            document.getElementById('qty-overlay').classList.remove('active'); 
+        }
 
         function confirmBuy() {
+            playSound('click');
             let totalPrice = currentBuyItem.price * currentBuyQty;
             if (userBalance < totalPrice) { alert("Недостатньо зірок!"); return; }
 
@@ -566,15 +763,19 @@
             renderMarket();
             updateUI();
             
+            playSound('win');
             document.getElementById('purchase-image').src = currentBuyItem.img;
             document.getElementById('purchase-nft-name').innerText = `${currentBuyItem.name} (x${currentBuyQty})`;
             document.getElementById('purchase-price').innerText = `- ${totalPrice.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐`;
             document.getElementById('purchase-overlay').classList.add('active');
         }
 
-        function closePurchase() { document.getElementById('purchase-overlay').classList.remove('active'); }
+        function closePurchase() { 
+            playSound('click');
+            document.getElementById('purchase-overlay').classList.remove('active'); 
+        }
 
-        // АПГРЕЙДЕР
+        // === АПГРЕЙДЕР ===
         function renderInventory() {
             const grid = document.getElementById('inventory-grid');
             const emptyMsg = document.getElementById('empty-inventory-msg');
@@ -603,6 +804,7 @@
             const existingIndex = selectedMyItems.findIndex(i => i.id === item.id);
 
             if (existingIndex > -1) {
+                playSound('click');
                 selectedMyItems.splice(existingIndex, 1);
                 if (selectedMyItems.length === 0) {
                     sliderBalance = 0;
@@ -610,6 +812,7 @@
                 }
                 updateUI();
             } else {
+                playSound('click');
                 if (item.count === 1) {
                     selectedMyItems.push({ ...item, selectedQty: 1 });
                     updateUI();
@@ -645,9 +848,13 @@
             document.getElementById('up-qty-total-price').innerText = (qty * price).toLocaleString('en-US', {maximumFractionDigits: 2});
         }
 
-        function closeUpgradeQtyModal() { document.getElementById('upgrade-qty-overlay').classList.remove('active'); }
+        function closeUpgradeQtyModal() { 
+            playSound('click');
+            document.getElementById('upgrade-qty-overlay').classList.remove('active'); 
+        }
 
         function confirmUpgradeQty() {
+            playSound('click');
             const qty = parseInt(document.getElementById('upgrade-qty-slider').value);
             if (qty > 0) {
                 const existingIndex = selectedMyItems.findIndex(i => i.id === currentUpgradeItem.id);
@@ -680,20 +887,20 @@
                     <div class="inv-name">${item.name}</div>
                     <div class="cat-price">${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐</div>
                 `;
-                card.onclick = () => { selectedTargetItem = item; updateUI(); };
+                card.onclick = () => { playSound('click'); selectedTargetItem = item; updateUI(); };
                 grid.appendChild(card);
             });
         }
 
         function updateUI() {
-            updateTopBalance(); 
+            updateTopBalance();
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
-            const totalValue = itemsValue + sliderBalance; 
+            const totalValue = itemsValue + sliderBalance;
             document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US', {maximumFractionDigits: 2});
             
             renderInventory();
             renderCatalog(totalValue);
-            renderProfile(); // Оновлюємо профіль
+            renderProfile();
 
             const sliderSection = document.getElementById('balance-section');
             const sliderInput = document.getElementById('balance-slider');
@@ -724,6 +931,7 @@
             const totalValue = itemsValue + sliderBalance;
             if (totalValue === 0 || !selectedTargetItem) return;
 
+            playSound('spin');
             const btn = document.getElementById('upgrade-btn');
             const arrow = document.getElementById('spin-arrow');
             btn.disabled = true;
@@ -755,12 +963,16 @@
                 });
 
                 if (isWin) { 
+                    playSound('win');
                     let wonInvItem = myInventory.find(i => i.id === wonItem.id);
                     if(wonInvItem) { wonInvItem.count += 1; } 
                     else { myInventory.push({ ...wonItem, count: 1 }); }
                     showResultModal(true, wonItem); 
                 } 
-                else { showResultModal(false, null); }
+                else { 
+                    playSound('lose');
+                    showResultModal(false, null); 
+                }
 
                 selectedMyItems = []; selectedTargetItem = null;
                 document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
@@ -788,6 +1000,7 @@
         }
 
         function closeResult() {
+            playSound('click');
             document.getElementById('result-overlay').classList.remove('active');
             document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
         }
@@ -806,6 +1019,7 @@
         }
 
         function setMultiplier(mult, btnElement) {
+            playSound('click');
             if (selectedMyItems.length === 0) { alert("Спочатку виберіть предмети!"); return; }
             document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
@@ -823,10 +1037,7 @@
             updateUI();
         });
 
-
-        // ==========================================
-        // ПРОФІЛЬ (ВИВЕДЕННЯ ТА ПРОДАЖ)
-        // ==========================================
+        // === ПРОФІЛЬ ===
         function renderProfile() {
             const grid = document.getElementById('profile-grid');
             const emptyMsg = document.getElementById('empty-profile-msg');
@@ -867,23 +1078,22 @@
             const confirmSell = confirm(`Ви впевнені, що хочете продати 1 шт. ${item.name} за ${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐?`);
             
             if (confirmSell) {
+                playSound('click');
                 userBalance += item.price;
                 item.count -= 1;
                 if (item.count <= 0) {
                     myInventory = myInventory.filter(i => i.id !== item.id);
                 }
-                // Повертаємо в маркет, якщо його там немає
                 if (!marketGifts.find(g => g.id === item.id)) {
                     marketGifts.push({ id: item.id, name: item.name, price: item.price, img: item.img });
                 }
-
                 saveState();
                 updateUI();
-                alert(`Успішно продано! +${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐`);
             }
         }
 
         function openWithdrawModal(id) {
+            playSound('click');
             const item = myInventory.find(i => i.id === id);
             if (!item) return;
             
@@ -897,10 +1107,12 @@
         }
 
         function closeWithdrawModal() {
+            playSound('click');
             document.getElementById('withdraw-overlay').classList.remove('active');
         }
 
         function confirmWithdraw() {
+            playSound('click');
             const tgUser = document.getElementById('withdraw-user').value.trim();
             const price = document.getElementById('withdraw-price').value.trim();
 
@@ -909,7 +1121,6 @@
                 return;
             }
 
-            // Імітація виведення (зменшуємо кількість)
             currentWithdrawItem.count -= 1;
             if (currentWithdrawItem.count <= 0) {
                 myInventory = myInventory.filter(i => i.id !== currentWithdrawItem.id);
@@ -921,11 +1132,11 @@
             alert(`Запит на виведення ${currentWithdrawItem.name} для ${tgUser} на суму ${price} ⭐ прийнято!`);
         }
 
-
-        // Ініціалізація при старті
-        loadState(); // Завантажуємо збережені дані
+        // === ІНІЦІАЛІЗАЦІЯ ===
+        loadState();
         renderMarket();
         updateUI();
+        updateUsdEquivalent();
     </script>
 </body>
 </html>
