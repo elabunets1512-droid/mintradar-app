@@ -665,11 +665,11 @@
             }
 
             if (code === 'MINT100') {
-                userBalance += 100; alert('Промокод активовано! +10 ⭐'); playSound('win');
+                userBalance += 10; alert('Промокод активовано! +10 ⭐'); playSound('win');
                 localStorage.setItem('last_promo_time', now); document.getElementById('promo-code').value = '';
                 saveState(); updateUI(); checkPromoStatus();
             } else if (code === 'PEPE500') {
-                userBalance += 500; alert('Промокод активовано! +25 ⭐'); playSound('win');
+                userBalance += 25; alert('Промокод активовано! +25 ⭐'); playSound('win');
                 localStorage.setItem('last_promo_time', now); document.getElementById('promo-code').value = '';
                 saveState(); updateUI(); checkPromoStatus();
             } else {
