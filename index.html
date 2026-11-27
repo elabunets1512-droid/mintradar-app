@@ -3,177 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MintRadar - Market & Upgrader</title>
+    <title>MintRadar - Cosmic Market & Upgrader</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #08090d; --panel: #12151c; --card: #1c1f26; --text: #ffffff;
-            --muted: #8b8e96; --border: #2a2d35;
-            --yellow: #ffcc00; --purple: #8a2be2; --red: #ff3333; --white: #ffffff;
+            --bg: #05050e; --panel: rgba(20, 25, 40, 0.7); --card: rgba(30, 35, 55, 0.8); --text: #ffffff;
+            --muted: #8b8e96; --border: rgba(255, 255, 255, 0.1);
+            --yellow: #ffcc00; --purple: #a855f7; --red: #ff4d4d; --white: #ffffff;
             --green: #00ff88; --blue: #00bfff;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg); color: var(--text); margin: 0; padding: 15px;
-            padding-bottom: 90px; overflow-x: hidden;
+            background: radial-gradient(circle at 50% 0%, #1a103c 0%, #05050e 100%);
+            color: var(--text); margin: 0; padding: 15px;
+            padding-bottom: 90px; overflow-x: hidden; min-height: 100vh;
+        }
+
+        /* КОСМІЧНИЙ ФОН ТА АНІМАЦІЇ */
+        .space-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+        .stars { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; opacity: 0.6; animation: twinkle 4s infinite alternate; }
+        @keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 0.8; } }
+        
+        .floating-obj { position: absolute; bottom: -50px; font-size: 24px; opacity: 0; animation: floatUp linear forwards; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
         /* Верхнє меню */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .logo { font-size: 20px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px;}
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--panel); backdrop-filter: blur(10px); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; z-index: 10; }
+        .logo { font-size: 20px; font-weight: 900; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
         .balance-area { display: flex; align-items: center; gap: 10px; }
         .balance { font-size: 14px; font-weight: bold; color: var(--text); display: flex; align-items: center; gap: 5px; }
 
         /* Вкладки */
-        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content { display: none; animation: fadeIn 0.4s; position: relative; z-index: 10; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ДИЗАЙН МАРКЕТУ */
         .market-controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-bar { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 15px; color: white; font-size: 14px; outline: none; }
+        .search-bar { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 15px; color: white; font-size: 14px; outline: none; backdrop-filter: blur(5px); }
         .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .market-card { background: #14171f; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: 0.2s; }
-        .market-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: var(--blue); }
-        .market-img-box { width: 100%; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; background: #1c1f26; position: relative; padding: 20px; box-sizing: border-box; }
-        .market-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); }
+        .market-card { background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; backdrop-filter: blur(5px); }
+        .market-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3); border-color: var(--purple); }
+        .market-img-box { width: 100%; aspect-ratio: 1 / 1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.3); position: relative; padding: 20px; box-sizing: border-box; }
+        .market-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); transition: 0.3s; }
+        .market-card:hover .market-img { filter: drop-shadow(0 0 25px rgba(0, 191, 255, 0.5)); transform: scale(1.05); }
         .market-badge { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: #ccc; font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
-        .market-info { padding: 15px; background: #101218; }
+        .market-info { padding: 15px; background: rgba(0,0,0,0.2); }
         .market-name { font-size: 16px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .market-id { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-        .market-price-row { display: flex; justify-content: space-between; align-items: center; background: #1a1d26; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .market-price-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
         .market-price-text { font-size: 14px; font-weight: bold; color: var(--yellow); display: flex; align-items: center; gap: 5px; }
-        .market-buy-btn { background: var(--blue); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .market-buy-btn { background: linear-gradient(90deg, #a855f7, #00bfff); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; transition: 0.2s; }
         .market-buy-btn:active { transform: scale(0.95); }
 
         /* ДИЗАЙН АПГРЕЙДЕРА */
         .main-layout { display: grid; grid-template-columns: 320px 1fr 350px; gap: 15px; }
-        .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
-        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .panel { background: var(--panel); border-radius: 16px; padding: 15px; border: 1px solid var(--border); backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .panel-title { font-size: 14px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
         .inventory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .inv-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
         .inv-card:hover { border-color: var(--purple); }
-        .inv-card.selected { border-color: var(--purple); background: rgba(138, 43, 226, 0.2); box-shadow: 0 0 10px rgba(138,43,226,0.5); }
+        .inv-card.selected { border-color: var(--purple); background: rgba(168, 85, 247, 0.2); box-shadow: 0 0 15px rgba(168,85,247,0.5); }
         .inv-img { width: 50px; height: 50px; object-fit: contain; }
         .inv-name { font-size: 11px; font-weight: bold; margin: 5px 0; height: 26px; overflow: hidden; }
-        .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,51,51,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
+        .inv-price { font-size: 12px; font-weight: bold; color: var(--red); background: rgba(255,77,77,0.1); padding: 2px 5px; border-radius: 5px; display: inline-block; }
         .count-badge { position: absolute; top: 5px; left: 5px; background: var(--yellow); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; }
         .selected-badge { position: absolute; top: 5px; right: 5px; background: var(--purple); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 2; display: none; }
         .inv-card.selected .selected-badge { display: block; }
 
-        .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, #1c1f26 0%, #12151c 100%); }
-        .total-value-box { background: rgba(138, 43, 226, 0.1); border: 1px solid var(--purple); padding: 10px 20px; border-radius: 12px; margin-bottom: 10px; text-align: center; width: 100%; max-width: 250px;}
-        .total-value-box span { font-size: 24px; font-weight: 900; color: var(--purple); }
+        .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: radial-gradient(circle at center, rgba(168,85,247,0.1) 0%, transparent 70%); }
+        .total-value-box { background: rgba(168, 85, 247, 0.15); border: 1px solid var(--purple); padding: 10px 20px; border-radius: 12px; margin-bottom: 10px; text-align: center; width: 100%; max-width: 250px; box-shadow: 0 0 20px rgba(168,85,247,0.2); }
+        .total-value-box span { font-size: 24px; font-weight: 900; color: var(--purple); text-shadow: 0 0 10px rgba(168,85,247,0.5); }
         
-        .wheel-container { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; margin: 10px 0 20px 0; box-shadow: 0 0 40px rgba(255, 204, 0, 0.1); border-radius: 50%; }
-        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #2a2d35 0deg 2deg, transparent 2deg 10deg); border: 2px solid #1a1d26; }
-        .wheel-arc { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), #2a2d35 var(--chance-percent, 0%)); -webkit-mask: radial-gradient(transparent 60%, black 61%); mask: radial-gradient(transparent 60%, black 61%); }
+        .wheel-container { position: relative; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; margin: 10px 0 20px 0; box-shadow: 0 0 50px rgba(168, 85, 247, 0.3); border-radius: 50%; }
+        .wheel-bg { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0.1) 0deg 2deg, transparent 2deg 10deg); border: 2px solid rgba(255,255,255,0.2); }
+        .wheel-arc { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(to top, var(--yellow) var(--chance-percent, 0%), rgba(0,0,0,0.5) var(--chance-percent, 0%)); -webkit-mask: radial-gradient(transparent 60%, black 61%); mask: radial-gradient(transparent 60%, black 61%); transition: 0.3s; }
         .wheel-arrow { position: absolute; top: 0; left: 50%; margin-left: -10px; width: 20px; height: 110px; transform-origin: 50% 100%; z-index: 10; }
-        .wheel-arrow::after { content: ''; position: absolute; top: 0; left: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--yellow); }
-        .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 90px; background: var(--yellow); }
-        .wheel-center { position: absolute; width: 100px; height: 100px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid var(--border); z-index: 5; box-shadow: inset 0 0 20px #000; }
-        .chance-text { font-size: 28px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.5); }
+        .wheel-arrow::after { content: ''; position: absolute; top: 0; left: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 20px solid var(--yellow); filter: drop-shadow(0 0 5px var(--yellow)); }
+        .wheel-arrow::before { content: ''; position: absolute; top: 20px; left: 9px; width: 2px; height: 90px; background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
+        .wheel-center { position: absolute; width: 100px; height: 100px; background: #05050e; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid var(--purple); z-index: 5; box-shadow: inset 0 0 20px #000, 0 0 20px rgba(168,85,247,0.4); }
+        .chance-text { font-size: 28px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.8); }
 
         .multipliers { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
-        .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
+        .mult-btn { background: transparent; color: #ff69b4; border: 1px solid #ff69b4; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .mult-btn:hover, .mult-btn.active { background: #ff69b4; color: #000; box-shadow: 0 0 15px rgba(255, 105, 180, 0.6); }
 
-        .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
+        .balance-section { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid var(--border); transition: 0.3s; }
         .balance-section.disabled { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
         .slider-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
         input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; margin: 10px 0; }
         input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #2a2d35; border-radius: 3px; }
-        input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background: var(--yellow); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: rgba(255,255,255,0.1); border-radius: 3px; }
+        input[type=range]::-webkit-slider-thumb { height: 20px; width: 20px; border-radius: 50%; background: var(--yellow); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 15px rgba(255, 204, 0, 0.8); }
         .slider-info { font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px;}
         .slider-info span { color: var(--yellow); font-weight: bold; }
 
-        .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(255,153,0,0.4); margin-top: 20px; }
+        .btn-upgrade { width: 100%; max-width: 300px; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; text-transform: uppercase; background: linear-gradient(90deg, #ffcc00, #ff9900); color: #000; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 20px rgba(255,153,0,0.5); margin-top: 20px; }
         .btn-upgrade:disabled { opacity: 0.5; background: #333; color: #888; box-shadow: none; cursor: not-allowed; }
         .btn-upgrade:active { transform: scale(0.98); }
 
         .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
         .catalog-card { background: var(--card); border-radius: 10px; padding: 10px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
         .catalog-card:hover { border-color: var(--white); }
-        .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .catalog-card.selected { border-color: var(--white); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
         .cat-price { font-size: 11px; font-weight: bold; color: var(--white); margin-top: 5px; }
 
         /* ПРОФІЛЬ (ІНВЕНТАР) */
         .profile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .profile-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); position: relative; }
+        .profile-card { background: var(--card); border-radius: 12px; padding: 10px; text-align: center; border: 1px solid var(--border); position: relative; backdrop-filter: blur(5px); }
         .profile-card img { width: 60px; height: 60px; object-fit: contain; }
         .profile-card .name { font-weight: bold; font-size: 12px; margin: 5px 0; }
         .profile-actions { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .action-btn { background: #2a2d35; border: 1px solid #3a3d45; border-radius: 6px; padding: 5px 8px; color: white; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-        .action-btn:hover { background: #3a3d45; }
+        .action-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 5px 8px; color: white; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
         .action-btn svg { width: 16px; height: 16px; fill: white; }
-        .action-btn.withdraw:hover { background: var(--blue); border-color: var(--blue); }
-        .action-btn.sell:hover { background: var(--red); border-color: var(--red); }
+        .action-btn.withdraw:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 10px var(--blue); }
+        .action-btn.sell:hover { background: var(--red); border-color: var(--red); box-shadow: 0 0 10px var(--red); }
         
         /* БОНУСИ ТА ПРОМОКОДИ */
-        .bonus-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .promo-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .bonus-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
+        .promo-section { background: var(--panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border); backdrop-filter: blur(10px); }
         .promo-input { display: flex; gap: 10px; margin-top: 10px; }
-        .promo-input input { flex: 1; padding: 12px; background: #1a1d26; border: 1px solid var(--border); border-radius: 8px; color: white; outline: none;}
-        .promo-input button { padding: 12px 20px; background: var(--green); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .promo-input input { flex: 1; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none;}
+        .promo-input button { padding: 12px 20px; background: var(--green); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
+        .promo-input button:disabled { background: #555; color: #aaa; cursor: not-allowed; box-shadow: none; }
 
         /* ГАМАНЕЦЬ */
         .wallet-container { max-width: 500px; margin: 0 auto; }
-        .wallet-card { background: var(--panel); border-radius: 16px; padding: 25px; border: 1px solid var(--border); }
-        .wallet-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: center; color: var(--yellow); }
+        .wallet-card { background: var(--panel); border-radius: 16px; padding: 25px; border: 1px solid var(--border); backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .wallet-title { font-size: 20px; font-weight: 900; margin-bottom: 20px; text-align: center; color: var(--yellow); text-shadow: 0 0 10px rgba(255,204,0,0.5); }
         .quick-amounts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
-        .amount-btn { background: #1a1d26; border: 1px solid var(--border); color: white; padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .amount-btn { background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: white; padding: 12px 18px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
         .amount-btn:hover { border-color: var(--yellow); }
-        .amount-btn.active { background: var(--yellow); color: #000; border-color: var(--yellow); }
+        .amount-btn.active { background: var(--yellow); color: #000; border-color: var(--yellow); box-shadow: 0 0 20px rgba(255,204,0,0.5); }
         .custom-amount-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
-        .custom-amount-input { flex: 1; background: #1a1d26; border: 1px solid var(--border); border-radius: 10px; padding: 15px; color: white; font-size: 18px; font-weight: bold; outline: none; }
-        .usd-equivalent { font-size: 18px; font-weight: bold; color: var(--green); min-width: 80px; text-align: right; }
+        .custom-amount-input { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px; padding: 15px; color: white; font-size: 18px; font-weight: bold; outline: none; }
+        .usd-equivalent { font-size: 18px; font-weight: bold; color: var(--green); min-width: 80px; text-align: right; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
         .usd-label { font-size: 12px; color: var(--muted); text-align: right; }
         .payment-method { margin-bottom: 20px; }
-        .payment-option { display: flex; align-items: center; gap: 10px; padding: 15px; background: #1a1d26; border-radius: 10px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
-        .payment-option.active { border-color: var(--blue); background: rgba(0, 191, 255, 0.1); }
+        .payment-option { display: flex; align-items: center; gap: 10px; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 10px; margin-bottom: 10px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .payment-option.active { border-color: var(--blue); background: rgba(0, 191, 255, 0.1); box-shadow: 0 0 20px rgba(0,191,255,0.3); }
         .payment-icon { font-size: 24px; }
-        .btn-topup { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; background: linear-gradient(90deg, #00ff88, #00bfff); color: #000; cursor: pointer; transition: 0.2s; }
+        .btn-topup { width: 100%; padding: 18px; border-radius: 12px; border: none; font-size: 18px; font-weight: 900; background: linear-gradient(90deg, #00ff88, #00bfff); color: #000; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 20px rgba(0,255,136,0.4); }
         .btn-topup:active { transform: scale(0.98); }
 
         /* НИЖНЄ МЕНЮ */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(18, 21, 28, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 1000; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 20, 0.9); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border); z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); cursor: pointer; transition: 0.2s; }
-        .nav-item.active { color: var(--yellow); transform: translateY(-2px); }
+        .nav-item.active { color: var(--yellow); transform: translateY(-2px); text-shadow: 0 0 10px var(--yellow); }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
 
         /* МОДАЛЬНІ ВІКНА */
         .result-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 2000; flex-direction: column; }
         .result-overlay.active { display: flex; }
-        .result-modal { background: var(--panel); border-radius: 24px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; }
+        .result-modal { background: var(--panel); border-radius: 24px; padding: 25px; text-align: center; width: 90%; max-width: 350px; border: 2px solid var(--border); transform: scale(0.8); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 2001; backdrop-filter: blur(20px); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
         .result-overlay.active .result-modal { transform: scale(1); opacity: 1; }
-        .result-modal.win { border-color: var(--green); box-shadow: 0 0 40px rgba(0, 255, 136, 0.2); }
-        .result-modal.lose { border-color: var(--red); box-shadow: 0 0 40px rgba(255, 51, 51, 0.2); }
-        .result-modal.purchase { border-color: var(--blue); box-shadow: 0 0 40px rgba(0, 191, 255, 0.2); }
-        .result-modal.buy-qty { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255, 204, 0, 0.2); }
-        .result-modal.up-qty { border-color: var(--purple); box-shadow: 0 0 40px rgba(138, 43, 226, 0.2); }
+        .result-modal.win { border-color: var(--green); box-shadow: 0 0 50px rgba(0, 255, 136, 0.3); }
+        .result-modal.lose { border-color: var(--red); box-shadow: 0 0 50px rgba(255, 77, 77, 0.3); }
+        .result-modal.purchase { border-color: var(--blue); box-shadow: 0 0 50px rgba(0, 191, 255, 0.3); }
+        .result-modal.buy-qty { border-color: var(--yellow); box-shadow: 0 0 50px rgba(255, 204, 0, 0.3); }
+        .result-modal.up-qty { border-color: var(--purple); box-shadow: 0 0 50px rgba(168, 85, 247, 0.3); }
         .result-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .result-modal.win .result-title { color: var(--green); }
-        .result-modal.lose .result-title { color: var(--red); }
-        .result-modal.purchase .result-title { color: var(--blue); }
-        .result-modal.buy-qty .result-title { color: var(--yellow); }
-        .result-modal.up-qty .result-title { color: var(--purple); }
+        .result-modal.win .result-title { color: var(--green); text-shadow: 0 0 10px var(--green); }
+        .result-modal.lose .result-title { color: var(--red); text-shadow: 0 0 10px var(--red); }
+        .result-modal.purchase .result-title { color: var(--blue); text-shadow: 0 0 10px var(--blue); }
+        .result-modal.buy-qty .result-title { color: var(--yellow); text-shadow: 0 0 10px var(--yellow); }
+        .result-modal.up-qty .result-title { color: var(--purple); text-shadow: 0 0 10px var(--purple); }
         .result-img-container { width: 100px; height: 100px; margin: 0 auto 15px auto; background: rgba(0,0,0,0.3); border-radius: 20px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border); }
-        .result-img { width: 70px; height: 70px; object-fit: contain; }
+        .result-img { width: 70px; height: 70px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(255,255,255,0.3)); }
         .result-nft-name { font-size: 18px; font-weight: bold; color: var(--text); margin-bottom: 10px; }
         .price-deducted { font-size: 18px; font-weight: bold; color: var(--red); margin-bottom: 20px; }
         .btn-close-result { background: var(--text); color: var(--bg); border: none; padding: 15px 40px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.2s; }
         .btn-close-result:hover { opacity: 0.8; }
 
         .stepper-container { display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0; }
-        .step-btn { width: 50px; height: 50px; border-radius: 50%; background: #1a1d26; color: white; border: 1px solid var(--border); font-size: 28px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .step-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--border); font-size: 28px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
         .step-btn:active { transform: scale(0.9); }
-        .step-btn:hover { background: #2a2d35; }
+        .step-btn:hover { background: rgba(255,255,255,0.2); }
         .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .step-value { font-size: 32px; font-weight: 900; color: var(--yellow); min-width: 60px; text-align: center; }
+        .step-value { font-size: 32px; font-weight: 900; color: var(--yellow); min-width: 60px; text-align: center; text-shadow: 0 0 10px rgba(255,204,0,0.5); }
         .qty-total-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; }
         .qty-total-text span { color: var(--yellow); }
-        .withdraw-input { width: 100%; padding: 12px; background: #1a1d26; border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .withdraw-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        
         .placeholder-tab { text-align: center; padding: 50px 20px; color: var(--muted); }
 
         @keyframes fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -202,6 +219,11 @@
     </style>
 </head>
 <body>
+
+    <!-- КОСМІЧНИЙ ФОН -->
+    <div class="space-bg" id="space-bg">
+        <div class="stars"></div>
+    </div>
 
     <div class="top-bar">
         <div class="logo">🔼 MintRadar</div>
@@ -261,14 +283,14 @@
                 <input type="range" id="upgrade-qty-slider" min="1" max="10" value="1">
             </div>
             <div class="qty-total-text" style="color: var(--white);">Сума: <span id="up-qty-total-price" style="color: var(--purple);">0</span> ⭐</div>
-            <button class="btn-upgrade" onclick="confirmUpgradeQty()" style="margin-top: 0; margin-bottom: 10px; background: linear-gradient(90deg, #8a2be2, #4b0082); color: #fff;">Додати</button>
+            <button class="btn-upgrade" onclick="confirmUpgradeQty()" style="margin-top: 0; margin-bottom: 10px; background: linear-gradient(90deg, #a855f7, #4b0082); color: #fff;">Додати</button>
             <button class="btn-close-result" onclick="closeUpgradeQtyModal()" style="background: transparent; color: var(--muted); border: 1px solid var(--border);">Скасувати</button>
         </div>
     </div>
 
     <!-- Вікно ВИВЕДЕННЯ NFT -->
     <div class="result-overlay" id="withdraw-overlay">
-        <div class="result-modal" style="border-color: var(--blue); box-shadow: 0 0 40px rgba(0, 191, 255, 0.2);">
+        <div class="result-modal" style="border-color: var(--blue); box-shadow: 0 0 50px rgba(0, 191, 255, 0.3);">
             <div class="result-title" style="color: var(--blue);">Виведення NFT</div>
             <div class="result-img-container"><img id="withdraw-image" class="result-img" src=""></div>
             <div class="result-nft-name" id="withdraw-nft-name" style="margin-bottom: 15px;">Назва</div>
@@ -367,7 +389,7 @@
 
     <!-- ================= ВКЛАДКА 4: ПРОФІЛЬ ================= -->
     <div id="tab-profile" class="tab-content">
-        <h2 style="text-align: center; margin-bottom: 20px;">Мій Профіль</h2>
+        <h2 style="text-align: center; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255,255,255,0.3);">Мій Профіль</h2>
         
         <!-- Щоденний бонус -->
         <div class="bonus-section">
@@ -381,14 +403,14 @@
         <!-- Промокоди -->
         <div class="promo-section">
             <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">🔑 Промокод</div>
-            <div style="color: var(--muted); font-size: 12px;">Введіть секретний код, щоб отримати бонус</div>
+            <div style="color: var(--muted); font-size: 12px;">Введіть секретний код (1 раз на день)</div>
             <div class="promo-input">
                 <input type="text" id="promo-code" placeholder="MINT100">
-                <button onclick="applyPromo()">Активувати</button>
+                <button id="promo-btn" onclick="applyPromo()">Активувати</button>
             </div>
         </div>
 
-        <h3 style="margin-top: 30px; margin-bottom: 15px;">Мої NFT</h3>
+        <h3 style="margin-top: 30px; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255,255,255,0.3);">Мої NFT</h3>
         <div id="empty-profile-msg" style="text-align:center; color:var(--muted); margin-top:20px;">У вас поки немає NFT для продажу або виведення.</div>
         <div class="profile-grid" id="profile-grid"></div>
     </div>
@@ -413,52 +435,90 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // === СИСТЕМА ЗВУКІВ (Web Audio API) ===
+        // === КОСМІЧНИЙ ФОН (ГЕНЕРАЦІЯ ЛІТАЮЧИХ ОБ'ЄКТІВ) ===
+        const emojis = ['🚀', '⭐', '💎', '💵', '🛸', '☄️', '👾', '🎁'];
+        const nftImages = [
+            "https://nft.fragment.com/gift/plushpepe-1.webp",
+            "https://nft.fragment.com/gift/durovscap-1.webp",
+            "https://nft.fragment.com/gift/scaredcat-13163.webp",
+            "https://nft.fragment.com/gift/heartlocket-1.webp"
+        ];
+
+        function spawnFloatingObject() {
+            const bg = document.getElementById('space-bg');
+            const obj = document.createElement('div');
+            obj.className = 'floating-obj';
+            
+            // Рандомно вибираємо: емодзі чи картинка NFT
+            if (Math.random() > 0.6) {
+                // NFT
+                const img = document.createElement('img');
+                img.src = nftImages[Math.floor(Math.random() * nftImages.length)];
+                img.style.width = '40px';
+                img.style.height = '40px';
+                img.style.objectFit = 'contain';
+                img.style.filter = 'drop-shadow(0 0 10px rgba(255,255,255,0.5))';
+                obj.appendChild(img);
+            } else {
+                // Емодзі
+                obj.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                obj.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            }
+
+            // Випадкова позиція та швидкість
+            obj.style.left = Math.random() * 100 + 'vw';
+            obj.style.animationDuration = (Math.random() * 10 + 8) + 's';
+            obj.style.animationDelay = Math.random() * 2 + 's';
+            
+            bg.appendChild(obj);
+
+            // Видаляємо після завершення анімації
+            setTimeout(() => { obj.remove(); }, 15000);
+        }
+
+        // Запускаємо генерацію кожні 800мс
+        setInterval(spawnFloatingObject, 800);
+        // Одразу спавнимо декілька
+        for(let i=0; i<5; i++) setTimeout(spawnFloatingObject, i*300);
+
+        // === СИСТЕМА ЗВУКІВ ===
         let audioCtx;
         function playSound(type) {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            osc.connect(gain); gain.connect(audioCtx.destination);
 
             if (type === 'click') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'select') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
             } else if (type === 'tab') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if (type === 'spin') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
                 osc.frequency.linearRampToValueAtTime(400, audioCtx.currentTime + 3);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3);
                 osc.start(); osc.stop(audioCtx.currentTime + 3);
             } else if (type === 'win') {
-                // Мажорний акорд
                 [440, 554, 659, 880].forEach((freq, i) => {
-                    const o = audioCtx.createOscillator();
-                    const g = audioCtx.createGain();
-                    o.connect(g); g.connect(audioCtx.destination);
-                    o.type = 'sine'; o.frequency.value = freq;
-                    g.gain.setValueAtTime(0.1, audioCtx.currentTime + i*0.1);
-                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i*0.1 + 0.3);
+                    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                    o.connect(g); g.connect(audioCtx.destination); o.type = 'sine'; o.frequency.value = freq;
+                    g.gain.setValueAtTime(0.1, audioCtx.currentTime + i*0.1); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i*0.1 + 0.3);
                     o.start(audioCtx.currentTime + i*0.1); o.stop(audioCtx.currentTime + i*0.1 + 0.3);
                 });
             } else if (type === 'lose') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.5);
             }
         }
@@ -515,30 +575,14 @@
         ];
 
         // ЗМІННІ СТАНУ
-        let marketGifts = [];
-        let myInventory = [];
-        let selectedMyItems = [];
-        let userBalance = 0;
-        let sliderBalance = 0;
-        let selectedTargetItem = null;
-
-        let currentBuyItem = null;
-        let currentBuyQty = 1;
-        let currentUpgradeItem = null;
-        let currentWithdrawItem = null;
-        
-        // Змінні для гаманця
-        let topupAmount = 500;
-        let selectedPaymentMethod = 'stars';
+        let marketGifts = []; let myInventory = []; let selectedMyItems = []; 
+        let userBalance = 0; let sliderBalance = 0; let selectedTargetItem = null;
+        let currentBuyItem = null; let currentBuyQty = 1; let currentUpgradeItem = null; let currentWithdrawItem = null;
+        let topupAmount = 500; let selectedPaymentMethod = 'stars';
 
         // === СИСТЕМА ЗБЕРЕЖЕННЯ ===
         function saveState() {
-            const state = {
-                balance: userBalance,
-                market: marketGifts,
-                inventory: myInventory,
-                lastBonus: localStorage.getItem('last_bonus_time') || 0
-            };
+            const state = { balance: userBalance, market: marketGifts, inventory: myInventory };
             localStorage.setItem('mintradar_state', JSON.stringify(state));
         }
 
@@ -546,27 +590,19 @@
             const saved = localStorage.getItem('mintradar_state');
             if (saved) {
                 const state = JSON.parse(saved);
-                userBalance = state.balance;
-                marketGifts = state.market;
-                myInventory = state.inventory;
+                userBalance = state.balance; marketGifts = state.market; myInventory = state.inventory;
             } else {
-                userBalance = 100000;
-                marketGifts = [...allGifts];
-                myInventory = [];
-                saveState();
+                userBalance = 100000; marketGifts = [...allGifts]; myInventory = []; saveState();
             }
             checkBonusStatus();
+            checkPromoStatus();
         }
 
         function updateTopBalance() {
             document.getElementById('top-balance').innerText = userBalance.toLocaleString('en-US', {maximumFractionDigits: 2});
             document.getElementById('available-balance').innerText = userBalance.toLocaleString('en-US', {maximumFractionDigits: 2});
-            const slider = document.getElementById('balance-slider');
-            slider.max = userBalance;
-            if (sliderBalance > userBalance) {
-                sliderBalance = userBalance;
-                slider.value = userBalance;
-            }
+            const slider = document.getElementById('balance-slider'); slider.max = userBalance;
+            if (sliderBalance > userBalance) { sliderBalance = userBalance; slider.value = userBalance; }
             document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
         }
 
@@ -581,29 +617,21 @@
         // === ГАМАНЕЦЬ ===
         function setTopupAmount(amount) {
             playSound('click');
-            topupAmount = amount;
-            document.getElementById('custom-amount').value = amount;
+            topupAmount = amount; document.getElementById('custom-amount').value = amount;
             document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            updateUsdEquivalent();
+            event.target.classList.add('active'); updateUsdEquivalent();
         }
 
         function updateUsdEquivalent() {
             const input = document.getElementById('custom-amount');
             let amount = parseInt(input.value);
-            if (isNaN(amount) || amount < 50) amount = 50;
-            if (amount > 10000) amount = 10000;
-            input.value = amount;
-            topupAmount = amount;
-            
-            // Курс: 10 USD = 500 зірок
-            const usd = (amount * 0.02).toFixed(2);
-            document.getElementById('usd-equivalent').innerText = '$' + usd;
+            if (isNaN(amount) || amount < 50) amount = 50; if (amount > 10000) amount = 10000;
+            input.value = amount; topupAmount = amount;
+            document.getElementById('usd-equivalent').innerText = '$' + (amount * 0.02).toFixed(2);
         }
 
         function selectPayment(method, element) {
-            playSound('click');
-            selectedPaymentMethod = method;
+            playSound('click'); selectedPaymentMethod = method;
             document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
             if (element) element.classList.add('active');
         }
@@ -611,36 +639,54 @@
         function initiateTopup() {
             playSound('click');
             if (selectedPaymentMethod === 'stars') {
-                tg.sendData(JSON.stringify({ 
-                    action: 'topup_stars', 
-                    amount: topupAmount,
-                    usd: (topupAmount * 0.02).toFixed(2)
-                }));
-                tg.close();
+                document.getElementById('result-title-text').innerText = 'Створюю рахунок...';
+                document.getElementById('result-modal-box').className = 'result-modal';
+                document.getElementById('result-image').src = 'https://via.placeholder.com/70/08090d/ffcc00?text=⭐';
+                document.getElementById('result-nft-name').innerText = 'Зачекайте, бот надішле рахунок у чат...';
+                document.getElementById('result-overlay').classList.add('active');
+
+                setTimeout(() => {
+                    tg.sendData(JSON.stringify({ action: 'topup_stars', amount: topupAmount, usd: (topupAmount * 0.02).toFixed(2) }));
+                }, 1000);
             }
         }
 
-        // === ПРОМОКОДИ ТА БОНУСИ ===
+        // === БОНУСИ ТА ПРОМОКОДИ ===
         function applyPromo() {
             playSound('click');
             const code = document.getElementById('promo-code').value.trim().toUpperCase();
-            if (code === 'MINT100') {
-                userBalance += 5;
-                alert('Промокод активовано! +5 ⭐');
-                playSound('win');
-                document.getElementById('promo-code').value = '';
-                saveState();
-                updateUI();
-            } else if (code === 'PEPE500') {
-                userBalance += 10;
-                alert('Промокод активовано! +10 ⭐');
-                playSound('win');
-                document.getElementById('promo-code').value = '';
-                saveState();
-                updateUI();
-            } else {
-                alert('Невірний промокод!');
+            const lastPromoTime = localStorage.getItem('last_promo_time');
+            const now = Date.now();
+
+            if (lastPromoTime && (now - lastPromoTime < 24 * 60 * 60 * 1000)) {
+                alert('Ви вже використовували промокод сьогодні! Спробуйте завтра.');
                 playSound('lose');
+                return;
+            }
+
+            if (code === 'MINT100') {
+                userBalance += 100; alert('Промокод активовано! +100 ⭐'); playSound('win');
+                localStorage.setItem('last_promo_time', now); document.getElementById('promo-code').value = '';
+                saveState(); updateUI(); checkPromoStatus();
+            } else if (code === 'PEPE500') {
+                userBalance += 500; alert('Промокод активовано! +500 ⭐'); playSound('win');
+                localStorage.setItem('last_promo_time', now); document.getElementById('promo-code').value = '';
+                saveState(); updateUI(); checkPromoStatus();
+            } else {
+                alert('Невірний промокод!'); playSound('lose');
+            }
+        }
+
+        function checkPromoStatus() {
+            const lastPromoTime = localStorage.getItem('last_promo_time');
+            const now = Date.now();
+            const btn = document.getElementById('promo-btn');
+            const input = document.getElementById('promo-code');
+
+            if (lastPromoTime && (now - lastPromoTime < 24 * 60 * 60 * 1000)) {
+                btn.disabled = true; btn.innerText = 'Завтра'; input.disabled = true; input.placeholder = 'Використано';
+            } else {
+                btn.disabled = false; btn.innerText = 'Активувати'; input.disabled = false; input.placeholder = 'MINT100';
             }
         }
 
@@ -649,15 +695,9 @@
             const now = Date.now();
             const btn = document.getElementById('bonus-btn');
             if (lastBonus && (now - lastBonus < 24 * 60 * 60 * 1000)) {
-                btn.disabled = true;
-                btn.innerText = 'Вже отримано';
-                btn.style.background = '#333';
-                btn.style.color = '#888';
+                btn.disabled = true; btn.innerText = 'Вже отримано'; btn.style.background = '#333'; btn.style.color = '#888';
             } else {
-                btn.disabled = false;
-                btn.innerText = 'Забрати';
-                btn.style.background = 'linear-gradient(90deg, #ffcc00, #ff9900)';
-                btn.style.color = '#000';
+                btn.disabled = false; btn.innerText = 'Забрати'; btn.style.background = 'linear-gradient(90deg, #ffcc00, #ff9900)'; btn.style.color = '#000';
             }
         }
 
@@ -665,31 +705,24 @@
             const lastBonus = localStorage.getItem('last_bonus_time');
             const now = Date.now();
             if (!lastBonus || (now - lastBonus >= 24 * 60 * 60 * 1000)) {
-                userBalance += 10;
-                localStorage.setItem('last_bonus_time', now);
-                alert('Щоденний бонус отримано! +10 ⭐');
-                playSound('win');
-                saveState();
-                updateUI();
-                checkBonusStatus();
+                userBalance += 500; localStorage.setItem('last_bonus_time', now);
+                alert('Щоденний бонус отримано! +500 ⭐'); playSound('win');
+                saveState(); updateUI(); checkBonusStatus();
             }
         }
 
         // === МАРКЕТ ===
         function renderMarket() {
-            const grid = document.getElementById('market-grid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('market-grid'); grid.innerHTML = '';
             const query = document.getElementById('search-input').value.toLowerCase();
             const itemsToShow = marketGifts.filter(item => item.name.toLowerCase().includes(query));
 
             if (itemsToShow.length === 0) {
-                grid.innerHTML = '<div style="color:var(--muted); text-align:center; grid-column: 1/-1; padding: 50px;">Товарів не знайдено.</div>';
-                return;
+                grid.innerHTML = '<div style="color:var(--muted); text-align:center; grid-column: 1/-1; padding: 50px;">Товарів не знайдено.</div>'; return;
             }
 
             itemsToShow.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'market-card';
+                const card = document.createElement('div'); card.className = 'market-card';
                 card.innerHTML = `
                     <div class="market-img-box">
                         <img src="${item.img}" class="market-img" onerror="this.src='https://via.placeholder.com/150?text=NFT'">
@@ -711,22 +744,15 @@
         function filterMarket() { renderMarket(); }
 
         function openQtyModal(id) {
-            playSound('click');
-            currentBuyItem = marketGifts.find(g => g.id === id);
-            currentBuyQty = 1;
-            document.getElementById('qty-image').src = currentBuyItem.img;
-            document.getElementById('qty-name').innerText = currentBuyItem.name;
+            playSound('click'); currentBuyItem = marketGifts.find(g => g.id === id); currentBuyQty = 1;
+            document.getElementById('qty-image').src = currentBuyItem.img; document.getElementById('qty-name').innerText = currentBuyItem.name;
             document.getElementById('qty-price-per').innerText = currentBuyItem.price.toLocaleString('en-US', {maximumFractionDigits: 2});
-            updateQtyDisplay();
-            document.getElementById('qty-overlay').classList.add('active');
+            updateQtyDisplay(); document.getElementById('qty-overlay').classList.add('active');
         }
 
         function changeBuyQty(amount) {
-            playSound('click');
-            currentBuyQty += amount;
-            if (currentBuyQty < 1) currentBuyQty = 1;
-            if (currentBuyQty > 25) currentBuyQty = 25;
-            updateQtyDisplay();
+            playSound('click'); currentBuyQty += amount;
+            if (currentBuyQty < 1) currentBuyQty = 1; if (currentBuyQty > 25) currentBuyQty = 25; updateQtyDisplay();
         }
 
         function updateQtyDisplay() {
@@ -737,57 +763,33 @@
             document.getElementById('btn-plus').disabled = currentBuyQty >= 25;
         }
 
-        function closeQtyModal() { 
-            playSound('click');
-            document.getElementById('qty-overlay').classList.remove('active'); 
-        }
+        function closeQtyModal() { playSound('click'); document.getElementById('qty-overlay').classList.remove('active'); }
 
         function confirmBuy() {
-            playSound('click');
-            let totalPrice = currentBuyItem.price * currentBuyQty;
+            playSound('click'); let totalPrice = currentBuyItem.price * currentBuyQty;
             if (userBalance < totalPrice) { alert("Недостатньо зірок!"); return; }
-
-            userBalance -= totalPrice;
-            marketGifts = marketGifts.filter(g => g.id !== currentBuyItem.id);
-
+            userBalance -= totalPrice; marketGifts = marketGifts.filter(g => g.id !== currentBuyItem.id);
             let invItem = myInventory.find(i => i.id === currentBuyItem.id);
-            if (invItem) {
-                invItem.count += currentBuyQty;
-            } else {
-                myInventory.push({ ...currentBuyItem, count: currentBuyQty });
-            }
-
-            saveState();
-            updateTopBalance();
-            closeQtyModal();
-            renderMarket();
-            updateUI();
+            if (invItem) { invItem.count += currentBuyQty; } else { myInventory.push({ ...currentBuyItem, count: currentBuyQty }); }
+            saveState(); updateTopBalance(); closeQtyModal(); renderMarket(); updateUI();
             
-            playSound('win');
-            document.getElementById('purchase-image').src = currentBuyItem.img;
+            playSound('win'); document.getElementById('purchase-image').src = currentBuyItem.img;
             document.getElementById('purchase-nft-name').innerText = `${currentBuyItem.name} (x${currentBuyQty})`;
             document.getElementById('purchase-price').innerText = `- ${totalPrice.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐`;
             document.getElementById('purchase-overlay').classList.add('active');
         }
 
-        function closePurchase() { 
-            playSound('click');
-            document.getElementById('purchase-overlay').classList.remove('active'); 
-        }
+        function closePurchase() { playSound('click'); document.getElementById('purchase-overlay').classList.remove('active'); }
 
         // === АПГРЕЙДЕР ===
         function renderInventory() {
-            const grid = document.getElementById('inventory-grid');
-            const emptyMsg = document.getElementById('empty-inventory-msg');
+            const grid = document.getElementById('inventory-grid'); const emptyMsg = document.getElementById('empty-inventory-msg');
             grid.innerHTML = '';
-            
             if (myInventory.length === 0) { emptyMsg.style.display = 'block'; } else { emptyMsg.style.display = 'none'; }
 
             myInventory.forEach(item => {
-                const selectedItemData = selectedMyItems.find(i => i.id === item.id);
-                const isSelected = !!selectedItemData;
-                const card = document.createElement('div');
-                card.className = `inv-card ${isSelected ? 'selected' : ''}`;
+                const selectedItemData = selectedMyItems.find(i => i.id === item.id); const isSelected = !!selectedItemData;
+                const card = document.createElement('div'); card.className = `inv-card ${isSelected ? 'selected' : ''}`;
                 card.innerHTML = `
                     <div class="count-badge">x${item.count}</div>
                     ${isSelected ? `<div class="selected-badge">${selectedItemData.selectedQty}</div>` : ''}
@@ -795,48 +797,30 @@
                     <div class="inv-name">${item.name}</div>
                     <div class="inv-price">${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐</div>
                 `;
-                card.onclick = () => handleInventoryClick(item);
-                grid.appendChild(card);
+                card.onclick = () => handleInventoryClick(item); grid.appendChild(card);
             });
         }
 
         function handleInventoryClick(item) {
             const existingIndex = selectedMyItems.findIndex(i => i.id === item.id);
-
             if (existingIndex > -1) {
-                playSound('click');
-                selectedMyItems.splice(existingIndex, 1);
-                if (selectedMyItems.length === 0) {
-                    sliderBalance = 0;
-                    document.getElementById('balance-slider').value = 0;
-                }
+                playSound('select'); selectedMyItems.splice(existingIndex, 1);
+                if (selectedMyItems.length === 0) { sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
                 updateUI();
             } else {
-                playSound('click');
-                if (item.count === 1) {
-                    selectedMyItems.push({ ...item, selectedQty: 1 });
-                    updateUI();
-                } else {
-                    openUpgradeQtyModal(item);
-                }
+                playSound('select');
+                if (item.count === 1) { selectedMyItems.push({ ...item, selectedQty: 1 }); updateUI(); } 
+                else { openUpgradeQtyModal(item); }
             }
         }
 
         function openUpgradeQtyModal(item) {
-            currentUpgradeItem = item;
-            const existingSelection = selectedMyItems.find(i => i.id === item.id);
+            currentUpgradeItem = item; const existingSelection = selectedMyItems.find(i => i.id === item.id);
             const initialQty = existingSelection ? existingSelection.selectedQty : 1;
-
-            document.getElementById('up-qty-image').src = item.img;
-            document.getElementById('up-qty-name').innerText = item.name;
+            document.getElementById('up-qty-image').src = item.img; document.getElementById('up-qty-name').innerText = item.name;
             document.getElementById('up-qty-max').innerText = item.count;
-            
-            const slider = document.getElementById('upgrade-qty-slider');
-            slider.max = item.count;
-            slider.value = initialQty;
-
-            updateUpgradeQtyDisplay(initialQty, item.price);
-            document.getElementById('upgrade-qty-overlay').classList.add('active');
+            const slider = document.getElementById('upgrade-qty-slider'); slider.max = item.count; slider.value = initialQty;
+            updateUpgradeQtyDisplay(initialQty, item.price); document.getElementById('upgrade-qty-overlay').classList.add('active');
         }
 
         document.getElementById('upgrade-qty-slider').addEventListener('input', function(e) {
@@ -848,36 +832,21 @@
             document.getElementById('up-qty-total-price').innerText = (qty * price).toLocaleString('en-US', {maximumFractionDigits: 2});
         }
 
-        function closeUpgradeQtyModal() { 
-            playSound('click');
-            document.getElementById('upgrade-qty-overlay').classList.remove('active'); 
-        }
+        function closeUpgradeQtyModal() { playSound('click'); document.getElementById('upgrade-qty-overlay').classList.remove('active'); }
 
         function confirmUpgradeQty() {
-            playSound('click');
-            const qty = parseInt(document.getElementById('upgrade-qty-slider').value);
+            playSound('click'); const qty = parseInt(document.getElementById('upgrade-qty-slider').value);
             if (qty > 0) {
                 const existingIndex = selectedMyItems.findIndex(i => i.id === currentUpgradeItem.id);
-                if (existingIndex > -1) {
-                    selectedMyItems[existingIndex].selectedQty = qty;
-                } else {
-                    selectedMyItems.push({ ...currentUpgradeItem, selectedQty: qty });
-                }
-            } else {
-                selectedMyItems = selectedMyItems.filter(i => i.id !== currentUpgradeItem.id);
-            }
-
-            if (selectedMyItems.length === 0) { 
-                sliderBalance = 0; 
-                document.getElementById('balance-slider').value = 0; 
-            }
-            closeUpgradeQtyModal();
-            updateUI();
+                if (existingIndex > -1) { selectedMyItems[existingIndex].selectedQty = qty; } 
+                else { selectedMyItems.push({ ...currentUpgradeItem, selectedQty: qty }); }
+            } else { selectedMyItems = selectedMyItems.filter(i => i.id !== currentUpgradeItem.id); }
+            if (selectedMyItems.length === 0) { sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
+            closeUpgradeQtyModal(); updateUI();
         }
 
         function renderCatalog(totalValue) {
-            const grid = document.getElementById('catalog-grid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('catalog-grid'); grid.innerHTML = '';
             const sortedGifts = [...allGifts].filter(item => item.price >= totalValue).sort((a, b) => a.price - b.price);
             sortedGifts.forEach(item => {
                 const card = document.createElement('div');
@@ -887,42 +856,30 @@
                     <div class="inv-name">${item.name}</div>
                     <div class="cat-price">${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐</div>
                 `;
-                card.onclick = () => { playSound('click'); selectedTargetItem = item; updateUI(); };
-                grid.appendChild(card);
+                card.onclick = () => { playSound('click'); selectedTargetItem = item; updateUI(); }; grid.appendChild(card);
             });
         }
 
         function updateUI() {
-            updateTopBalance();
-            const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
+            updateTopBalance(); const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
             const totalValue = itemsValue + sliderBalance;
             document.getElementById('total-price-val').innerText = totalValue.toLocaleString('en-US', {maximumFractionDigits: 2});
-            
-            renderInventory();
-            renderCatalog(totalValue);
-            renderProfile();
+            renderInventory(); renderCatalog(totalValue); renderProfile();
 
-            const sliderSection = document.getElementById('balance-section');
-            const sliderInput = document.getElementById('balance-slider');
+            const sliderSection = document.getElementById('balance-section'); const sliderInput = document.getElementById('balance-slider');
             if (selectedMyItems.length === 0) { sliderSection.classList.add('disabled'); sliderInput.disabled = true; } 
             else { sliderSection.classList.remove('disabled'); sliderInput.disabled = false; }
 
-            const chanceText = document.getElementById('modal-chance-text');
-            const arc = document.getElementById('spin-arc');
-            const arrow = document.getElementById('spin-arrow');
-            const upgradeBtn = document.getElementById('upgrade-btn');
+            const chanceText = document.getElementById('modal-chance-text'); const arc = document.getElementById('spin-arc');
+            const arrow = document.getElementById('spin-arrow'); const upgradeBtn = document.getElementById('upgrade-btn');
             arrow.style.transition = 'none'; arrow.style.transform = 'rotate(0deg)';
             if (selectedTargetItem && totalValue > selectedTargetItem.price) selectedTargetItem = null;
 
             if (selectedMyItems.length > 0 && totalValue > 0 && selectedTargetItem) {
                 let chance = (totalValue / selectedTargetItem.price) * 100;
                 if (chance >= 100) chance = 99; if (chance < 1) chance = 1;
-                chanceText.innerText = Math.round(chance) + '%';
-                arc.style.setProperty('--chance-percent', chance + '%');
-                upgradeBtn.disabled = false;
-            } else {
-                chanceText.innerText = '0%'; arc.style.setProperty('--chance-percent', '0%'); upgradeBtn.disabled = true;
-            }
+                chanceText.innerText = Math.round(chance) + '%'; arc.style.setProperty('--chance-percent', chance + '%'); upgradeBtn.disabled = false;
+            } else { chanceText.innerText = '0%'; arc.style.setProperty('--chance-percent', '0%'); upgradeBtn.disabled = true; }
         }
 
         function startUpgrade() {
@@ -931,128 +888,73 @@
             const totalValue = itemsValue + sliderBalance;
             if (totalValue === 0 || !selectedTargetItem) return;
 
-            playSound('spin');
-            const btn = document.getElementById('upgrade-btn');
-            const arrow = document.getElementById('spin-arrow');
-            btn.disabled = true;
-
-            let chance = (totalValue / selectedTargetItem.price) * 100;
-            if (chance >= 100) chance = 99;
-            const halfWidth = chance * 1.8; 
-            const roll = Math.random() * 100;
-            const isWin = roll <= chance;
+            playSound('spin'); const btn = document.getElementById('upgrade-btn'); const arrow = document.getElementById('spin-arrow'); btn.disabled = true;
+            let chance = (totalValue / selectedTargetItem.price) * 100; if (chance >= 100) chance = 99;
+            const halfWidth = chance * 1.8; const roll = Math.random() * 100; const isWin = roll <= chance;
             let targetAngle = isWin ? (180 - halfWidth) + (Math.random() * (halfWidth * 2)) : (180 + halfWidth) + (Math.random() * (360 - (halfWidth * 2)));
             const totalRotation = (360 * 5) + targetAngle;
 
-            arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)';
-            arrow.style.transform = `rotate(${totalRotation}deg)`;
-
+            arrow.style.transition = 'transform 3s cubic-bezier(0.1, 0.8, 0.2, 1)'; arrow.style.transform = `rotate(${totalRotation}deg)`;
             const wonItem = selectedTargetItem;
 
             setTimeout(() => {
                 if (sliderBalance > 0) { userBalance -= sliderBalance; sliderBalance = 0; document.getElementById('balance-slider').value = 0; }
-                
                 selectedMyItems.forEach(selItem => {
                     const invItem = myInventory.find(i => i.id === selItem.id);
-                    if (invItem) {
-                        invItem.count -= selItem.selectedQty;
-                        if (invItem.count <= 0) {
-                            myInventory = myInventory.filter(i => i.id !== invItem.id);
-                        }
-                    }
+                    if (invItem) { invItem.count -= selItem.selectedQty; if (invItem.count <= 0) { myInventory = myInventory.filter(i => i.id !== invItem.id); } }
                 });
-
                 if (isWin) { 
-                    playSound('win');
-                    let wonInvItem = myInventory.find(i => i.id === wonItem.id);
-                    if(wonInvItem) { wonInvItem.count += 1; } 
-                    else { myInventory.push({ ...wonItem, count: 1 }); }
+                    playSound('win'); let wonInvItem = myInventory.find(i => i.id === wonItem.id);
+                    if(wonInvItem) { wonInvItem.count += 1; } else { myInventory.push({ ...wonItem, count: 1 }); }
                     showResultModal(true, wonItem); 
-                } 
-                else { 
-                    playSound('lose');
-                    showResultModal(false, null); 
-                }
-
-                selectedMyItems = []; selectedTargetItem = null;
-                document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
-                
-                saveState();
-                updateUI(); btn.disabled = false;
+                } else { playSound('lose'); showResultModal(false, null); }
+                selectedMyItems = []; selectedTargetItem = null; document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
+                saveState(); updateUI(); btn.disabled = false;
             }, 3000);
         }
 
         function showResultModal(isWin, item) {
-            const overlay = document.getElementById('result-overlay');
-            const modalBox = document.getElementById('result-modal-box');
-            const title = document.getElementById('result-title-text');
-            const img = document.getElementById('result-image');
-            const name = document.getElementById('result-nft-name');
-
-            if (isWin) {
-                modalBox.className = 'result-modal win'; title.innerText = 'Вітаю ви перемогли!';
-                img.src = item.img; name.innerText = item.name; createConfetti();
-            } else {
-                modalBox.className = 'result-modal lose'; title.innerText = 'На жаль, ви програли';
-                img.src = 'https://via.placeholder.com/80/1c1f26/ff3333?text=X'; name.innerText = 'Предмети згоріли';
-            }
+            const overlay = document.getElementById('result-overlay'); const modalBox = document.getElementById('result-modal-box');
+            const title = document.getElementById('result-title-text'); const img = document.getElementById('result-image'); const name = document.getElementById('result-nft-name');
+            if (isWin) { modalBox.className = 'result-modal win'; title.innerText = 'Вітаю ви перемогли!'; img.src = item.img; name.innerText = item.name; createConfetti(); } 
+            else { modalBox.className = 'result-modal lose'; title.innerText = 'На жаль, ви програли'; img.src = 'https://via.placeholder.com/80/1c1f26/ff3333?text=X'; name.innerText = 'Предмети згоріли'; }
             overlay.classList.add('active');
         }
 
         function closeResult() {
-            playSound('click');
-            document.getElementById('result-overlay').classList.remove('active');
-            document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
+            playSound('click'); document.getElementById('result-overlay').classList.remove('active'); document.querySelectorAll('.confetti-piece').forEach(e => e.remove());
         }
 
         function createConfetti() {
             const colors = ['#ffcc00', '#00ff88', '#00bfff', '#ff69b4', '#ffffff'];
             for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti-piece';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                const confetti = document.createElement('div'); confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + 'vw'; confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's'; confetti.style.animationDelay = (Math.random() * 0.5) + 's';
                 document.getElementById('result-overlay').appendChild(confetti);
             }
         }
 
         function setMultiplier(mult, btnElement) {
-            playSound('click');
-            if (selectedMyItems.length === 0) { alert("Спочатку виберіть предмети!"); return; }
-            document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active'));
-            if (btnElement) btnElement.classList.add('active');
+            playSound('click'); if (selectedMyItems.length === 0) { alert("Спочатку виберіть предмети!"); return; }
+            document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('active')); if (btnElement) btnElement.classList.add('active');
             const itemsValue = selectedMyItems.reduce((sum, i) => sum + (i.price * i.selectedQty), 0);
             const targetPrice = Math.round((itemsValue + sliderBalance) * mult);
             let closestItem = allGifts.find(i => i.price >= targetPrice) || allGifts[allGifts.length-1];
-            selectedTargetItem = closestItem;
-            updateUI();
+            selectedTargetItem = closestItem; updateUI();
         }
 
         document.getElementById('balance-slider').addEventListener('input', function(e) {
             if (selectedMyItems.length === 0) { e.target.value = 0; sliderBalance = 0; alert("Спочатку оберіть NFT з інвентарю!"); return; }
-            sliderBalance = parseInt(e.target.value);
-            document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐';
-            updateUI();
+            sliderBalance = parseInt(e.target.value); document.getElementById('slider-val-display').innerText = sliderBalance.toLocaleString('en-US') + ' ⭐'; updateUI();
         });
 
         // === ПРОФІЛЬ ===
         function renderProfile() {
-            const grid = document.getElementById('profile-grid');
-            const emptyMsg = document.getElementById('empty-profile-msg');
-            grid.innerHTML = '';
-
-            if (myInventory.length === 0) {
-                emptyMsg.style.display = 'block';
-                return;
-            } else {
-                emptyMsg.style.display = 'none';
-            }
-
+            const grid = document.getElementById('profile-grid'); const emptyMsg = document.getElementById('empty-profile-msg'); grid.innerHTML = '';
+            if (myInventory.length === 0) { emptyMsg.style.display = 'block'; return; } else { emptyMsg.style.display = 'none'; }
             myInventory.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'profile-card';
+                const card = document.createElement('div'); card.className = 'profile-card';
                 card.innerHTML = `
                     <div style="position:absolute; top:5px; left:5px; font-size:12px; font-weight:bold; color:var(--yellow);">x${item.count}</div>
                     <img src="${item.img}" onerror="this.src='https://via.placeholder.com/60?text=NFT'">
@@ -1066,77 +968,40 @@
                             <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
                         </button>
                     </div>
-                `;
-                grid.appendChild(card);
+                `; grid.appendChild(card);
             });
         }
 
         function sellItem(id) {
-            const item = myInventory.find(i => i.id === id);
-            if (!item) return;
-
-            const confirmSell = confirm(`Ви впевнені, що хочете продати 1 шт. ${item.name} за ${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐?`);
-            
-            if (confirmSell) {
-                playSound('click');
-                userBalance += item.price;
-                item.count -= 1;
-                if (item.count <= 0) {
-                    myInventory = myInventory.filter(i => i.id !== item.id);
-                }
-                if (!marketGifts.find(g => g.id === item.id)) {
-                    marketGifts.push({ id: item.id, name: item.name, price: item.price, img: item.img });
-                }
-                saveState();
-                updateUI();
+            const item = myInventory.find(i => i.id === id); if (!item) return;
+            if (confirm(`Ви впевнені, що хочете продати 1 шт. ${item.name} за ${item.price.toLocaleString('en-US', {maximumFractionDigits: 2})} ⭐?`)) {
+                playSound('click'); userBalance += item.price; item.count -= 1;
+                if (item.count <= 0) { myInventory = myInventory.filter(i => i.id !== item.id); }
+                if (!marketGifts.find(g => g.id === item.id)) { marketGifts.push({ id: item.id, name: item.name, price: item.price, img: item.img }); }
+                saveState(); updateUI();
             }
         }
 
         function openWithdrawModal(id) {
-            playSound('click');
-            const item = myInventory.find(i => i.id === id);
-            if (!item) return;
-            
-            currentWithdrawItem = item;
-            document.getElementById('withdraw-image').src = item.img;
-            document.getElementById('withdraw-nft-name').innerText = item.name;
-            document.getElementById('withdraw-user').value = '';
-            document.getElementById('withdraw-price').value = '';
-            
+            playSound('click'); const item = myInventory.find(i => i.id === id); if (!item) return;
+            currentWithdrawItem = item; document.getElementById('withdraw-image').src = item.img; document.getElementById('withdraw-nft-name').innerText = item.name;
+            document.getElementById('withdraw-user').value = ''; document.getElementById('withdraw-price').value = '';
             document.getElementById('withdraw-overlay').classList.add('active');
         }
 
-        function closeWithdrawModal() {
-            playSound('click');
-            document.getElementById('withdraw-overlay').classList.remove('active');
-        }
+        function closeWithdrawModal() { playSound('click'); document.getElementById('withdraw-overlay').classList.remove('active'); }
 
         function confirmWithdraw() {
-            playSound('click');
-            const tgUser = document.getElementById('withdraw-user').value.trim();
-            const price = document.getElementById('withdraw-price').value.trim();
-
-            if (!tgUser || !price) {
-                alert("Будь ласка, заповніть всі поля!");
-                return;
-            }
-
+            playSound('click'); const tgUser = document.getElementById('withdraw-user').value.trim(); const price = document.getElementById('withdraw-price').value.trim();
+            if (!tgUser || !price) { alert("Будь ласка, заповніть всі поля!"); return; }
             currentWithdrawItem.count -= 1;
-            if (currentWithdrawItem.count <= 0) {
-                myInventory = myInventory.filter(i => i.id !== currentWithdrawItem.id);
-            }
-
-            saveState();
-            updateUI();
-            closeWithdrawModal();
+            if (currentWithdrawItem.count <= 0) { myInventory = myInventory.filter(i => i.id !== currentWithdrawItem.id); }
+            saveState(); updateUI(); closeWithdrawModal();
             alert(`Запит на виведення ${currentWithdrawItem.name} для ${tgUser} на суму ${price} ⭐ прийнято!`);
         }
 
         // === ІНІЦІАЛІЗАЦІЯ ===
-        loadState();
-        renderMarket();
-        updateUI();
-        updateUsdEquivalent();
+        loadState(); renderMarket(); updateUI(); updateUsdEquivalent();
     </script>
 </body>
 </html>
